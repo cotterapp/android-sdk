@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bullet"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:paddingVertical="30dp">
+
+        <TextView
+            android:id="@+id/input_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/akkurat"
+            android:text="\u25CB"
+            android:textColor="@color/colorWhite"
+            android:textSize="25dp"
+            android:paddingHorizontal="10dp"
+            />
+        <TextView
+            android:id="@+id/input_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/akkurat"
+            android:text="\u25CB"
+            android:textColor="@color/colorWhite"
+            android:textSize="25dp"
+            android:paddingHorizontal="10dp"
+            />
+
+        <TextView
+            android:id="@+id/input_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/akkurat"
+            android:text="\u25CB"
+            android:textColor="@color/colorWhite"
+            android:textSize="25dp"
+            android:paddingHorizontal="10dp"
+            />
+
+        <TextView
+            android:id="@+id/input_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/akkurat"
+            android:text="\u25CB"
+            android:textColor="@color/colorWhite"
+            android:textSize="25dp"
+            android:paddingHorizontal="10dp"
+            />
+</LinearLayout>
