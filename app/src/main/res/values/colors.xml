@@ -4,5 +4,8 @@
     <color name="colorGreenDark">#15daa3</color>
     <color name="colorBlack">#000000</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorLightGrey">#D8D8D8</color>
+    <color name="colorDarkGrey">#666666</color>
+    <color name="colorDanger">#D92C59</color>
 
 </resources>

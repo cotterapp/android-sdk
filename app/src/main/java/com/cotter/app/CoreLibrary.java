@@ -10,6 +10,12 @@ public class CoreLibrary {
     //    Methods
     public static String PinMethod = "PIN";
 
+    // Colors
+    public static Colors colors;
+
+    // Strings
+    public static Strings strings;
+
     private static Context ctx;
     public static Flow PinEnrollment = new Flow(new String[] { ScreenNames.PinEnrollmentEnterPin, ScreenNames.PinEnrollmentReEnterPin });
     public static Flow PinVerification= new Flow(new String[] { ScreenNames.PinVerification });
@@ -22,6 +28,8 @@ public class CoreLibrary {
         getUser();
         getRules();
         AuthRequest.SetMainServerURL(mainServerURL);
+        strings = new Strings();
+        colors = new Colors();
     }
 
     public static User getUser() {

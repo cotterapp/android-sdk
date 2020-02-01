@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,7 +7,8 @@
     android:columnCount="3"
     android:orientation="horizontal"
     android:useDefaultMargins="true"
-    android:background="@color/colorGreen">
+    android:background="@color/colorWhite">
+
 
     <Button
         android:id="@+id/keyboard_1"
@@ -16,12 +18,12 @@
         android:gravity="center"
         android:layout_gravity="center_vertical"
         android:text="1"
-        android:background="@color/colorGreen"
+        android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
         android:onClick="onPressKey"
-        android:textColor="@color/colorWhite"
-        android:textSize="20dp"
-        
+        android:textColor="@color/colorBlack"
+        android:textSize="24dp"
+
     />
     <Button
         android:id="@+id/keyboard_2"
@@ -31,12 +33,12 @@
         android:gravity="center"
         android:layout_gravity="center_vertical"
         android:text="2"
-        android:background="@color/colorGreen"
+        android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
         android:onClick="onPressKey"
-        android:textColor="@color/colorWhite"
-        android:textSize="20dp"
-        
+        android:textColor="@color/colorBlack"
+        android:textSize="24dp"
+
         />
     <Button
         android:id="@+id/keyboard_3"
@@ -46,12 +48,12 @@
         android:gravity="center"
         android:layout_gravity="center_vertical"
         android:text="3"
-        android:background="@color/colorGreen"
+        android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
         android:onClick="onPressKey"
-        android:textColor="@color/colorWhite"
-        android:textSize="20dp"
-        
+        android:textColor="@color/colorBlack"
+        android:textSize="24dp"
+
         />
     <Button
         android:id="@+id/keyboard_4"
@@ -61,12 +63,12 @@
         android:gravity="center"
         android:layout_gravity="center_vertical"
         android:text="4"
-        android:background="@color/colorGreen"
+        android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
         android:onClick="onPressKey"
-        android:textColor="@color/colorWhite"
-        android:textSize="20dp"
-        
+        android:textColor="@color/colorBlack"
+        android:textSize="24dp"
+
         />
     <Button
         android:id="@+id/keyboard_5"
@@ -76,12 +78,12 @@
         android:gravity="center"
         android:layout_gravity="center_vertical"
         android:text="5"
-        android:background="@color/colorGreen"
+        android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
         android:onClick="onPressKey"
-        android:textColor="@color/colorWhite"
-        android:textSize="20dp"
-        
+        android:textColor="@color/colorBlack"
+        android:textSize="24dp"
+
         />
     <Button
         android:id="@+id/keyboard_6"
@@ -91,12 +93,12 @@
         android:gravity="center"
         android:layout_gravity="center_vertical"
         android:text="6"
-        android:background="@color/colorGreen"
+        android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
         android:onClick="onPressKey"
-        android:textColor="@color/colorWhite"
-        android:textSize="20dp"
-        
+        android:textColor="@color/colorBlack"
+        android:textSize="24dp"
+
         />
     <Button
         android:id="@+id/keyboard_7"
@@ -106,12 +108,12 @@
         android:gravity="center"
         android:layout_gravity="center_vertical"
         android:text="7"
-        android:background="@color/colorGreen"
+        android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
         android:onClick="onPressKey"
-        android:textColor="@color/colorWhite"
-        android:textSize="20dp"
-        
+        android:textColor="@color/colorBlack"
+        android:textSize="24dp"
+
         />
     <Button
         android:id="@+id/keyboard_8"
@@ -121,12 +123,12 @@
         android:gravity="center"
         android:layout_gravity="center_vertical"
         android:text="8"
-        android:background="@color/colorGreen"
+        android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
         android:onClick="onPressKey"
-        android:textColor="@color/colorWhite"
-        android:textSize="20dp"
-        
+        android:textColor="@color/colorBlack"
+        android:textSize="24dp"
+
         />
     <Button
         android:id="@+id/keyboard_9"
@@ -136,12 +138,12 @@
         android:gravity="center"
         android:layout_gravity="center_vertical"
         android:text="9"
-        android:background="@color/colorGreen"
+        android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
         android:onClick="onPressKey"
-        android:textColor="@color/colorWhite"
-        android:textSize="20dp"
-        
+        android:textColor="@color/colorBlack"
+        android:textSize="24dp"
+
         />
     <ImageButton
         android:layout_width="0dp"
@@ -150,10 +152,10 @@
         android:gravity="center"
         android:layout_gravity="center_vertical"
         android:id="@+id/keyboard_biometric"
-        android:background="@color/colorGreen"
+        android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
         android:onClick="onPressKey"
-        android:tint="@color/colorWhite"
+        android:tint="@color/colorBlack"
         />
     <Button
         android:id="@+id/keyboard_0"
@@ -163,12 +165,12 @@
         android:gravity="center"
         android:layout_gravity="center_vertical"
         android:text="0"
-        android:background="@color/colorGreen"
+        android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
         android:onClick="onPressKey"
-        android:textColor="@color/colorWhite"
-        android:textSize="20dp"
-        
+        android:textColor="@color/colorBlack"
+        android:textSize="24dp"
+
         />
     <ImageButton
         android:src="@drawable/backspace"
@@ -178,11 +180,11 @@
         android:gravity="center"
         android:layout_gravity="center_vertical"
         android:id="@+id/keyboard_backspace"
-        android:background="@color/colorGreen"
+        android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
         android:onClick="onDeleteKey"
-        android:textColor="@color/colorWhite"
-        android:tint="@color/colorWhite"
-        
+        android:textColor="@color/colorBlack"
+        android:tint="@color/colorBlack"
+
         />
 </GridLayout>
