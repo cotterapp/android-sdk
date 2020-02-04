@@ -40,7 +40,7 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
     private ConstraintLayout container;
     private LinearLayout bullet;
 
-    public Map<String, String> ActivityStrings = Cotter.strings.PinVerification;
+    public Map<String, String> ActivityStrings;
 
     private Executor executor;
     private BiometricPrompt biometricPrompt;
@@ -54,6 +54,8 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pin_verification);
+
+        ActivityStrings = Cotter.strings.PinVerification;
 
         // Refetch user
         User.refetchUser(getApplicationContext(), Cotter.authRequest);

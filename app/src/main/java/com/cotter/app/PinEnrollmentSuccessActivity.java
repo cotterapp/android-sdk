@@ -35,12 +35,14 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
 
     private boolean biometricAvailable = false;
 
-    public Map<String, String> ActivityStrings = Cotter.strings.PinEnrollmentSuccess;
+    public Map<String, String> ActivityStrings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pin_enrollment_success);
+
+        ActivityStrings = Cotter.strings.PinEnrollmentSuccess;
 
         textTitle = findViewById(R.id.title);
         textSubtitle = findViewById(R.id.subtitle);

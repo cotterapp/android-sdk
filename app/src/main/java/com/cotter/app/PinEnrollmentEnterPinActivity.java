@@ -31,12 +31,15 @@ public class PinEnrollmentEnterPinActivity extends AppCompatActivity implements 
     private ConstraintLayout container;
     private LinearLayout bullet;
 
-    public Map<String, String> ActivityStrings = Cotter.strings.PinEnrollmentEnterPin;
+    public Map<String, String> ActivityStrings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pin_enrollment_enter_pin);
+
+        ActivityStrings = Cotter.strings.PinEnrollmentEnterPin;
+
         pin = "";
         // set pins objects
         pins.add((TextView)findViewById(R.id.input_1));
