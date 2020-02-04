@@ -1,27 +1,23 @@
 package com.cotter.app;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.CycleInterpolator;
-import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PinEnrollmentReEnterPinActivity extends AppCompatActivity {
+public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implements PinInterface {
     public static String name = ScreenNames.PinEnrollmentReEnterPin;
     private static String pin;
     private static String originalPin;
@@ -32,6 +28,7 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity {
     private TextView textTitle;
     private TextView textShow;
     private TextView textError;
+    private ConstraintLayout container;
 
     private boolean pinError = false;
     private boolean showPin = false;
@@ -57,16 +54,18 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity {
         Intent intent = getIntent();
         originalPin = intent.getExtras().getString("pin");
 
-        // get views for texts
+        // Set strings
         textTitle = findViewById(R.id.text_title);
         textShow = findViewById(R.id.text_show);
         textError = findViewById(R.id.text_error);
+        textTitle.setText(Cotter.strings.PinEnrollmentReEnterPin.get(Strings.Title));
+        textShow.setText(Cotter.strings.PinEnrollmentReEnterPin.get(Strings.ShowPin));
 
-        // Set strings
-        textTitle.setText(CoreLibrary.strings.PinEnrollmentReEnterPin.get(Strings.Title));
-        textShow.setText(CoreLibrary.strings.PinEnrollmentReEnterPin.get(Strings.ShowPin));
-        textShow.setTextColor(Color.parseColor(CoreLibrary.colors.ColorPrimary));
-        textError.setTextColor(Color.parseColor(CoreLibrary.colors.ColorDanger));
+        // Set colors
+        container = findViewById(R.id.container);
+        container.setBackgroundColor(Color.parseColor(Cotter.colors.ColorBackground));
+        textShow.setTextColor(Color.parseColor(Cotter.colors.ColorPrimary));
+        textError.setTextColor(Color.parseColor(Cotter.colors.ColorDanger));
 
         // Set up and show toolbar
         setupToolBar();
@@ -74,8 +73,8 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity {
 
     // Set up and show toolbar
     private void setupToolBar() {
-        androidx.appcompat.widget.Toolbar toolbar = (androidx.appcompat.widget.Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(CoreLibrary.strings.Headers.get(name));
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(Cotter.strings.Headers.get(name));
 
         if (toolbar == null) return;
 
@@ -105,8 +104,8 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity {
         setBullet();
     }
 
-    // when pin reaches 6 digits, onSubmit will be invoked
-    public void onSubmit() {
+    // when pin reaches 6 digits, onSubmitPin will be invoked
+    public void onSubmitPin() {
 
         // Check if pin is valid
         if (!originalPin.equals(pin)) {
@@ -125,16 +124,44 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity {
             }
         };
 
-        AuthRequest.EnrollMethod(this, CoreLibrary.PinMethod, pin, cb);
+        Cotter.authRequest.EnrollMethod(this, Cotter.PinMethod, pin, cb);
     }
 
-    // When Enroll Pin inside onSubmit succeed, this will be invoked, going to the next page
+    // When Enroll Pin inside onSubmitPin succeed, this will be invoked, going to the next page
     public void onContinue() {
-        Class nextScreen = CoreLibrary.PinEnrollment.nextStep(name);
+        Class nextScreen = Cotter.PinEnrollment.nextStep(name);
         Intent in = new Intent(this, nextScreen);
         startActivity(in);
         finish();
     }
+
+
+    // SETTER AND GETTER FOR CLASS ATTRIBUTES
+    // Set this.pin
+    public void setPin(String updatedPin) {
+        pin = updatedPin;
+    }
+    // Get this.pin
+    public String getPin() {
+        return pin;
+    }
+    // Set this.pinError
+    public void setPinError(boolean pinErr) {
+        pinError = pinErr;
+    }
+    // Get this.pinError
+    public boolean getPinError() {
+        return pinError;
+    }
+    // Set this.showPin
+    public void setShowPin(boolean show) {
+        showPin = show;
+    }
+    // Get this.showPin
+    public boolean getShowPin() {
+        return showPin;
+    }
+
 
     // Invoked when pin is invalid
     public void invalidPin() {
@@ -145,127 +172,36 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity {
             return;
         }
 
-        // Shake the bullet container
-        bullet.startAnimation(shakeError());
+        String errorString = Cotter.strings.PinEnrollmentReEnterPin.get(Strings.ErrorNoMatch);
+        PinHelper.shakePin(bullet, pins, errorString, textShow, textError, this, this);
 
-        // Shake the phone
-        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(400);
-
-        // set the pins to red
-        for(int i=0; i<pins.size(); i++) {
-            TextView currPin = pins.get(i);
-            currPin.setTextColor(Color.parseColor(CoreLibrary.colors.ColorDanger));
-        }
-
-        // set hide the "Show Pin" textView and show the error text view
-        pinError = true;
-        textShow.setVisibility(View.GONE);
-        textError.setVisibility(View.VISIBLE);
-        textError.setText(CoreLibrary.strings.PinEnrollmentReEnterPin.get(Strings.ErrorNoMatch));
     }
 
     // Set the bullets to the correct color based on entered pin length,
     // and decide to show bullets or numbers based on showPin
     public void setBullet() {
-        String color = CoreLibrary.colors.ColorAccent;
-
-        // Set color to red if pin is in error condition
-        if (pinError) color = CoreLibrary.colors.ColorDanger;
-
-        if (showPin) {
-            // if showPin, then show the numbers
-            char[] pinchar = pin.toCharArray();
-
-            for(int i=0; i<pins.size(); i++) {
-                TextView currPin = pins.get(i);
-                if (pin.length() > i) {
-                    currPin.setText(String.valueOf(pinchar[i]));
-                    currPin.setTextColor(Color.parseColor(color));
-                } else {
-                    // unset pin positions will stay as bullets
-                    currPin.setText("\u25CF");
-                    currPin.setTextColor(getResources().getColor(R.color.colorLightGrey));
-                }
-            }
-
-        } else {
-            // if showPin is false, then show as bullets
-            for(int i=0; i<pins.size(); i++) {
-                TextView currPin = pins.get(i);
-                currPin.setText("\u25CF");
-                if (pin.length() > i) {
-                    currPin.setTextColor(Color.parseColor(color));
-                } else {
-                    currPin.setTextColor(getResources().getColor(R.color.colorLightGrey));
-                }
-
-            }
-        }
+        PinHelper.setBullet(pinError, showPin, pin, pins, this);
     }
+
 
     // Called when keyboard is pressed
     public void onPressKey( View v ) {
-        Button b = (Button)v;
-        String t = b.getText().toString();
-        pin = pin + t;
-        setBullet();
-        if (pin.length() > 5) {
-            onSubmit();
-        }
+        PinHelper.onPressKey(v, this);
     }
 
     // called when delete key is pressed
     public void onDeleteKey(View v) {
-        if (pin.length() > 0) {
-            pin = pin.substring(0, pin.length()-1);
-        }
-
-        // if pin is in error condition, reset pin to ""
-        // ALso hide textError and show "Show Pin"
-        if (pinError) {
-            pin = "";
-            pinError = false;
-            if (pin.length() < 6) {
-                textError.setText("");
-            }
-            textShow.setVisibility(View.VISIBLE);
-            textError.setVisibility(View.GONE);
-            setShowPin(false);
-        }
-        setBullet();
+        PinHelper.onDeleteKey(textError, textShow, this);
     }
-
     // Toggle showing pin or not
     public void onToggleShowPin(View v) {
-        if (!showPin) {
-            textShow.setText(CoreLibrary.strings.PinEnrollmentReEnterPin.get(Strings.HidePin));
-        } else {
-            textShow.setText(CoreLibrary.strings.PinEnrollmentReEnterPin.get(Strings.ShowPin));
-        }
-        showPin = !showPin;
+        setShowPinText(!showPin);
         setBullet();
     }
 
     // Set showPin to a certain value
-    public void setShowPin(boolean show) {
-        if (!show) {
-            textShow.setText(CoreLibrary.strings.PinEnrollmentReEnterPin.get(Strings.ShowPin));
-        } else {
-            textShow.setText(CoreLibrary.strings.PinEnrollmentReEnterPin.get(Strings.HidePin));
-        }
-        showPin = show;
-        setBullet();
+    public void setShowPinText(boolean show) {
+        PinHelper.setShowPinText(show, textShow, Cotter.strings.PinEnrollmentEnterPin.get(Strings.ShowPin), Cotter.strings.PinEnrollmentReEnterPin.get(Strings.HidePin), this);
     }
 
-
-
-    //    HELPER FUNCTIONS
-    // Help shake a container
-    public TranslateAnimation shakeError() {
-        TranslateAnimation shake = new TranslateAnimation(0, 10, 0, 0);
-        shake.setDuration(300);
-        shake.setInterpolator(new CycleInterpolator(3));
-        return shake;
-    }
 }

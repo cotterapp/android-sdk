@@ -17,9 +17,9 @@ public class Rules {
 
     private static Rules instance;
 
-    public static Rules getInstance(Context context) {
+    public static Rules getInstance(Context context, AuthRequest authRequest) {
         if (instance == null) {
-            AuthRequest.GetRules(context, new Callback(){
+            authRequest.GetRules(context, new Callback(){
                 public void onSuccess(JSONObject response){
                     Gson gson = new Gson();
                     instance = gson.fromJson(response.toString(), Rules.class);

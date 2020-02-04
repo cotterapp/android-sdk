@@ -2,13 +2,17 @@ package com.cotter.app;
 
 import android.content.Context;
 
-public class CoreLibrary {
+public class Cotter {
     public static String UserID;
     public static String ApiKeyID;
     public static String ApiSecretKey;
 
+    // AuthRequest
+    public static AuthRequest authRequest;
+
     //    Methods
     public static String PinMethod = "PIN";
+    public static String BiometricMethod = "BIOMETRIC";
 
     // Colors
     public static Colors colors;
@@ -17,7 +21,7 @@ public class CoreLibrary {
     public static Strings strings;
 
     private static Context ctx;
-    public static Flow PinEnrollment = new Flow(new String[] { ScreenNames.PinEnrollmentEnterPin, ScreenNames.PinEnrollmentReEnterPin });
+    public static Flow PinEnrollment = new Flow(new String[] { ScreenNames.PinEnrollmentEnterPin, ScreenNames.PinEnrollmentReEnterPin, ScreenNames.PinEnrollmentSuccess });
     public static Flow PinVerification= new Flow(new String[] { ScreenNames.PinVerification });
 
     public static void init(Context context, String mainServerURL, String userID, String apiKeyID, String apiSecretKey) {
@@ -25,18 +29,18 @@ public class CoreLibrary {
         ApiKeyID = apiKeyID;
         ApiSecretKey = apiSecretKey;
         ctx = context;
-        getUser();
-        getRules();
-        AuthRequest.SetMainServerURL(mainServerURL);
+        authRequest = new AuthRequest(mainServerURL);
+        getUser(authRequest);
+//        getRules(authRequest);
         strings = new Strings();
         colors = new Colors();
     }
 
-    public static User getUser() {
-        return User.getInstance(ctx);
+    public static User getUser(AuthRequest authRequest) {
+        return User.getInstance(ctx, authRequest);
     }
 
-    public static Rules getRules() {
-        return Rules.getInstance(ctx);
+    public static Rules getRules(AuthRequest authRequest) {
+        return Rules.getInstance(ctx, authRequest);
     }
 }

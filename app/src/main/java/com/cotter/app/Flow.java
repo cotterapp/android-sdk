@@ -2,7 +2,6 @@ package com.cotter.app;
 
 import android.content.Context;
 import android.content.Intent;
-import android.view.View;
 
 import java.util.Arrays;
 
@@ -18,14 +17,13 @@ public class Flow {
         int index = Arrays.asList(listFlow).indexOf(screenName);
         if (index != listFlow.length - 1) {
             String nextScreen = listFlow[index + 1];
-            return ScreenNames.nameToScreen.get(nextScreen);
+            return ScreenNames.getClassFromName(nextScreen);
         }
         return callBack;
     }
 
-    public void startFlow(View view, Class callBackIntent, String event) {
+    public void startFlow(Context ctx, Class callBackIntent, String event) {
         this.callBack = callBackIntent;
-        Context ctx = view.getContext();
         Class intent = ScreenNames.getClassFromName(listFlow[0]);
         Intent in = new Intent(ctx, intent);
         in.putExtra("event", event);

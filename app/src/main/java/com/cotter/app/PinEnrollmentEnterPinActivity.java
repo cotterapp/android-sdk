@@ -1,35 +1,37 @@
 package com.cotter.app;
 
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.CycleInterpolator;
-import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class PinEnrollmentEnterPinActivity extends AppCompatActivity {
+public class PinEnrollmentEnterPinActivity extends AppCompatActivity implements PinInterface {
     public static String name = ScreenNames.PinEnrollmentEnterPin;
-    private static String pin;
+    private String pin;
     private List<TextView> pins = new ArrayList<TextView>();
 
-    private static boolean pinError = false;
-    private static boolean showPin = false;
+    private boolean pinError = false;
+    private boolean showPin = false;
 
     private TextView textTitle;
     private TextView textShow;
     private TextView textError;
+    private ConstraintLayout container;
     private LinearLayout bullet;
+
+    public Map<String, String> ActivityStrings = Cotter.strings.PinEnrollmentEnterPin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,16 +49,18 @@ public class PinEnrollmentEnterPinActivity extends AppCompatActivity {
         // set bullet obj
         bullet = findViewById(R.id.bullet);
 
-        // get views for texts
+        // Set strings
         textTitle = findViewById(R.id.text_title);
         textShow = findViewById(R.id.text_show);
         textError = findViewById(R.id.text_error);
+        textTitle.setText(ActivityStrings.get(Strings.Title));
+        textShow.setText(ActivityStrings.get(Strings.ShowPin));
 
-        // Set strings
-        textTitle.setText(CoreLibrary.strings.PinEnrollmentEnterPin.get(Strings.Title));
-        textShow.setText(CoreLibrary.strings.PinEnrollmentEnterPin.get(Strings.ShowPin));
-        textShow.setTextColor(Color.parseColor(CoreLibrary.colors.ColorPrimary));
-        textError.setTextColor(Color.parseColor(CoreLibrary.colors.ColorDanger));
+        // Set colors
+        container = findViewById(R.id.container);
+        container.setBackgroundColor(Color.parseColor(Cotter.colors.ColorBackground));
+        textShow.setTextColor(Color.parseColor(Cotter.colors.ColorPrimary));
+        textError.setTextColor(Color.parseColor(Cotter.colors.ColorDanger));
 
         // Set up and show toolbar
         setupToolBar();
@@ -64,9 +68,8 @@ public class PinEnrollmentEnterPinActivity extends AppCompatActivity {
 
     // Set up and show toolbar
     private void setupToolBar() {
-        androidx.appcompat.widget.Toolbar toolbar = (androidx.appcompat.widget.Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(CoreLibrary.strings.Headers.get(name));
-        toolbar.setTitle(CoreLibrary.strings.Headers.get(name));
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(Cotter.strings.Headers.get(name));
 
         if (toolbar == null) return;
 
@@ -81,7 +84,26 @@ public class PinEnrollmentEnterPinActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle arrow click here
         if (item.getItemId() == android.R.id.home) {
-            finish(); // close this activity and return to preview activity (if there is any)
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomDialogTheme)
+                    .setTitle(ActivityStrings.get(Strings.DialogTitle))
+                    .setMessage(ActivityStrings.get(Strings.DialogSubtitle))
+                    .setPositiveButton(ActivityStrings.get(Strings.DialogPositiveButton), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    })
+                    .setNegativeButton(ActivityStrings.get(Strings.DialogNegativeButton), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish(); // close this activity and return to preview activity (if there is any)
+                        }
+                    });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
         }
 
         return super.onOptionsItemSelected(item);
@@ -96,176 +118,83 @@ public class PinEnrollmentEnterPinActivity extends AppCompatActivity {
     }
 
 
-    // when pin reaches 6 digits, onSubmit will be invoked
-    public void onContinue() {
+    // when pin reaches 6 digits, onSubmitPin will be invoked
+    public void onSubmitPin() {
         // If PIN is weak, don't let it pass
-        if (pinIsWeak()) {
+        if (PinHelper.pinIsWeak(pin)) {
             invalidPin();
             return;
         }
+        onContinue();
+    }
+
+    public void onContinue() {
         // Otherwise continue to next screen
-        Class nextScreen = CoreLibrary.PinEnrollment.nextStep(name);
+        Class nextScreen = Cotter.PinEnrollment.nextStep(name);
         Intent in = new Intent(this, nextScreen);
         in.putExtra("pin", pin);
         startActivity(in);
-        finish();
     }
+
+
+
+    // SETTER AND GETTER FOR CLASS ATTRIBUTES
+    // Set this.pin
+    public void setPin(String updatedPin) {
+        pin = updatedPin;
+    }
+    // Get this.pin
+    public String getPin() {
+        return pin;
+    }
+    // Set this.pinError
+    public void setPinError(boolean pinErr) {
+        pinError = pinErr;
+    }
+    // Get this.pinError
+    public boolean getPinError() {
+        return pinError;
+    }
+    // Set this.showPin
+    public void setShowPin(boolean show) {
+        showPin = show;
+    }
+    // Get this.showPin
+    public boolean getShowPin() {
+        return showPin;
+    }
+
 
 
     // Set the bullets to the correct color based on entered pin length,
     // and decide to show bullets or numbers based on showPin
     public void setBullet() {
-        String color = CoreLibrary.colors.ColorAccent;
-
-        // Set color to red if pin is in error condition
-        if (pinError) color = CoreLibrary.colors.ColorDanger;
-
-        if (showPin) {
-            // if showPin, then show the numbers
-            char[] pinchar = pin.toCharArray();
-
-            for(int i=0; i<pins.size(); i++) {
-                TextView currPin = pins.get(i);
-                if (pin.length() > i) {
-                    currPin.setText(String.valueOf(pinchar[i]));
-                    currPin.setTextColor(Color.parseColor(color));
-                } else {
-                    // unset pin positions will stay as bullets
-                    currPin.setText("\u25CF");
-                    currPin.setTextColor(getResources().getColor(R.color.colorLightGrey));
-                }
-            }
-
-        } else {
-            // if showPin is false, then show as bullets
-            for(int i=0; i<pins.size(); i++) {
-                TextView currPin = pins.get(i);
-                currPin.setText("\u25CF");
-                if (pin.length() > i) {
-                    currPin.setTextColor(Color.parseColor(color));
-                } else {
-                    currPin.setTextColor(getResources().getColor(R.color.colorLightGrey));
-                }
-
-            }
-        }
+        PinHelper.setBullet(pinError, showPin, pin, pins, this);
     }
 
     // Called when keyboard is pressed
-    public void onPressKey( View v ) {
-        Button b = (Button)v;
-        String t = b.getText().toString();
-        pin = pin + t;
-        setBullet();
-        if (pin.length() > 5) {
-            onContinue();
-        }
-    }
+    public void onPressKey( View v ) { PinHelper.onPressKey(v, this); }
 
     // called when delete key is pressed
     public void onDeleteKey(View v) {
-        if (pin.length() > 0) {
-            pin = pin.substring(0, pin.length()-1);
-        }
-        // if pin is in error condition, reset pin to ""
-        // ALso hide textError and show "Show Pin"
-        if (pinError) {
-            pin = "";
-            pinError = false;
-            if (pin.length() < 6) {
-                textError.setText("");
-            }
-            textShow.setVisibility(View.VISIBLE);
-            textError.setVisibility(View.GONE);
-            setShowPin(false);
-        }
-        setBullet();
-    }
-
-    // check if PIN is weak
-    public boolean pinIsWeak() {
-        char[] pinchar = pin.toCharArray();
-        // Check repeating digits
-        int count = 0;
-        for (int i = 0; i < pin.length()-1; i++) {
-            if (pinchar[i] == pinchar[i+1]) {
-                count = count + 1;
-            }
-        }
-        if (count >= 5) {
-            return true;
-        }
-        // Check increasing digits
-        count = 0;
-        for (int i = 0; i < pin.length()-1; i++) {
-            if (pinchar[i] == pinchar[i+1]+1) {
-                count = count + 1;
-            }
-        }
-        if (count >= 5) {
-            return true;
-        }
-        // Check decreasing digits
-        count = 0;
-        for (int i = 0; i < pin.length()-1; i++) {
-            if (pinchar[i] == pinchar[i+1]-1) {
-                count = count + 1;
-            }
-        }
-        if (count >= 5) {
-            return true;
-        }
-        return false;
+        PinHelper.onDeleteKey(textError, textShow, this);
     }
 
     // if PIN is weak, this is invoked
     public void invalidPin() {
-        // Shake the bullet container and the phone
-        bullet.startAnimation(shakeError());
-        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(400);
-
-        // set pin color to red
-        for(int i=0; i<pins.size(); i++) {
-            TextView currPin = pins.get(i);
-            currPin.setTextColor(Color.parseColor(CoreLibrary.colors.ColorDanger));
-        }
-
-        // hide textShow and show error text
-        pinError = true;
-        textShow.setVisibility(View.GONE);
-        textError.setVisibility(View.VISIBLE);
-        textError.setText(CoreLibrary.strings.PinEnrollmentEnterPin.get(Strings.ErrorCombination));
+        String errorString = ActivityStrings.get(Strings.ErrorCombination);
+        PinHelper.shakePin(bullet, pins, errorString, textShow, textError, this, this);
     }
 
     // toggle Show Pin
     public void onToggleShowPin(View v) {
-        if (!showPin) {
-            textShow.setText(CoreLibrary.strings.PinEnrollmentEnterPin.get(Strings.HidePin));
-        } else {
-            textShow.setText(CoreLibrary.strings.PinEnrollmentEnterPin.get(Strings.ShowPin));
-        }
-        showPin = !showPin;
+        setShowPinText(!showPin);
         setBullet();
     }
 
     // set Show Pin to a certain value
-    public void setShowPin(boolean show) {
-        if (!show) {
-            textShow.setText(CoreLibrary.strings.PinEnrollmentEnterPin.get(Strings.ShowPin));
-        } else {
-            textShow.setText(CoreLibrary.strings.PinEnrollmentEnterPin.get(Strings.HidePin));
-        }
-        showPin = show;
-        setBullet();
+    public void setShowPinText(boolean show) {
+        PinHelper.setShowPinText(show, textShow, ActivityStrings.get(Strings.ShowPin), ActivityStrings.get(Strings.HidePin), this);
     }
 
-    //    HELPER FUNCTIONS
-    // Help shake a container
-    public TranslateAnimation shakeError() {
-        TranslateAnimation shake = new TranslateAnimation(0, 10, 0, 0);
-        shake.setDuration(300);
-        shake.setInterpolator(new CycleInterpolator(3));
-        return shake;
-    }
 }

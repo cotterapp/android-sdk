@@ -3,6 +3,7 @@ package com.cotter.app;
 import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -20,38 +21,39 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AuthRequest {
-    public static String mainServerURL;
-    public static void SetMainServerURL(String url) {
+    public String mainServerURL;
+    public AuthRequest(String url) {
         mainServerURL = url;
     }
-    public static void GetUser(Context context, final Callback callback) {
-        String url = mainServerURL + "/user/" + CoreLibrary.UserID;
+    public void GetUser(final Context context, final Callback callback) {
+        String url = mainServerURL + "/user/" + Cotter.UserID;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
                         callback.onSuccess(response);
+                        Log.d("AUTH_REQUEST_GET_USER", "Success getting user: " + response.toString());
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         callback.onError(getErrorMessage(error));
+                        Log.d("AUTH_REQUEST_GET_USER", "Error getting user: " + getErrorMessage(error));
                     }
                 }){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String>  params = new HashMap<String, String>();
-                params.put("API_KEY_ID", CoreLibrary.ApiKeyID);
-                params.put("API_SECRET_KEY", CoreLibrary.ApiSecretKey);
+                params.put("API_KEY_ID", Cotter.ApiKeyID);
+                params.put("API_SECRET_KEY", Cotter.ApiSecretKey);
 
                 return params;
             }
@@ -61,8 +63,8 @@ public class AuthRequest {
         VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
 
-    public static void EnrollMethod(Context context, String method, String code, final Callback callback) {
-        String url = mainServerURL + "/user/" + CoreLibrary.UserID;
+    public void EnrollMethod(Context context, String method, String code, final Callback callback) {
+        String url = mainServerURL + "/user/" + Cotter.UserID;
 
         JSONObject req = new JSONObject();
 
@@ -91,8 +93,8 @@ public class AuthRequest {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String>  params = new HashMap<String, String>();
-                params.put("API_KEY_ID", CoreLibrary.ApiKeyID);
-                params.put("API_SECRET_KEY", CoreLibrary.ApiSecretKey);
+                params.put("API_KEY_ID", Cotter.ApiKeyID);
+                params.put("API_SECRET_KEY", Cotter.ApiSecretKey);
 
                 return params;
             }
@@ -103,7 +105,7 @@ public class AuthRequest {
     }
 
 
-    public static void GetRules(Context context, final Callback callback) {
+    public void GetRules(Context context, final Callback callback) {
         String url = mainServerURL + "/rules";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -111,19 +113,21 @@ public class AuthRequest {
                     @Override
                     public void onResponse(JSONObject response) {
                         callback.onSuccess(response);
+                        Log.d("AUTH_REQUEST_GET_RULES", "Success getting rules: " + response.toString());
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         callback.onError(getErrorMessage(error));
+                        Log.d("AUTH_REQUEST_GET_RULES", "Success getting rules: " + getErrorMessage(error));
                     }
                 }){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String>  params = new HashMap<String, String>();
-                params.put("API_KEY_ID", CoreLibrary.ApiKeyID);
-                params.put("API_SECRET_KEY", CoreLibrary.ApiSecretKey);
+                params.put("API_KEY_ID", Cotter.ApiKeyID);
+                params.put("API_SECRET_KEY", Cotter.ApiSecretKey);
 
                 return params;
             }
@@ -134,27 +138,35 @@ public class AuthRequest {
     }
 
 
+    public String ConstructApprovedEventMsg(String event, String timestamp, String method) {
+        return String.join("", Cotter.getUser(Cotter.authRequest).client_user_id,Cotter.ApiKeyID,
+                event,
+                timestamp,
+                method,
+                "true"
+        );
+    }
 
-    public static void CreateApprovedEvent(Context context, Activity act, String method, String event, String code, final Callback callback) {
-        String url = mainServerURL + "/event/create";
-
-        Date now = new Date();
-        long timestamp = now.getTime() / 1000L;
-
+    public JSONObject ConstructApprovedEventJSON(String event, String timestamp, String method, String code, final Callback callback) {
         final JSONObject req = new JSONObject();
 
         try {
-            req.put("client_user_id", CoreLibrary.UserID);
-            req.put("issuer", CoreLibrary.ApiKeyID);
+            req.put("client_user_id", Cotter.getUser(Cotter.authRequest).client_user_id);
+            req.put("issuer", Cotter.ApiKeyID);
             req.put("event", event);
             req.put("ip", getLocalIpAddress());
-            req.put("timestamp", Long.toString(timestamp));
+            req.put("timestamp", timestamp);
             req.put("method", method);
             req.put("code", code);
             req.put("approved", true);
         } catch (Exception e) {
             callback.onError(e.toString());
         }
+        return req;
+    }
+
+    public void CreateApprovedEventRequest(Context context, JSONObject req, final Callback callback) {
+        String url = mainServerURL + "/event/create";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, url, req, new Response.Listener<JSONObject>() {
@@ -173,8 +185,8 @@ public class AuthRequest {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String>  params = new HashMap<String, String>();
-                params.put("API_KEY_ID", CoreLibrary.ApiKeyID);
-                params.put("API_SECRET_KEY", CoreLibrary.ApiSecretKey);
+                params.put("API_KEY_ID", Cotter.ApiKeyID);
+                params.put("API_SECRET_KEY", Cotter.ApiSecretKey);
 
                 return params;
             }
@@ -219,6 +231,7 @@ public class AuthRequest {
     }
 
     public static String getErrorMessage(VolleyError error) {
+        Log.d("VOlley Error", error.getMessage());
         return "Fail http request";
     }
 }

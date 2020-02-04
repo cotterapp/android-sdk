@@ -1,47 +1,141 @@
 package com.cotter.app;
 
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.CycleInterpolator;
-import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.biometric.BiometricPrompt;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import org.json.JSONObject;
 
-public class PinVerificationActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executor;
+
+public class PinVerificationActivity extends AppCompatActivity implements PinInterface, BiometricInterface {
     public static String name = ScreenNames.PinVerification;
     private static String event;
     private static String pin;
     private static int wrong;
-    private TextView pin1;
-    private TextView pin2;
-    private TextView pin3;
-    private TextView pin4;
+
+    private List<TextView> pins = new ArrayList<TextView>();
+
+    private boolean pinError = false;
+    private boolean showPin = false;
+
+    private TextView textTitle;
+    private TextView textShow;
+    private TextView textError;
+    private ConstraintLayout container;
     private LinearLayout bullet;
 
+    public Map<String, String> ActivityStrings = Cotter.strings.PinVerification;
+
+    private Executor executor;
+    private BiometricPrompt biometricPrompt;
+    private BiometricPrompt.PromptInfo promptInfo;
+    private String timestamp;
+
+    private boolean biometricAvailable = false;
+    private boolean defaultBiometric = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pin_verification);
+
+        // Refetch user
+        User.refetchUser(getApplicationContext(), Cotter.authRequest);
+
         pin = "";
         wrong = 0;
-        pin1 = findViewById(R.id.input_1);
-        pin2 = findViewById(R.id.input_2);
-        pin3 = findViewById(R.id.input_3);
-        pin4 = findViewById(R.id.input_4);
+        // set pins objects
+        pins.add((TextView)findViewById(R.id.input_1));
+        pins.add((TextView)findViewById(R.id.input_2));
+        pins.add((TextView)findViewById(R.id.input_3));
+        pins.add((TextView)findViewById(R.id.input_4));
+        pins.add((TextView)findViewById(R.id.input_5));
+        pins.add((TextView)findViewById(R.id.input_6));
+
         bullet = findViewById(R.id.bullet);
+
+
+        // Set strings
+        textTitle = findViewById(R.id.text_title);
+        textShow = findViewById(R.id.text_show);
+        textError = findViewById(R.id.text_error);
+        textTitle.setText(ActivityStrings.get(Strings.Title));
+        textShow.setText(ActivityStrings.get(Strings.ShowPin));
+
+        // Set colors
+        container = findViewById(R.id.container);
+        container.setBackgroundColor(Color.parseColor(Cotter.colors.ColorBackground));
+        textShow.setTextColor(Color.parseColor(Cotter.colors.ColorPrimary));
+        textError.setTextColor(Color.parseColor(Cotter.colors.ColorDanger));
+
+        // Set up and show toolbar
+        setupToolBar();
 
         Intent intent = getIntent();
         event = intent.getExtras().getString("event");
+
+        // Check if user's default method is biometric
+        defaultBiometric = Cotter.getUser(Cotter.authRequest).default_method.equals(Cotter.BiometricMethod);
+        biometricAvailable = BiometricHelper.checkBiometricAvailable(this);
+
+
+        Log.d("default method method", Cotter.getUser(Cotter.authRequest).default_method);
+        Log.d("biometricAvailable", String.valueOf(biometricAvailable));
+        if (defaultBiometric && biometricAvailable) {
+            // Setup Biometric Handlers for onAuthSuccess, or onAuthFail, etc.
+            BiometricHelper.setupVerifyBiometricHandler(this, this, this, this);
+
+            // Create Biometric Prompt
+            promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                    .setTitle(ActivityStrings.get(Strings.BiometricTitle))
+                    .setSubtitle(ActivityStrings.get(Strings.BiometricSubtitle))
+                    .setNegativeButtonText(ActivityStrings.get(Strings.BiometricNegativeButton))
+                    .build();
+
+            // Show Prompt
+            Log.d("DEFAULT AND AVAILABLE", "running prompt");
+            BiometricHelper.PromptBiometric(this);
+        }
+    }
+
+    // Set up and show toolbar
+    private void setupToolBar() {
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(Cotter.strings.Headers.get(name));
+
+        if (toolbar == null) return;
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
+    }
+
+    // Handle back button
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle arrow click here
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // close this activity and return to preview activity (if there is any)
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -52,8 +146,9 @@ public class PinVerificationActivity extends AppCompatActivity {
         setBullet();
     }
 
-
-    public void onSubmit() {
+    // ------- PIN HANDLERS ---------
+    // Submit the pin to check thru Cotter server
+    public void onSubmitPin() {
         // Verify Pin
         Callback cb = new Callback(){
             public void onSuccess(JSONObject response){
@@ -75,14 +170,45 @@ public class PinVerificationActivity extends AppCompatActivity {
             }
         };
 
-        AuthRequest.CreateApprovedEvent(this, this, CoreLibrary.PinMethod, event, pin, cb);
+        Date now = new Date();
+        long timestamp = now.getTime() / 1000L;
+        String strTimestamp = Long.toString(timestamp);
+        JSONObject req = Cotter.authRequest.ConstructApprovedEventJSON(event, strTimestamp, Cotter.PinMethod, pin, cb);
+        Cotter.authRequest.CreateApprovedEventRequest(this, req, cb);
     }
 
+    // Continue to next screen
     public void onContinue() {
-        Class nextScreen = CoreLibrary.PinVerification.nextStep(name);
+        Class nextScreen = Cotter.PinVerification.nextStep(name);
         Intent in = new Intent(this, nextScreen);
         startActivity(in);
         finish();
+    }
+
+    // SETTER AND GETTER FOR PIN INTERFACE
+    // Set this.pin
+    public void setPin(String updatedPin) {
+        pin = updatedPin;
+    }
+    // Get this.pin
+    public String getPin() {
+        return pin;
+    }
+    // Set this.pinError
+    public void setPinError(boolean pinErr) {
+        pinError = pinErr;
+    }
+    // Get this.pinError
+    public boolean getPinError() {
+        return pinError;
+    }
+    // Set this.showPin
+    public void setShowPin(boolean show) {
+        showPin = show;
+    }
+    // Get this.showPin
+    public boolean getShowPin() {
+        return showPin;
     }
 
     public void invalidPin() {
@@ -91,59 +217,121 @@ public class PinVerificationActivity extends AppCompatActivity {
             finish();
             return;
         }
-        bullet.startAnimation(shakeError());
 
-        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(400);
-        pin = "";
-        setBullet();
+        String errorString = ActivityStrings.get(Strings.ErrorInvalid);
+        PinHelper.shakePin(bullet, pins, errorString, textShow, textError, this, this);
     }
 
+    // Set the bullets to the correct color based on entered pin length,
+    // and decide to show bullets or numbers based on showPin
     public void setBullet() {
-        if (pin.length() > 0) {
-            pin1.setText("\u25CF");
-        } else {
-            pin1.setText("\u25CB");
-        }
-        if (pin.length() > 1) {
-            pin2.setText("\u25CF");
-        } else {
-            pin2.setText("\u25CB");
-        }
-        if (pin.length() > 2) {
-            pin3.setText("\u25CF");
-        } else {
-            pin3.setText("\u25CB");
-        }
-        if (pin.length() > 3) {
-            pin4.setText("\u25CF");
-        } else {
-            pin4.setText("\u25CB");
-        }
+        PinHelper.setBullet(pinError, showPin, pin, pins, this);
     }
+
+    // Called when keyboard is pressed
     public void onPressKey( View v ) {
-        Button b = (Button)v;
-        String t = b.getText().toString();
-        pin = pin + t;
-        setBullet();
-        if (pin.length() > 3) {
-            onSubmit();
-        }
+        PinHelper.onPressKey(v, this);
     }
 
+    // called when delete key is pressed
     public void onDeleteKey(View v) {
-        if (pin.length() > 0) {
-            pin = pin.substring(0, pin.length()-1);
-        }
+        PinHelper.onDeleteKey(textError, textShow, this);
+    }
+
+    // Toggle showing pin or not
+    public void onToggleShowPin(View v) {
+        setShowPinText(!showPin);
         setBullet();
     }
 
+    // Set showPin to a certain value
+    public void setShowPinText(boolean show) {
+        PinHelper.setShowPinText(show, textShow, Cotter.strings.PinEnrollmentEnterPin.get(Strings.ShowPin), Cotter.strings.PinEnrollmentReEnterPin.get(Strings.HidePin), this);
+    }
 
-    //    HELPER FUNCTIONS
-    public TranslateAnimation shakeError() {
-        TranslateAnimation shake = new TranslateAnimation(0, 10, 0, 0);
-        shake.setDuration(300);
-        shake.setInterpolator(new CycleInterpolator(3));
-        return shake;
+    // ------- BIOMETRIC HANDLERS ---------
+    // SETTER AND GETTER FOR BIOMETRIC INTERFACE
+    public void setBiometricPrompt(BiometricPrompt bp) {
+        biometricPrompt = bp;
+    }
+    public BiometricPrompt getBiometricPrompt() {
+        return biometricPrompt;
+    }
+    public void setExecutor(Executor ex) {
+        executor = ex;
+    }
+    public Executor getExecutor() {
+        return executor;
+    }
+    public void setPromptInfo(BiometricPrompt.PromptInfo pi) {
+        promptInfo = pi;
+    }
+    public BiometricPrompt.PromptInfo getPromptInfo() {
+        return promptInfo;
+    }
+
+    public String getStringToSign() {
+        Date now = new Date();
+        long timestampLong = now.getTime() / 1000L;
+        timestamp = Long.toString(timestampLong);
+
+        return Cotter.authRequest.ConstructApprovedEventMsg(event, timestamp, Cotter.BiometricMethod);
+    }
+
+
+    // Submit the signature from biometric
+    public void onSubmitBio(String signature) {
+        // Verify Pin
+        Callback cb = new Callback(){
+            public void onSuccess(JSONObject response){
+                Boolean valid;
+                try {
+                    valid = response.getBoolean("approved");
+                    Log.d("COTTER_PIN_VERIFICATION", "onSubmitBio > onSuccess > Response Success Signature: " + response.toString());
+                } catch (Exception e) {
+                    valid = false;
+                    Log.d("COTTER_PIN_VERIFICATION", "onSubmitBio > onSuccess > Response ERROR Signature: " + response.toString());
+                }
+                if (valid) {
+                    Log.d("COTTER_PIN_VERIFICATION", "onSubmitBio Valid Success Signature: " + response.toString());
+                    onContinue();
+                } else {
+                    invalidSignature();
+                }
+            }
+            public void onError(String error){
+                Log.d("COTTER_PIN_VERIFICATION", "onSubmitBio > onError: " + error);
+                Log.e("Verify Signature Error", error);
+                invalidSignature();
+            }
+        };
+
+        JSONObject req = Cotter.authRequest.ConstructApprovedEventJSON(event, timestamp, Cotter.BiometricMethod, signature, cb);
+        Cotter.authRequest.CreateApprovedEventRequest(this, req, cb);
+    }
+
+    public void invalidSignature() {
+        final BiometricInterface bi = this;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomDialogTheme)
+                .setTitle(ActivityStrings.get(Strings.DialogTitle))
+                .setMessage(ActivityStrings.get(Strings.DialogSubtitle))
+                .setPositiveButton(ActivityStrings.get(Strings.DialogPositiveButton), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Input Pin instead
+                        dialog.cancel(); // dismiss the alert dialog
+                    }
+                })
+                .setNegativeButton(ActivityStrings.get(Strings.DialogNegativeButton), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Retry Biometric
+                        BiometricHelper.PromptBiometric(bi); // Prompt again
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
     }
 }

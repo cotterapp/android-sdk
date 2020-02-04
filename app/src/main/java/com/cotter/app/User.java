@@ -16,9 +16,9 @@ public class User {
 
     private static User instance;
 
-    public static User getInstance(Context context) {
+    public static User getInstance(Context context, AuthRequest authRequest) {
         if (instance == null) {
-            AuthRequest.GetUser(context, new Callback(){
+            authRequest.GetUser(context, new Callback(){
                 public void onSuccess(JSONObject response){
                     Gson gson = new Gson();
                     instance = gson.fromJson(response.toString(), User.class);
@@ -29,6 +29,19 @@ public class User {
                 }
             });
         }
+        return instance;
+    }
+    public static User refetchUser(Context context, AuthRequest authRequest) {
+        authRequest.GetUser(context, new Callback(){
+            public void onSuccess(JSONObject response){
+                Gson gson = new Gson();
+                instance = gson.fromJson(response.toString(), User.class);
+                Log.i("Init User Success", response.toString());
+            }
+            public void onError(String error){
+                Log.e("Init User Error", error);
+            }
+        });
         return instance;
     }
 }
