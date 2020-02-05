@@ -92,10 +92,9 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
         Intent intent = getIntent();
         event = intent.getExtras().getString("event");
 
-        Log.d("default user", Cotter.getUser(Cotter.authRequest).toString());
 
         // Check if user's default method is biometric
-        defaultBiometric = Cotter.getUser(Cotter.authRequest).default_method != null && Cotter.getUser(Cotter.authRequest).default_method.equals(Cotter.BiometricMethod);
+        defaultBiometric = Cotter.getUser(Cotter.authRequest) != null && Cotter.getUser(Cotter.authRequest).default_method != null && Cotter.getUser(Cotter.authRequest).default_method.equals(Cotter.BiometricMethod);
         biometricAvailable = BiometricHelper.checkBiometricAvailable(this);
 
         Log.d("biometricAvailable", String.valueOf(biometricAvailable));

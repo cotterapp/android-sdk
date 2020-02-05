@@ -36,15 +36,26 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
 
     public Map<String, String> ActivityStrings;
 
+    private boolean changePin = false;
+    private String currentPin = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pin_enrollment_re_enter_pin);
         pin = "";
         wrong = 0;
-        pin = "";
 
         ActivityStrings = Cotter.strings.PinEnrollmentReEnterPin;
+
+        // Checking if this was called from Change Pin or Enroll Pin
+        Intent intent = getIntent();
+        changePin = intent.getExtras().getBoolean("change_pin");
+        currentPin = intent.getExtras().getString("current_pin");
+        if (changePin) {
+            name = ScreenNames.PinChangeReEnterPin;
+            ActivityStrings = Cotter.strings.PinChangeReEnterPin;
+        }
 
         // set pins objects
         pins.add((TextView)findViewById(R.id.input_1));
@@ -56,7 +67,6 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
 
         // set bullet obj and original pin from PinEnrollmentEnterPinActivity
         bullet = findViewById(R.id.bullet);
-        Intent intent = getIntent();
         originalPin = intent.getExtras().getString("pin");
 
         // Set strings
@@ -129,13 +139,26 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
             }
         };
 
-        Cotter.authRequest.EnrollMethod(this, Cotter.PinMethod, pin, cb);
+        if (changePin) {
+            Cotter.authRequest.ChangeMethod(this, Cotter.PinMethod, pin, currentPin, cb);
+        } else {
+            Cotter.authRequest.EnrollMethod(this, Cotter.PinMethod, pin, cb);
+        }
     }
 
     // When Enroll Pin inside onSubmitPin succeed, this will be invoked, going to the next page
     public void onContinue() {
+        PinEnrollmentEnterPinActivity.instance.finish();
         Class nextScreen = Cotter.PinEnrollment.nextStep(name);
+        if (changePin) {
+            nextScreen = Cotter.PinChange.nextStep(name);
+        }
         Intent in = new Intent(this, nextScreen);
+        if (changePin) {
+            in.putExtra("change_pin", true);
+        } else {
+            in.putExtra("change_pin", false);
+        }
         startActivity(in);
         finish();
     }

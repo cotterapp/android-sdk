@@ -9,10 +9,13 @@ import java.util.Arrays;
 public class Flow {
     String[] listFlow;
     Class callBack;
+    boolean changePin = false;
 
     public Flow(String[] flow ) {
+
         this.listFlow = flow;
     }
+
 
     public Class nextStep(String screenName) {
         int index = Arrays.asList(listFlow).indexOf(screenName);

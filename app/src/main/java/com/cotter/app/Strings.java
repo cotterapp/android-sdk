@@ -12,6 +12,9 @@ public class Strings {
     public Map<String, String> PinEnrollmentSuccess = new HashMap<>();
     public Map<String, String> PinVerification = new HashMap<>();
     public Map<String, String> PinChangeVerifyPin = new HashMap<>();
+    public Map<String, String> PinChangeEnterPin = new HashMap<>();
+    public Map<String, String> PinChangeReEnterPin = new HashMap<>();
+    public Map<String, String> PinChangeSuccess = new HashMap<>();
 
     // Pin Enrollment
     public static String Title = "TITLE";
@@ -38,6 +41,9 @@ public class Strings {
         Headers.put(ScreenNames.PinEnrollmentEnterPin, "Activate Pin");
         Headers.put(ScreenNames.PinEnrollmentReEnterPin, "Confirm Pin");
         Headers.put(ScreenNames.PinVerification, "Verify Pin");
+        Headers.put(ScreenNames.PinChangeVerifyPin, "Change Pin");
+        Headers.put(ScreenNames.PinChangeEnterPin, "Enter New Pin");
+        Headers.put(ScreenNames.PinChangeReEnterPin, "Confirm New Pin");
 
         // Pin Enrollment Default Strings
         PinEnrollmentEnterPin.put(Title, "Enter Pin");
@@ -78,12 +84,29 @@ public class Strings {
         PinVerification.put(DialogPositiveButton, "Input PIN");
         PinVerification.put(DialogNegativeButton, "Try Again");
 
-        // Pin Change Verification default strings
+        // Pin Change default strings
         PinChangeVerifyPin.put(Title, "Enter Current Pin");
         PinChangeVerifyPin.put(ShowPin, "Show Pin");
         PinChangeVerifyPin.put(HidePin, "Hide Pin");
         PinChangeVerifyPin.put(ErrorInvalid, "Your PIN is invalid");
 
+        PinChangeEnterPin.put(Title, "Enter New Pin");
+        PinChangeEnterPin.put(ShowPin, "Show Pin");
+        PinChangeEnterPin.put(HidePin, "Hide Pin");
+        PinChangeEnterPin.put(ErrorCombination, "Your PIN is weak. Please enter a stronger PIN.");
+        PinChangeEnterPin.put(DialogTitle, "Are you sure you don't want to setup your new PIN?");
+        PinChangeEnterPin.put(DialogSubtitle, "You will be able to use your old PIN if you don't setup a new PIN.");
+        PinChangeEnterPin.put(DialogPositiveButton, "Setup New PIN");
+        PinChangeEnterPin.put(DialogNegativeButton, "Next Time");
+
+        PinChangeReEnterPin.put(Title, "Re-Enter New Pin");
+        PinChangeReEnterPin.put(ShowPin, "Show Pin");
+        PinChangeReEnterPin.put(HidePin, "Hide Pin");
+        PinChangeReEnterPin.put(ErrorNoMatch, "Your PIN doesn't match your previous PIN.");
+
+        PinChangeSuccess.put(Title, "Successfully Change PIN");
+        PinChangeSuccess.put(Subtitle, "You can now use your new PIN to unlock your account and make transactions");
+        PinChangeSuccess.put(ButtonText, "Done");
     }
 
 

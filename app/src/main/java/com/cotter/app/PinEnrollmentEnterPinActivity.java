@@ -33,12 +33,27 @@ public class PinEnrollmentEnterPinActivity extends AppCompatActivity implements 
 
     public Map<String, String> ActivityStrings;
 
+    private boolean changePin = false;
+    private String currentPin = "";
+
+    public static PinEnrollmentEnterPinActivity instance;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pin_enrollment_enter_pin);
 
         ActivityStrings = Cotter.strings.PinEnrollmentEnterPin;
+        instance = this;
+
+        // Checking if this was called from Change Pin or Enroll Pin
+        Intent intent = getIntent();
+        changePin = intent.getExtras().getBoolean("change_pin");
+        currentPin = intent.getExtras().getString("current_pin");
+        if (changePin) {
+            name = ScreenNames.PinChangeEnterPin;
+            ActivityStrings = Cotter.strings.PinChangeEnterPin;
+        }
 
         pin = "";
         // set pins objects
@@ -134,8 +149,15 @@ public class PinEnrollmentEnterPinActivity extends AppCompatActivity implements 
     public void onContinue() {
         // Otherwise continue to next screen
         Class nextScreen = Cotter.PinEnrollment.nextStep(name);
+        if (changePin) {
+            nextScreen = Cotter.PinChange.nextStep(name);
+        }
         Intent in = new Intent(this, nextScreen);
         in.putExtra("pin", pin);
+        if (changePin) {
+            in.putExtra("current_pin", currentPin);
+            in.putExtra("change_pin", true);
+        }
         startActivity(in);
     }
 

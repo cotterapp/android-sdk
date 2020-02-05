@@ -38,12 +38,21 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
 
     public Map<String, String> ActivityStrings;
 
+    private boolean changePin = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pin_enrollment_success);
 
         ActivityStrings = Cotter.strings.PinEnrollmentSuccess;
+
+        Intent intent = getIntent();
+        changePin = intent.getExtras().getBoolean("change_pin");
+        if (changePin) {
+            name = ScreenNames.PinChangeSuccess;
+            ActivityStrings = Cotter.strings.PinChangeSuccess;
+        }
 
         textTitle = findViewById(R.id.title);
         textSubtitle = findViewById(R.id.subtitle);
@@ -62,7 +71,7 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
         constraint.setBackgroundColor(Color.parseColor(Cotter.colors.ColorBackground));
 
         // Check that biometric is enabled
-        biometricAvailable = BiometricHelper.checkBiometricAvailable(this);
+        biometricAvailable = BiometricHelper.checkBiometricAvailable(this) && !changePin;
 
         if (biometricAvailable) {
             // Setup Biometric Handlers for onAuthSuccess, or onAuthFail, etc.
@@ -133,6 +142,9 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
         User.refetchUser(getApplicationContext(), Cotter.authRequest);
 
         Class nextScreen = Cotter.PinEnrollment.nextStep(name);
+        if (changePin) {
+            nextScreen = Cotter.PinChange.nextStep(name);
+        }
         Intent in = new Intent(this, nextScreen);
         startActivity(in);
         finish();

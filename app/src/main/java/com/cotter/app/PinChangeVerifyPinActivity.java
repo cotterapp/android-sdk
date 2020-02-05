@@ -146,8 +146,11 @@ public class PinChangeVerifyPinActivity extends AppCompatActivity implements Pin
 
     // Continue to next screen
     public void onContinue() {
-        Class nextScreen = Cotter.PinVerification.nextStep(name);
+        Class nextScreen = Cotter.PinChange.nextStep(name);
+
         Intent in = new Intent(this, nextScreen);
+        in.putExtra("current_pin", pin);
+        in.putExtra("change_pin", true);
         startActivity(in);
         finish();
     }
