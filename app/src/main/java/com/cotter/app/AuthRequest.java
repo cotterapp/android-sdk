@@ -231,7 +231,9 @@ public class AuthRequest {
     }
 
     public static String getErrorMessage(VolleyError error) {
-        Log.d("VOlley Error", error.getMessage());
+        if (error.getMessage() != null) {
+            Log.d("Volley Error", error.getMessage());
+        }
         return "Fail http request";
     }
 }

@@ -61,23 +61,18 @@
         android:textAlignment="center"
         />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-
-        android:layout_marginTop="20dp"
-        android:text="Done"
-        android:textColor="@color/colorGreen"
-        android:textAllCaps="false"
-        android:onClick="onCheckBiometric"
-
-        app:cornerRadius="5dp"
-        style="?android:attr/borderlessButtonStyle"
-        app:backgroundTint="@color/colorWhite"
-        app:strokeColor="@color/colorLightGrey"
-        app:strokeWidth="1dp"
-        />
+        <Button
+            android:id="@+id/button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Done"
+            android:textColor="@color/colorGreen"
+            android:textAllCaps="false"
+            android:onClick="onCheckBiometric"
+            android:background="@drawable/button_success"
+            android:paddingBottom="0dp"
+            />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

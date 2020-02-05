@@ -2,6 +2,7 @@ package com.cotter.app;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.View;
 
 import java.util.Arrays;
 
@@ -22,9 +23,10 @@ public class Flow {
         return callBack;
     }
 
-    public void startFlow(Context ctx, Class callBackIntent, String event) {
+    public void startFlow(View view, Class callBackIntent, String event) {
         this.callBack = callBackIntent;
         Class intent = ScreenNames.getClassFromName(listFlow[0]);
+        Context ctx = view.getContext();
         Intent in = new Intent(ctx, intent);
         in.putExtra("event", event);
         ctx.startActivity(in);

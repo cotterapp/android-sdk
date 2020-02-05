@@ -5,14 +5,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
-import com.google.android.material.button.MaterialButton;
 
 import org.json.JSONObject;
 
@@ -24,7 +23,7 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
 
     private TextView textTitle;
     private TextView textSubtitle;
-    private MaterialButton button;
+    private Button button;
     private ImageView img;
     private ConstraintLayout constraint;
 
