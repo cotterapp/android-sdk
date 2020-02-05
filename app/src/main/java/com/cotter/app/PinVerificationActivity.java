@@ -248,7 +248,7 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
 
     // Set showPin to a certain value
     public void setShowPinText(boolean show) {
-        PinHelper.setShowPinText(show, textShow, Cotter.strings.PinEnrollmentEnterPin.get(Strings.ShowPin), Cotter.strings.PinEnrollmentReEnterPin.get(Strings.HidePin), this);
+        PinHelper.setShowPinText(show, textShow, ActivityStrings.get(Strings.ShowPin), ActivityStrings.get(Strings.HidePin), this);
     }
 
     // ------- BIOMETRIC HANDLERS ---------

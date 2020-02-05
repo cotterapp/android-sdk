@@ -11,6 +11,7 @@ public class Strings {
     public Map<String, String> PinEnrollmentReEnterPin = new HashMap<>();
     public Map<String, String> PinEnrollmentSuccess = new HashMap<>();
     public Map<String, String> PinVerification = new HashMap<>();
+    public Map<String, String> PinChangeVerifyPin = new HashMap<>();
 
     // Pin Enrollment
     public static String Title = "TITLE";
@@ -59,6 +60,10 @@ public class Strings {
         PinEnrollmentSuccess.put(BiometricTitle, "Biometric Verification");
         PinEnrollmentSuccess.put(BiometricSubtitle, "Protect your account using Biometrics");
         PinEnrollmentSuccess.put(BiometricNegativeButton, "Cancel");
+        PinEnrollmentSuccess.put(DialogTitle, "Something went wrong");
+        PinEnrollmentSuccess.put(DialogSubtitle, "You may have already enrolled Biometrics before.");
+        PinEnrollmentSuccess.put(DialogPositiveButton, "Skip this step");
+        PinEnrollmentSuccess.put(DialogNegativeButton, "Try Again");
 
         // Pin Verification default strings
         PinVerification.put(Title, "Enter Pin");
@@ -72,6 +77,12 @@ public class Strings {
         PinVerification.put(DialogSubtitle, "Do you want to try again or enter pin instead?");
         PinVerification.put(DialogPositiveButton, "Input PIN");
         PinVerification.put(DialogNegativeButton, "Try Again");
+
+        // Pin Change Verification default strings
+        PinChangeVerifyPin.put(Title, "Enter Current Pin");
+        PinChangeVerifyPin.put(ShowPin, "Show Pin");
+        PinChangeVerifyPin.put(HidePin, "Hide Pin");
+        PinChangeVerifyPin.put(ErrorInvalid, "Your PIN is invalid");
 
     }
 

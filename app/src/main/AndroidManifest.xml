@@ -5,20 +5,23 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission
-        android:name="android.permission.USE_FINGERPRINT" />
-    <uses-feature android:name="android.hardware.fingerprint"
-        android:required="false"/>
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+
+    <uses-feature
+        android:name="android.hardware.fingerprint"
+        android:required="false" />
+
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PinEnrollmentSuccessActivity"></activity>
+        <activity android:name=".PinChangeVerifyPinActivity"></activity>
+        <activity android:name=".PinEnrollmentSuccessActivity" />
         <activity android:name=".PinVerificationActivity" />
         <activity android:name=".PinEnrollmentReEnterPinActivity" />
         <activity android:name=".PinEnrollmentEnterPinActivity" />
-        <activity android:name="com.cotter.app.MainActivity" />
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>

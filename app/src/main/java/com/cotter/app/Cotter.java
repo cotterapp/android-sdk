@@ -23,6 +23,7 @@ public class Cotter {
     private static Context ctx;
     public static Flow PinEnrollment = new Flow(new String[] { ScreenNames.PinEnrollmentEnterPin, ScreenNames.PinEnrollmentReEnterPin, ScreenNames.PinEnrollmentSuccess });
     public static Flow PinVerification= new Flow(new String[] { ScreenNames.PinVerification });
+    public static Flow PinChange= new Flow(new String[] { ScreenNames.PinChangeVerifyPin });
 
     public static void init(Context context, String mainServerURL, String userID, String apiKeyID, String apiSecretKey) {
         UserID = userID;

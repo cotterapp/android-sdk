@@ -1,5 +1,7 @@
 package com.cotter.app;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -118,6 +120,7 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
             }
             public void onError(String error){
                 Log.e("Submit Key Error", error);
+                invalidEnrollBiometric();
             }
         };
 
@@ -137,4 +140,30 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
 
     // unused BiometricInterface methods
     public String getStringToSign() {return null;}
+
+    // Fail http request -> already enrolled
+    public void invalidEnrollBiometric() {
+        final BiometricInterface bi = this;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomDialogTheme)
+                .setTitle(ActivityStrings.get(Strings.DialogTitle))
+                .setMessage(ActivityStrings.get(Strings.DialogSubtitle))
+                .setPositiveButton(ActivityStrings.get(Strings.DialogPositiveButton), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Skipping biometrics
+                        onContinue();
+                    }
+                })
+                .setNegativeButton(ActivityStrings.get(Strings.DialogNegativeButton), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Retry Biometric
+                        BiometricHelper.PromptBiometric(bi); // Prompt again
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
+    }
 }

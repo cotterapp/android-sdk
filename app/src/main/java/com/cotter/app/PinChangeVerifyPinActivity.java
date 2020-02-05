@@ -15,37 +15,41 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implements PinInterface {
-    public static String name = ScreenNames.PinEnrollmentReEnterPin;
+public class PinChangeVerifyPinActivity extends AppCompatActivity implements PinInterface{
+    public static String name = ScreenNames.PinChangeVerifyPin;
+    private static String event;
     private static String pin;
-    private static String originalPin;
     private static int wrong;
+
     private List<TextView> pins = new ArrayList<TextView>();
-    private LinearLayout bullet;
+
+    private boolean pinError = false;
+    private boolean showPin = false;
 
     private TextView textTitle;
     private TextView textShow;
     private TextView textError;
     private ConstraintLayout container;
-
-    private boolean pinError = false;
-    private boolean showPin = false;
+    private LinearLayout bullet;
 
     public Map<String, String> ActivityStrings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pin_enrollment_re_enter_pin);
+        setContentView(R.layout.activity_pin_change_verify_pin);
+
+        ActivityStrings = Cotter.strings.PinChangeVerifyPin;
+
+        // Refetch user
+        User.refetchUser(getApplicationContext(), Cotter.authRequest);
+
         pin = "";
         wrong = 0;
-        pin = "";
-
-        ActivityStrings = Cotter.strings.PinEnrollmentReEnterPin;
-
         // set pins objects
         pins.add((TextView)findViewById(R.id.input_1));
         pins.add((TextView)findViewById(R.id.input_2));
@@ -54,10 +58,7 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
         pins.add((TextView)findViewById(R.id.input_5));
         pins.add((TextView)findViewById(R.id.input_6));
 
-        // set bullet obj and original pin from PinEnrollmentEnterPinActivity
         bullet = findViewById(R.id.bullet);
-        Intent intent = getIntent();
-        originalPin = intent.getExtras().getString("pin");
 
         // Set strings
         textTitle = findViewById(R.id.text_title);
@@ -74,6 +75,9 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
 
         // Set up and show toolbar
         setupToolBar();
+
+        Intent intent = getIntent();
+        event = intent.getExtras().getString("event");
     }
 
     // Set up and show toolbar
@@ -86,7 +90,7 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
     }
 
     // Handle back button
@@ -100,7 +104,6 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
         return super.onOptionsItemSelected(item);
     }
 
-    // What to do when user "backed" to this page
     @Override
     protected void onResume() {
         super.onResume();
@@ -109,39 +112,47 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
         setBullet();
     }
 
-    // when pin reaches 6 digits, onSubmitPin will be invoked
+
+    // ------- PIN HANDLERS ---------
+    // Submit the pin to check thru Cotter server
     public void onSubmitPin() {
-
-        // Check if pin is valid
-        if (!originalPin.equals(pin)) {
-            invalidPin();
-            return;
-        }
-
-        // Enroll Pin
+        // Verify Pin
         Callback cb = new Callback(){
             public void onSuccess(JSONObject response){
-                Log.i("Submit Pin Success", response.toString());
-                onContinue();
+                Boolean valid;
+                try {
+                    valid = response.getBoolean("approved");
+                } catch (Exception e) {
+                    valid = false;
+                }
+                if (valid) {
+                    onContinue();
+                } else {
+                    invalidPin();
+                }
             }
             public void onError(String error){
-                Log.e("Submit Pin Error", error);
+                Log.e("Verify Pin Error", error);
+                invalidPin();
             }
         };
 
-        Cotter.authRequest.EnrollMethod(this, Cotter.PinMethod, pin, cb);
+        Date now = new Date();
+        long timestamp = now.getTime() / 1000L;
+        String strTimestamp = Long.toString(timestamp);
+        JSONObject req = Cotter.authRequest.ConstructApprovedEventJSON(event, strTimestamp, Cotter.PinMethod, pin, cb);
+        Cotter.authRequest.CreateApprovedEventRequest(this, req, cb);
     }
 
-    // When Enroll Pin inside onSubmitPin succeed, this will be invoked, going to the next page
+    // Continue to next screen
     public void onContinue() {
-        Class nextScreen = Cotter.PinEnrollment.nextStep(name);
+        Class nextScreen = Cotter.PinVerification.nextStep(name);
         Intent in = new Intent(this, nextScreen);
         startActivity(in);
         finish();
     }
 
-
-    // SETTER AND GETTER FOR CLASS ATTRIBUTES
+    // SETTER AND GETTER FOR PIN INTERFACE
     // Set this.pin
     public void setPin(String updatedPin) {
         pin = updatedPin;
@@ -167,19 +178,15 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
         return showPin;
     }
 
-
-    // Invoked when pin is invalid
     public void invalidPin() {
-        // Allow 3 times wrong pin before closes the page and back to beginning
         wrong = wrong + 1;
         if (wrong >= 3) {
             finish();
             return;
         }
 
-        String errorString = ActivityStrings.get(Strings.ErrorNoMatch);
+        String errorString = ActivityStrings.get(Strings.ErrorInvalid);
         PinHelper.shakePin(bullet, pins, errorString, textShow, textError, this, this);
-
     }
 
     // Set the bullets to the correct color based on entered pin length,
@@ -187,7 +194,6 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
     public void setBullet() {
         PinHelper.setBullet(pinError, showPin, pin, pins, this);
     }
-
 
     // Called when keyboard is pressed
     public void onPressKey( View v ) {
@@ -198,6 +204,7 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
     public void onDeleteKey(View v) {
         PinHelper.onDeleteKey(textError, textShow, this);
     }
+
     // Toggle showing pin or not
     public void onToggleShowPin(View v) {
         setShowPinText(!showPin);

@@ -62,15 +62,22 @@ public class AuthRequest {
         // Access the RequestQueue through your singleton class.
         VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
-
     public void EnrollMethod(Context context, String method, String code, final Callback callback) {
+        UpdateMethod(context, method, code, true, callback);
+    }
+    
+    public void DeleteMethod(Context context, String method, String code, final Callback callback) {
+        UpdateMethod(context, method, code, false, callback);
+    }
+
+    public void UpdateMethod(Context context, String method, String code, boolean enrolled, final Callback callback) {
         String url = mainServerURL + "/user/" + Cotter.UserID;
 
         JSONObject req = new JSONObject();
 
         try {
             req.put("method", method);
-            req.put("enrolled", true);
+            req.put("enrolled", enrolled);
             req.put("code", code);
         } catch (Exception e) {
             callback.onError(e.toString());
