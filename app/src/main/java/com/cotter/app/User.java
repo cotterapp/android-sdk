@@ -11,7 +11,7 @@ public class User {
     public String ID;
     public String issuer;
     public String client_user_id;
-    public String[] enrolled;
+    public String[] enrolled = new String[]{};
     public String default_method;
 
     private static User instance;

@@ -84,8 +84,12 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
                     .setNegativeButtonText(ActivityStrings.get(Strings.BiometricNegativeButton))
                     .build();
 
-            // Generate keypair that can only be accessed by biometrics
-            publicKey = BiometricHelper.generateKeyPair();
+            publicKey = BiometricHelper.getPublicKey();
+
+            if (publicKey == null) {
+                // Generate keypair that can only be accessed by biometrics
+                publicKey = BiometricHelper.generateKeyPair();
+            }
         }
     }
 

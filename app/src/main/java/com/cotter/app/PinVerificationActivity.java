@@ -48,7 +48,6 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
     private String timestamp;
 
     private boolean biometricAvailable = false;
-    private boolean defaultBiometric = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,26 +92,31 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
         event = intent.getExtras().getString("event");
 
 
-        // Check if user's default method is biometric
-        defaultBiometric = Cotter.getUser(Cotter.authRequest) != null && Cotter.getUser(Cotter.authRequest).default_method != null && Cotter.getUser(Cotter.authRequest).default_method.equals(Cotter.BiometricMethod);
-        biometricAvailable = BiometricHelper.checkBiometricAvailable(this);
+        // Check if user's biometric is enrolled and available
+        final PinVerificationActivity self = this;
+        new CotterMethodHelper(this).biometricEnrolled(new CotterMethodChecker() {
+            @Override
+            public void onCheck(boolean biometricEnrolled) {
+                biometricAvailable = BiometricHelper.checkBiometricAvailable(self);
 
-        Log.d("biometricAvailable", String.valueOf(biometricAvailable));
-        if (defaultBiometric && biometricAvailable) {
-            // Setup Biometric Handlers for onAuthSuccess, or onAuthFail, etc.
-            BiometricHelper.setupVerifyBiometricHandler(this, this, this, this);
+                Log.d("biometricAvailable", String.valueOf(biometricAvailable));
+                if (biometricEnrolled && biometricAvailable) {
+                    // Setup Biometric Handlers for onAuthSuccess, or onAuthFail, etc.
+                    BiometricHelper.setupVerifyBiometricHandler(self, self, self, self);
 
-            // Create Biometric Prompt
-            promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                    .setTitle(ActivityStrings.get(Strings.BiometricTitle))
-                    .setSubtitle(ActivityStrings.get(Strings.BiometricSubtitle))
-                    .setNegativeButtonText(ActivityStrings.get(Strings.BiometricNegativeButton))
-                    .build();
+                    // Create Biometric Prompt
+                    promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                            .setTitle(ActivityStrings.get(Strings.BiometricTitle))
+                            .setSubtitle(ActivityStrings.get(Strings.BiometricSubtitle))
+                            .setNegativeButtonText(ActivityStrings.get(Strings.BiometricNegativeButton))
+                            .build();
 
-            // Show Prompt
-            Log.d("DEFAULT AND AVAILABLE", "running prompt");
-            BiometricHelper.PromptBiometric(this);
-        }
+                    // Show Prompt
+                    Log.d("DEFAULT AND AVAILABLE", "running prompt");
+                    BiometricHelper.PromptBiometric(self);
+                }
+            }
+        });
     }
 
     // Set up and show toolbar

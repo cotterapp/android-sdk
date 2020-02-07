@@ -15,6 +15,7 @@ public class Strings {
     public Map<String, String> PinChangeEnterPin = new HashMap<>();
     public Map<String, String> PinChangeReEnterPin = new HashMap<>();
     public Map<String, String> PinChangeSuccess = new HashMap<>();
+    public Map<String, String> BiometricChange = new HashMap<>();
 
     // Pin Enrollment
     public static String Title = "TITLE";
@@ -28,6 +29,7 @@ public class Strings {
 
     public static String DialogTitle = "DIALOG_TITLE";
     public static String DialogSubtitle = "DIALOG_SUBTITLE";
+    public static String DialogDisabledSubtitle = "DIALOG_DISABLED_SUBTITLE";
     public static String DialogPositiveButton = "POSITIVE_BUTTON_TEXT";
     public static String DialogNegativeButton = "NEGATIVE_BUTTON_TEXT";
 
@@ -107,6 +109,16 @@ public class Strings {
         PinChangeSuccess.put(Title, "Successfully Change PIN");
         PinChangeSuccess.put(Subtitle, "You can now use your new PIN to unlock your account and make transactions");
         PinChangeSuccess.put(ButtonText, "Done");
+
+        // Enable Disable Biometric
+        BiometricChange.put(BiometricTitle, "Biometric Verification");
+        BiometricChange.put(BiometricSubtitle, "Protect your account using Biometrics");
+        BiometricChange.put(BiometricNegativeButton, "Cancel");
+        BiometricChange.put(DialogTitle, "Something went wrong");
+        BiometricChange.put(DialogSubtitle, "You may have already enrolled Biometrics before.");
+        BiometricChange.put(DialogDisabledSubtitle, "You may not have Biometrics enrolled.");
+        BiometricChange.put(DialogPositiveButton, "Cancel");
+        BiometricChange.put(DialogNegativeButton, "Try Again");
     }
 
 

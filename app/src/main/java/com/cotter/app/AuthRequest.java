@@ -63,21 +63,25 @@ public class AuthRequest {
         VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
     public void EnrollMethod(Context context, String method, String code, final Callback callback) {
-        UpdateMethod(context, method, code, false, null, callback);
+        UpdateMethod(context, method, code, true,false, null, callback);
     }
 
     public void ChangeMethod(Context context, String method, String code, String currentCode, final Callback callback) {
-        UpdateMethod(context, method, code, true, currentCode, callback);
+        UpdateMethod(context, method, code, true,true, currentCode, callback);
     }
 
-    public void UpdateMethod(Context context, String method, String code, boolean changeCode, String currentCode, final Callback callback) {
+    public void DeleteMethod(Context context, String method, String code, final Callback callback) {
+        UpdateMethod(context, method, code, false, false, null, callback);
+    }
+
+    public void UpdateMethod(Context context, String method, String code, boolean enrolled, boolean changeCode, String currentCode, final Callback callback) {
         String url = mainServerURL + "/user/" + Cotter.UserID;
 
         JSONObject req = new JSONObject();
 
         try {
             req.put("method", method);
-            req.put("enrolled", true);
+            req.put("enrolled", enrolled);
             req.put("code", code);
             if (changeCode) {
                 req.put("change_code", changeCode);
@@ -244,6 +248,7 @@ public class AuthRequest {
     public static String getErrorMessage(VolleyError error) {
         if (error.getMessage() != null) {
             Log.d("Volley Error", error.getMessage());
+            return error.getMessage();
         }
         return "Fail http request";
     }

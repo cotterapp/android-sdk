@@ -17,6 +17,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.Signature;
 import java.util.concurrent.Executor;
 
@@ -128,6 +129,22 @@ public class BiometricHelper {
         return null;
     }
 
+    // Get Public Key
+    public static String getPublicKey() {
+        try {
+
+            KeyStore keyStore = KeyStore.getInstance(androidKeyStore);
+            keyStore.load(null);
+
+             PublicKey publicKey = keyStore.getCertificate(keyStoreAlias).getPublicKey();
+            return Base64.encodeToString(publicKey.getEncoded(), Base64.DEFAULT);
+        } catch (Exception e) {
+            Log.e("getPublicKey", e.toString());
+        }
+        return null;
+    }
+
+
     // Open Biometric Prompt
     public static void PromptBiometric(BiometricInterface biometricInterface) {
         try {
@@ -188,5 +205,4 @@ public class BiometricHelper {
         biometricInterface.setBiometricPrompt(bp);
         biometricInterface.setExecutor(ex);
     }
-
 }

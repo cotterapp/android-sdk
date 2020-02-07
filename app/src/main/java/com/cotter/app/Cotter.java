@@ -1,6 +1,10 @@
 package com.cotter.app;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
+
+import androidx.fragment.app.FragmentActivity;
 
 public class Cotter {
     public static String UserID;
@@ -20,6 +24,9 @@ public class Cotter {
     // Strings
     public static Strings strings;
 
+    public static BiometricPromptStandalone biometricPrompt;
+    public static CotterMethodHelper methods;
+
     private static Context ctx;
     public static Flow PinEnrollment = new Flow(new String[] { ScreenNames.PinEnrollmentEnterPin, ScreenNames.PinEnrollmentReEnterPin, ScreenNames.PinEnrollmentSuccess });
     public static Flow PinVerification= new Flow(new String[] { ScreenNames.PinVerification });
@@ -32,16 +39,28 @@ public class Cotter {
         ctx = context;
         authRequest = new AuthRequest(mainServerURL);
         getUser(authRequest);
-//        getRules(authRequest);
+        // getRules(authRequest);
         strings = new Strings();
         colors = new Colors();
+        methods = new CotterMethodHelper(context);
     }
 
     public static User getUser(AuthRequest authRequest) {
         return User.getInstance(ctx, authRequest);
     }
 
+    public static User getUser() {
+        if (authRequest == null) {
+            Log.e("COTTER_NOT_INITIALIZED", "Cotter is not yet initialized!");
+        }
+        return User.getInstance(ctx, authRequest);
+    }
+
     public static Rules getRules(AuthRequest authRequest) {
         return Rules.getInstance(ctx, authRequest);
+    }
+
+    public static void initBiometricSwitch(Context ctx, FragmentActivity fragmentAct, Activity act, CotterBiometricCallback callback) {
+        biometricPrompt = new BiometricPromptStandalone(ctx, fragmentAct, act, callback);
     }
 }
