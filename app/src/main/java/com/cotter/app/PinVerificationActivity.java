@@ -178,7 +178,7 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
         Date now = new Date();
         long timestamp = now.getTime() / 1000L;
         String strTimestamp = Long.toString(timestamp);
-        JSONObject req = Cotter.authRequest.ConstructApprovedEventJSON(event, strTimestamp, Cotter.PinMethod, pin, cb);
+        JSONObject req = Cotter.authRequest.ConstructApprovedEventJSON(event, strTimestamp, Cotter.PinMethod, pin, "", cb);
         Cotter.authRequest.CreateApprovedEventRequest(this, req, cb);
     }
 
@@ -311,7 +311,8 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
             }
         };
 
-        JSONObject req = Cotter.authRequest.ConstructApprovedEventJSON(event, timestamp, Cotter.BiometricMethod, signature, cb);
+
+        JSONObject req = Cotter.authRequest.ConstructApprovedEventJSON(event, timestamp, Cotter.BiometricMethod, signature, BiometricHelper.getPublicKey(), cb);
         Cotter.authRequest.CreateApprovedEventRequest(this, req, cb);
     }
 

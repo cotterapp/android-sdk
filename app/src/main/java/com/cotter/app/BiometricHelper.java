@@ -26,6 +26,12 @@ public class BiometricHelper {
     private static String keyStoreAlias = "COTTER_USER_KEY";
     private static String signatureAlgo = "SHA256withECDSA";
 
+    public static String getKeyStoreAlias() {
+        Log.e("KEYSTORE ALIAS", keyStoreAlias + Cotter.ApiKeyID + Cotter.UserID);
+        return keyStoreAlias + Cotter.ApiKeyID + Cotter.UserID;
+
+    }
+
     public static boolean checkBiometricAvailable(Context context) {
         // Check that biometric is enabled
         BiometricManager biometricManager = BiometricManager.from(context);
@@ -48,7 +54,7 @@ public class BiometricHelper {
     }
 
     // Handler on Auth Success
-    public static void setupEnrollBiometricHandler(final BiometricInterface biometricInterface, Context context, FragmentActivity fragmentActivity, final Activity activity) {
+    public static void setupEnrollBiometricHandler(final BiometricInterface biometricInterface, final Context context, FragmentActivity fragmentActivity, final Activity activity, final CotterBiometricCallback callback) {
         // Auth 1
         Executor ex = ContextCompat.getMainExecutor(context);
         BiometricPrompt bp = new BiometricPrompt(fragmentActivity,
@@ -57,7 +63,9 @@ public class BiometricHelper {
             public void onAuthenticationError(int errorCode,
                                               @NonNull CharSequence errString) {
                 super.onAuthenticationError(errorCode, errString);
-
+                if (callback != null) {
+                    callback.onCanceled();
+                }
                 Log.d("COTTER_BIOMETRIC_HELPER", "onAuthenticationError: " + errString);
             }
 
@@ -76,6 +84,9 @@ public class BiometricHelper {
             @Override
             public void onAuthenticationFailed() {
                 super.onAuthenticationFailed();
+                if (callback != null) {
+                    callback.onError("Biometric authentication failed: onAuthenticationFailed");
+                }
                 Log.d("COTTER_BIOMETRIC_HELPER", "onAuthenticationFailed");
             }
         });
@@ -88,7 +99,7 @@ public class BiometricHelper {
     public static String generateKeyPair() {
         try {
             KeyGenParameterSpec keyGenParameterSpec = new KeyGenParameterSpec.Builder(
-                    keyStoreAlias,
+                    getKeyStoreAlias(),
                     KeyProperties.PURPOSE_SIGN | KeyProperties.PURPOSE_VERIFY)
                     .setDigests(KeyProperties.DIGEST_SHA256,
                             KeyProperties.DIGEST_SHA512)
@@ -118,7 +129,7 @@ public class BiometricHelper {
             keyStore.load(null);
 
 
-            PrivateKey privateKey = (PrivateKey) keyStore.getKey(keyStoreAlias, null);
+            PrivateKey privateKey = (PrivateKey) keyStore.getKey(getKeyStoreAlias(), null);
             // PublicKey publicKey = keyStore.getCertificate("alias").getPublicKey();
 
             Log.d("getPrivateKey", privateKey.toString());
@@ -136,7 +147,7 @@ public class BiometricHelper {
             KeyStore keyStore = KeyStore.getInstance(androidKeyStore);
             keyStore.load(null);
 
-             PublicKey publicKey = keyStore.getCertificate(keyStoreAlias).getPublicKey();
+             PublicKey publicKey = keyStore.getCertificate(getKeyStoreAlias()).getPublicKey();
             return Base64.encodeToString(publicKey.getEncoded(), Base64.DEFAULT);
         } catch (Exception e) {
             Log.e("getPublicKey", e.toString());

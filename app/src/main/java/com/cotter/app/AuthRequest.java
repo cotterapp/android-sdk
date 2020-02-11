@@ -3,6 +3,7 @@ package com.cotter.app;
 import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -154,15 +155,18 @@ public class AuthRequest {
 
 
     public String ConstructApprovedEventMsg(String event, String timestamp, String method) {
-        return String.join("", Cotter.getUser(Cotter.authRequest).client_user_id,Cotter.ApiKeyID,
+        String[] list = {
+                Cotter.getUser(Cotter.authRequest).client_user_id,
+                Cotter.ApiKeyID,
                 event,
                 timestamp,
                 method,
                 "true"
-        );
+        };
+        return TextUtils.join("", list);
     }
 
-    public JSONObject ConstructApprovedEventJSON(String event, String timestamp, String method, String code, final Callback callback) {
+    public JSONObject ConstructApprovedEventJSON(String event, String timestamp, String method, String code, String publicKey, final Callback callback) {
         final JSONObject req = new JSONObject();
 
         try {
@@ -174,6 +178,7 @@ public class AuthRequest {
             req.put("method", method);
             req.put("code", code);
             req.put("approved", true);
+            req.put("public_key", publicKey);
         } catch (Exception e) {
             callback.onError(e.toString());
         }

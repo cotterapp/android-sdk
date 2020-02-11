@@ -39,7 +39,7 @@ public class BiometricPromptStandalone implements BiometricInterface {
 
         if (biometricAvailable) {
             // Setup Biometric Handlers for onAuthSuccess, or onAuthFail, etc.
-            BiometricHelper.setupEnrollBiometricHandler(this, ctx, fragmentAct, act);
+            BiometricHelper.setupEnrollBiometricHandler(this, ctx, fragmentAct, act, callback);
 
             // Create Biometric Prompt
             promptInfo = new BiometricPrompt.PromptInfo.Builder()
@@ -110,7 +110,6 @@ public class BiometricPromptStandalone implements BiometricInterface {
                     public void onClick(DialogInterface dialog, int which) {
                         // Skipping biometrics
                         User.refetchUser(ctx, Cotter.authRequest);
-                        callback.onCanceled();
                     }
                 })
                 .setNegativeButton(ActivityStrings.get(Strings.DialogNegativeButton), new DialogInterface.OnClickListener() {
@@ -138,7 +137,6 @@ public class BiometricPromptStandalone implements BiometricInterface {
                     public void onClick(DialogInterface dialog, int which) {
                         // Skipping biometrics
                         User.refetchUser(ctx, Cotter.authRequest);
-                        callback.onCanceled();
                     }
                 })
                 .setNegativeButton(ActivityStrings.get(Strings.DialogNegativeButton), new DialogInterface.OnClickListener() {
@@ -156,6 +154,11 @@ public class BiometricPromptStandalone implements BiometricInterface {
 
     // Open Biometric Prompt
     public void enableBiometric() {
+        if (!biometricAvailable) {
+            Log.e("COTTER BIOMETRIC PROMPT", "Biometric is not available on this device");
+            return;
+        }
+        publicKey = BiometricHelper.getPublicKey();
         if (publicKey == null) {
             // Generate keypair that can only be accessed by biometrics
             publicKey = BiometricHelper.generateKeyPair();
@@ -164,6 +167,10 @@ public class BiometricPromptStandalone implements BiometricInterface {
     }
 
     public void disableBiometric() {
+        if (!biometricAvailable) {
+            Log.e("COTTER BIOMETRIC PROMPT", "Biometric is not available on this device");
+            return;
+        }
         String pubKey = BiometricHelper.getPublicKey();
 
         // Signature is null for enrollment

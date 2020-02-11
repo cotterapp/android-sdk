@@ -35,7 +35,7 @@
 
     <ImageView
         android:id="@+id/success_image"
-        android:layout_width="240dp"
+        android:layout_width="280dp"
         android:layout_height="150dp"
         />
 

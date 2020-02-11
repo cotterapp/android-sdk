@@ -75,7 +75,7 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
 
         if (biometricAvailable) {
             // Setup Biometric Handlers for onAuthSuccess, or onAuthFail, etc.
-            BiometricHelper.setupEnrollBiometricHandler(this, this, this, this);
+            BiometricHelper.setupEnrollBiometricHandler(this, this, this, this, null);
 
             // Create Biometric Prompt
             promptInfo = new BiometricPrompt.PromptInfo.Builder()
