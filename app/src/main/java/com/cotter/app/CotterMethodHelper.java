@@ -16,8 +16,32 @@ public class CotterMethodHelper {
     public CotterMethodHelper(Context ctx) {
         this.ctx = ctx;
     }
-    public void biometricEnrolled(final CotterMethodChecker callback) {
 
+    // Check if biometric is enrolled in this device
+    public void biometricEnrolled(final CotterMethodChecker callback) {
+        String pubKey = BiometricHelper.getPublicKey();
+        Cotter.authRequest.CheckEnrolledMethod(ctx, Cotter.BiometricMethod, pubKey, new Callback(){
+            public void onSuccess(JSONObject response){
+                try {
+                    if(response.getBoolean("enrolled") && response.getString("method").equals(Cotter.BiometricMethod)){
+                        callback.onCheck(true);
+                    } else {
+                        callback.onCheck(false);
+                    }
+                } catch (Exception e) {
+                    callback.onCheck(false);
+                    Log.e("COTTER_REQ_BIO_ENROLLED", e.toString());
+                }
+            }
+            public void onError(String error){
+                Log.e("fetch User Error", error);
+            }
+        });
+    }
+
+    // TODO: "BIOMETRIC" in the array will be gone if any device disabled biometric
+    // Check if biometric is enrolled in any device (not necessarily this device
+    public void biometricEnrolledAny(final CotterMethodChecker callback) {
         Cotter.authRequest.GetUser(ctx, new Callback(){
             public void onSuccess(JSONObject response){
                 Gson gson = new Gson();
@@ -37,6 +61,7 @@ public class CotterMethodHelper {
             }
         });
     }
+
     public void biometricDefault(final CotterMethodChecker callback) {
 
         Cotter.authRequest.GetUser(ctx, new Callback(){
@@ -65,23 +90,21 @@ public class CotterMethodHelper {
     }
 
     public void pinEnrolled(final CotterMethodChecker callback) {
-
-        Cotter.authRequest.GetUser(ctx, new Callback(){
+        Cotter.authRequest.CheckEnrolledMethod(ctx, Cotter.PinMethod, null, new Callback(){
             public void onSuccess(JSONObject response){
-                Gson gson = new Gson();
-                User user = gson.fromJson(response.toString(), User.class);
-
-                // Convert String Array to List
-                List<String> enrolled = Arrays.asList(user.enrolled);
-
-                if(enrolled.contains(Cotter.PinMethod)){
-                    callback.onCheck(true);
-                } else {
+                try {
+                    if(response.getBoolean("enrolled") && response.getString("method").equals(Cotter.PinMethod)){
+                        callback.onCheck(true);
+                    } else {
+                        callback.onCheck(false);
+                    }
+                } catch (Exception e) {
                     callback.onCheck(false);
+                    Log.e("COTTER_PIN_ENROLLED", e.toString());
                 }
             }
             public void onError(String error){
-                Log.e("fetch User Error", error);
+                Log.e("COTTER_REQ_PIN_ENROLLED", error);
             }
         });
     }

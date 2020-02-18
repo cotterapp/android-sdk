@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -103,6 +104,42 @@ public class AuthRequest {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        callback.onError(getErrorMessage(error));
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("API_KEY_ID", Cotter.ApiKeyID);
+                params.put("API_SECRET_KEY", Cotter.ApiSecretKey);
+
+                return params;
+            }
+        };
+
+        // Access the RequestQueue through your singleton class.
+        VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
+
+    public void CheckEnrolledMethod(Context context, String method, String pubKey, final Callback callback) {
+        String url = mainServerURL + "/user/enrolled/" + Cotter.UserID + "/" + method;
+        if (pubKey != null) {
+            url = url + "/"  + Base64.encodeToString(pubKey.getBytes(), Base64.DEFAULT);
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("COTTER_ENROLLED_REQ", response.toString());
+                        callback.onSuccess(response);
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("COTTER_ENROLLED_ERR", getErrorMessage(error));
                         callback.onError(getErrorMessage(error));
                     }
                 }){
