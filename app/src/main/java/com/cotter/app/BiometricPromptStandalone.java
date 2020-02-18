@@ -24,6 +24,8 @@ public class BiometricPromptStandalone implements BiometricInterface {
     private boolean biometricAvailable;
 
     private Context ctx;
+    private FragmentActivity fragmentAct;
+    private Activity act;
 
     private Map<String, String> ActivityStrings;
 
@@ -32,6 +34,8 @@ public class BiometricPromptStandalone implements BiometricInterface {
     public BiometricPromptStandalone(Context ctx, FragmentActivity fragmentAct, Activity act, CotterBiometricCallback callback) {
         ActivityStrings = Cotter.strings.BiometricChange;
         this.ctx = ctx;
+        this.fragmentAct = fragmentAct;
+        this.act = act;
         this.callback = callback;
         publicKey = BiometricHelper.getPublicKey();
 
@@ -154,16 +158,29 @@ public class BiometricPromptStandalone implements BiometricInterface {
 
     // Open Biometric Prompt
     public void enableBiometric() {
-        if (!biometricAvailable) {
-            Log.e("COTTER BIOMETRIC PROMPT", "Biometric is not available on this device");
-            return;
-        }
-        publicKey = BiometricHelper.getPublicKey();
-        if (publicKey == null) {
-            // Generate keypair that can only be accessed by biometrics
-            publicKey = BiometricHelper.generateKeyPair();
-        }
-        BiometricHelper.PromptBiometric(this);
+        final BiometricInterface bi = this;
+        Cotter.methods.pinEnrolled(new CotterMethodChecker() {
+            @Override
+            public void onCheck(boolean result) {
+                if (result) {
+                    // if PIN already enrolled, can proceed with biometric
+                    if (!biometricAvailable) {
+                        Log.e("COTTER BIOMETRIC PROMPT", "Biometric is not available on this device");
+                        return;
+                    }
+                    publicKey = BiometricHelper.getPublicKey();
+                    if (publicKey == null) {
+                        // Generate keypair that can only be accessed by biometrics
+                        publicKey = BiometricHelper.generateKeyPair();
+                    }
+                    BiometricHelper.PromptBiometric(bi);
+                } else {
+                    // otherwise, MUST start with pin enrollment
+                    Cotter.PinEnrollment.startFlow(ctx, ctx.getClass(), "PIN_ENROLLMENT");
+                    act.finish();
+                }
+            }
+        });
     }
 
     public void disableBiometric() {

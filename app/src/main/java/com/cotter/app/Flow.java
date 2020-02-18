@@ -39,4 +39,11 @@ public class Flow {
         in.putExtra("event", event);
         ctx.startActivity(in);
     }
+    public void startFlow(Context ctx, Class callBackIntent, String event) {
+        this.callBack = callBackIntent;
+        Class intent = ScreenNames.getClassFromName(listFlow[0]);
+        Intent in = new Intent(ctx, intent);
+        in.putExtra("event", event);
+        ctx.startActivity(in);
+    }
 }
