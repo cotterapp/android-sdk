@@ -26,6 +26,11 @@ public class Flow {
         return callBack;
     }
 
+
+    public Class goToCallback() {
+        return callBack;
+    }
+
     public void startFlow(View view, Class callBackIntent, String event) {
         this.callBack = callBackIntent;
         Class intent = ScreenNames.getClassFromName(listFlow[0]);

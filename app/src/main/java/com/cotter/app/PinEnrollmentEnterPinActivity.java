@@ -115,7 +115,14 @@ public class PinEnrollmentEnterPinActivity extends AppCompatActivity implements 
                     .setNegativeButton(ActivityStrings.get(Strings.DialogNegativeButton), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            finish(); // close this activity and return to preview activity (if there is any)
+                            // Continue to callback class if PinEnrollment
+                            // otherwise if PinChange, go back
+                            if (!changePin) {
+                                Class nextScreen = Cotter.PinEnrollment.goToCallback();
+                                Intent in = new Intent(getApplicationContext(), nextScreen);
+                                startActivity(in);
+                            }
+                            finish();
                         }
                     });
             AlertDialog dialog = builder.create();
