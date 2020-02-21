@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -317,11 +318,23 @@ public class AuthRequest {
     }
 
     public static String getErrorMessage(VolleyError error) {
-        if (error.getMessage() != null) {
-            Log.d("Volley Error", error.getMessage());
-            return error.getMessage();
+        String statusCode = null;
+        String body = null;
+
+        if (error.networkResponse != null) {
+            //get status code here
+            statusCode = String.valueOf(error.networkResponse.statusCode);
+
+            //get response body and parse with appropriate encoding
+            if(error.networkResponse.data!=null) {
+                try {
+                    body = new String(error.networkResponse.data,"UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        return "Fail http request";
+        return "Status Code: " + statusCode + " Body: " + body;
     }
 
     private void showNetworkErrorDialogIfNecessary(Context context) {
