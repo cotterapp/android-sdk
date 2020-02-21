@@ -1,8 +1,12 @@
 package com.cotter.app;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -34,6 +38,11 @@ public class AuthRequest {
         mainServerURL = url;
     }
     public void GetUser(final Context context, final Callback callback) {
+        if (!networkIsAvailable(context)) {
+            showNetworkErrorDialogIfNecessary(context);
+            return;
+        }
+
         String url = mainServerURL + "/user/" + Cotter.UserID;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -77,6 +86,11 @@ public class AuthRequest {
     }
 
     public void UpdateMethod(Context context, String method, String code, boolean enrolled, boolean changeCode, String currentCode, final Callback callback) {
+        if (!networkIsAvailable(context)) {
+            showNetworkErrorDialogIfNecessary(context);
+            return;
+        }
+
         String url = mainServerURL + "/user/" + Cotter.UserID;
 
         JSONObject req = new JSONObject();
@@ -122,6 +136,11 @@ public class AuthRequest {
     }
 
     public void CheckEnrolledMethod(Context context, String method, String pubKey, final Callback callback) {
+        if (!networkIsAvailable(context)) {
+            showNetworkErrorDialogIfNecessary(context);
+            return;
+        }
+
         String url = mainServerURL + "/user/enrolled/" + Cotter.UserID + "/" + method;
         if (pubKey != null) {
             url = url + "/"  + Base64.encodeToString(pubKey.getBytes(), Base64.DEFAULT);
@@ -159,6 +178,11 @@ public class AuthRequest {
 
 
     public void GetRules(Context context, final Callback callback) {
+        if (!networkIsAvailable(context)) {
+            showNetworkErrorDialogIfNecessary(context);
+            return;
+        }
+
         String url = mainServerURL + "/rules";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -223,6 +247,11 @@ public class AuthRequest {
     }
 
     public void CreateApprovedEventRequest(Context context, JSONObject req, final Callback callback) {
+        if (!networkIsAvailable(context)) {
+            showNetworkErrorDialogIfNecessary(context);
+            return;
+        }
+
         String url = mainServerURL + "/event/create";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -293,5 +322,65 @@ public class AuthRequest {
             return error.getMessage();
         }
         return "Fail http request";
+    }
+
+    private void showNetworkErrorDialogIfNecessary(Context context) {
+        if (context == null || Cotter.strings == null) {
+            Log.e("COTTER_NETWORK_ERROR", "Cotter cannot be initialized because there is no connection");
+            return;
+        } else {
+            try {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme)
+                        .setTitle(Cotter.strings.NetworkError.get(Strings.DialogTitle))
+                        .setMessage(Cotter.strings.NetworkError.get(Strings.DialogSubtitle))
+                        .setIcon(Cotter.colors.NetworkErrorImage)
+                        .setPositiveButton(Cotter.strings.NetworkError.get(Strings.DialogPositiveButton), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
+            } catch (Exception e) {
+                Log.e("COTTER_NETWORK_ERROR", e.toString());
+            }
+        }
+    }
+
+    private void showHttpErrorDialog(Context context) {
+        if (context == null || Cotter.strings == null) {
+            Log.e("COTTER_HTTP_ERROR", "Cotter cannot be initialized because there is an http error");
+            return;
+        } else {
+            try {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme)
+                        .setTitle(Cotter.strings.HttpError.get(Strings.DialogTitle))
+                        .setMessage(Cotter.strings.HttpError.get(Strings.DialogSubtitle))
+                        .setIcon(Cotter.colors.HttpErrorImage)
+                        .setPositiveButton(Cotter.strings.HttpError.get(Strings.DialogPositiveButton), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
+            } catch (Exception e) {
+                Log.e("COTTER_HTTP_ERROR", e.toString());
+            }
+        }
+    }
+
+
+    private boolean networkIsAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
