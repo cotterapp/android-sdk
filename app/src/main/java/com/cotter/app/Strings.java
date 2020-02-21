@@ -16,6 +16,7 @@ public class Strings {
     public Map<String, String> PinChangeReEnterPin = new HashMap<>();
     public Map<String, String> PinChangeSuccess = new HashMap<>();
     public Map<String, String> BiometricChange = new HashMap<>();
+    public Map<String, String> NetworkError = new HashMap<>();
 
     // Pin Enrollment
     public static String Title = "TITLE";
@@ -119,6 +120,11 @@ public class Strings {
         BiometricChange.put(DialogDisabledSubtitle, "You may not have Biometrics enrolled.");
         BiometricChange.put(DialogPositiveButton, "Cancel");
         BiometricChange.put(DialogNegativeButton, "Try Again");
+
+        // Network Error Dialog
+        NetworkError.put(DialogTitle, "Connection Lost");
+        NetworkError.put(DialogSubtitle, "Please establish a stronger internet connection and try again.");
+        NetworkError.put(DialogPositiveButton, "Try Again");
     }
 
 
@@ -138,5 +144,9 @@ public class Strings {
     }
     public void setPinVerificationStrings(String key, String value) {
         PinVerification.put(key, value);
+    }
+
+    public void setNetworkErrorStrings(String key, String value) {
+        NetworkError.put(key, value);
     }
 }

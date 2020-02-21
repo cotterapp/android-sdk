@@ -157,7 +157,7 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
         // Verify Pin
         Callback cb = new Callback(){
             public void onSuccess(JSONObject response){
-                Boolean valid;
+                boolean valid;
                 try {
                     valid = response.getBoolean("approved");
                 } catch (Exception e) {
