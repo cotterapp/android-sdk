@@ -8,6 +8,7 @@ public class Colors {
     public String ColorBackground;
     public int SuccessImage;
     public int NetworkErrorImage;
+    public int HttpErrorImage;
 
     public Colors() {
         ColorBackground = "#FFFFFF";
@@ -16,6 +17,7 @@ public class Colors {
         ColorDanger = "#D92C59";
         SuccessImage = R.drawable.check;
         NetworkErrorImage = R.drawable.ic_cloud_off_black_24dp;
+        HttpErrorImage = R.drawable.ic_error_outline_black_24dp;
     }
 
     public void setColorPrimary(String color) {

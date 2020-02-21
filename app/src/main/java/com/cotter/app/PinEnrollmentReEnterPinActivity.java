@@ -135,6 +135,7 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
                 onContinue();
             }
             public void onError(String error){
+                errorOther();
                 Log.e("Submit Pin Error", error);
             }
         };
@@ -190,6 +191,13 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
         return showPin;
     }
 
+
+    // Invoked when pin cannot be enrolled
+    public void errorOther() {
+        String errorString = ActivityStrings.get(Strings.ErrorOther);
+        PinHelper.shakePin(bullet, pins, errorString, textShow, textError, this, this);
+
+    }
 
     // Invoked when pin is invalid
     public void invalidPin() {

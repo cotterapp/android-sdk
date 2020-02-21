@@ -17,6 +17,7 @@ public class Strings {
     public Map<String, String> PinChangeSuccess = new HashMap<>();
     public Map<String, String> BiometricChange = new HashMap<>();
     public Map<String, String> NetworkError = new HashMap<>();
+    public Map<String, String> HttpError = new HashMap<>();
 
     // Pin Enrollment
     public static String Title = "TITLE";
@@ -26,6 +27,7 @@ public class Strings {
     public static String HidePin = "HIDE_PIN";
     public static String ErrorCombination = "ERROR_COMBINATION";
     public static String ErrorNoMatch = "ERROR_NO_MATCH";
+    public static String ErrorOther = "ERROR_OTHER";
     public static String ErrorInvalid = "ERROR_INVALID";
 
     public static String DialogTitle = "DIALOG_TITLE";
@@ -38,6 +40,11 @@ public class Strings {
     public static String BiometricTitle = "BIOMETRIC_TITLE";
     public static String BiometricSubtitle = "BIOMETRIC_SUBTITLE";
     public static String BiometricNegativeButton = "BIOMETRIC_NEGATIVE_BUTTON";
+
+    // Auth Request
+    public static String DefaultNetworkErrorTitle = "Connection Lost";
+    public static String DefaultNetworkErrorSubtitle = "Please establish a stronger internet connection and try again.";
+    public static String DefaultNetworkPositiveButton = "Try Again";
 
     public Strings() {
 
@@ -62,6 +69,7 @@ public class Strings {
         PinEnrollmentReEnterPin.put(ShowPin, "Show Pin");
         PinEnrollmentReEnterPin.put(HidePin, "Hide Pin");
         PinEnrollmentReEnterPin.put(ErrorNoMatch, "Your PIN doesn't match your previous PIN.");
+        PinEnrollmentReEnterPin.put(ErrorOther, "Something went wrong.");
 
         PinEnrollmentSuccess.put(Title, "Successfully Activated PIN");
         PinEnrollmentSuccess.put(Subtitle, "You can now use your PIN to unlock your account and make transactions");
@@ -125,6 +133,11 @@ public class Strings {
         NetworkError.put(DialogTitle, "Connection Lost");
         NetworkError.put(DialogSubtitle, "Please establish a stronger internet connection and try again.");
         NetworkError.put(DialogPositiveButton, "Try Again");
+
+        // HTTP Error Dialog
+        HttpError.put(DialogTitle, "Something went wrong");
+        HttpError.put(DialogSubtitle, "Looks like there's an error on our end. Please try again.");
+        HttpError.put(DialogPositiveButton, "Try Again");
     }
 
 

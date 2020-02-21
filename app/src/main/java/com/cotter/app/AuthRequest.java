@@ -325,21 +325,57 @@ public class AuthRequest {
     }
 
     private void showNetworkErrorDialogIfNecessary(Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme)
-                .setTitle(Cotter.strings.NetworkError.get(Strings.DialogTitle))
-                .setMessage(Cotter.strings.NetworkError.get(Strings.DialogSubtitle))
-                .setIcon(Cotter.colors.NetworkErrorImage)
-                .setPositiveButton(Cotter.strings.NetworkError.get(Strings.DialogPositiveButton), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
+        if (context == null || Cotter.strings == null) {
+            Log.e("COTTER_NETWORK_ERROR", "Cotter cannot be initialized because there is no connection");
+            return;
+        } else {
+            try {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme)
+                        .setTitle(Cotter.strings.NetworkError.get(Strings.DialogTitle))
+                        .setMessage(Cotter.strings.NetworkError.get(Strings.DialogSubtitle))
+                        .setIcon(Cotter.colors.NetworkErrorImage)
+                        .setPositiveButton(Cotter.strings.NetworkError.get(Strings.DialogPositiveButton), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
 
-        AlertDialog dialog = builder.create();
-        dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
+            } catch (Exception e) {
+                Log.e("COTTER_NETWORK_ERROR", e.toString());
+            }
+        }
     }
+
+    private void showHttpErrorDialog(Context context) {
+        if (context == null || Cotter.strings == null) {
+            Log.e("COTTER_HTTP_ERROR", "Cotter cannot be initialized because there is an http error");
+            return;
+        } else {
+            try {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme)
+                        .setTitle(Cotter.strings.HttpError.get(Strings.DialogTitle))
+                        .setMessage(Cotter.strings.HttpError.get(Strings.DialogSubtitle))
+                        .setIcon(Cotter.colors.HttpErrorImage)
+                        .setPositiveButton(Cotter.strings.HttpError.get(Strings.DialogPositiveButton), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
+            } catch (Exception e) {
+                Log.e("COTTER_HTTP_ERROR", e.toString());
+            }
+        }
+    }
+
 
     private boolean networkIsAvailable(Context context) {
         ConnectivityManager connectivityManager
