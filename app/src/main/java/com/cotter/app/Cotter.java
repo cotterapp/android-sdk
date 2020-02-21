@@ -26,6 +26,8 @@ public class Cotter {
 
     public static BiometricPromptStandalone biometricPrompt;
     public static CotterMethodHelper methods;
+    public static IdentityRequest identity;
+
 
     private static Context ctx;
     public static Flow PinEnrollment = new Flow(new String[] { ScreenNames.PinEnrollmentEnterPin, ScreenNames.PinEnrollmentReEnterPin, ScreenNames.PinEnrollmentSuccess });
@@ -62,5 +64,19 @@ public class Cotter {
 
     public static void initBiometricSwitch(Context ctx, FragmentActivity fragmentAct, Activity act, CotterBiometricCallback callback) {
         biometricPrompt = new BiometricPromptStandalone(ctx, fragmentAct, act, callback);
+    }
+
+
+    // Identity Request
+    public static IdentityRequest getIdentity() {
+        if (identity == null) {
+            Log.e("COTTER IDENTITY", "You need to call newIdentity when calling .login first, then getIdentity in .handleCallbackURL");
+            identity = new IdentityRequest(ctx);
+        }
+        return identity;
+    }
+    public static IdentityRequest newIdentity(Context ctx) {
+        identity = new IdentityRequest(ctx);
+        return identity;
     }
 }

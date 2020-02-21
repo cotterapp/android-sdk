@@ -22,6 +22,21 @@
         <activity android:name=".PinEnrollmentReEnterPinActivity" />
         <activity android:name=".PinEnrollmentEnterPinActivity" />
         <activity android:name=".MainActivity" />
+
+
+        <activity android:name=".IdentityActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:launchMode="singleTask" />
+
+        <activity android:name=".RedirectUriReceiverActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="app.cotter.android"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
