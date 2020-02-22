@@ -93,7 +93,7 @@ public class IdentityRequest {
         url = url + "&type=" + type;
         url = url + "&code_challenge=" + codeChallenge;
         url = url + "&state=" + state;
-        url = url + "&input=" + input;
+        url = url + "&input=" + Uri.encode(input);
 
         Log.i("COTTER_IDENTITY", "Login with input: " + url);
 
