@@ -14,9 +14,7 @@ public class RedirectUriReceiverActivity extends Activity {
 
         Log.i("COTTER_IDENTITY", "RedirectUriReceiverActivity received");
 
-        // while this does not appear to be achieving much, handling the redirect in this way
-        // ensures that we can remove the browser tab from the back stack. See the documentation
-        // on AuthorizationManagementActivity for more details.
+        // Handling the redirect this way ensures that the WebView closes after redirect
         startActivity(IdentityManager.createResponseHandlingIntent(this, getIntent().getData()));
         Log.i("COTTER_IDENTITY", "RedirectUriReceiverActivity finished");
         finish();

@@ -47,6 +47,8 @@ public class IdentityManager {
 
     public static Intent createResponseHandlingIntent(Context context, Uri responseUri) {
         Log.i("createResponseIntent", responseUri.toString());
+
+        // Creating an intent of the IdentityActivity to handle the uri from redirect
         Intent intent = new Intent(context, IdentityActivity.class);
         intent.setData(responseUri);
         intent.putExtra(IdentityRequest.OPEN_TWA, false);
@@ -55,12 +57,15 @@ public class IdentityManager {
         return intent;
     }
 
+    // Use for the client's activity to process token response attached to their intent
     public static String handleResponse(Intent intent) {
         if (intent.hasExtra(TOKEN_RESPONSE)) {
             return intent.getStringExtra(TOKEN_RESPONSE);
         }
         return null;
     }
+
+    // Use for the client's activity to process token error attached to their intent
     public static String handleError(Intent intent) {
         if (intent.hasExtra(TOKEN_ERROR)) {
             return intent.getStringExtra(TOKEN_ERROR);

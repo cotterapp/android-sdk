@@ -78,19 +78,26 @@ public class IdentityActivity extends Activity {
             return;
         }
 
-        // if not open twa and auth already started, then this must be a respond
+        // if handleResponse requested, then this must come from redirect page
         if (handleResponse) {
-            // Otherwise, handle the response from verification request
+            // handle the response from verification request
             Log.i("COTTER_IDENTITY", "handleIntent, start handleResponse");
             handleResponse(this, intent);
             return;
         }
 
+        // if openTwa is true, mAuthorizationStarted has started, but not twaOpened
+        // this must be onResume when the WebView is open
+        // so set twaOpened = true
         if (openTwa && mAuthorizationStarted && !twaOpened) {
             twaOpened = true;
             Log.i("COTTER_IDENTITY", "handleIntent, openTwa && mAuthorizationStarted && !twaOpened -> set twaOpened true");
             return;
         }
+
+        // if openTwa is true, mAuthorizationStarted has started, and twaOpened is true
+        // this must be when the user canceled the WebView
+        // so finish the activity
         if (openTwa && mAuthorizationStarted && twaOpened) {
             Log.i("COTTER_IDENTITY", "handleIntent, openTwa && mAuthorizationStarted && twaOpened -> finish");
             finish();
@@ -102,6 +109,7 @@ public class IdentityActivity extends Activity {
         Uri uri = intent.getData();
 
         if (uri != null) {
+            // Getting response codes from the uri
             String authCode = uri.getQueryParameter(AUTH_CODE);
             String state = uri.getQueryParameter(STATE);
             String challengeIDstr = uri.getQueryParameter(CHALLENGE_ID);
@@ -111,12 +119,16 @@ public class IdentityActivity extends Activity {
             Log.i("COTTER_IDENTITY", "state :" + state);
             Log.i("COTTER_IDENTITY", "challengeIDstr :" + challengeIDstr);
 
+            // Getting the completion intent and original request for the state
             Intent completeIntent = IdentityManager.getInstance().getPendingIntent(state);
             IdentityRequest idReq = IdentityManager.getInstance().getIdentityRequest(state);
 
+            // Create callback after making a verification http request
             Callback callback = new Callback() {
                 @Override
                 public void onSuccess(JSONObject result) {
+                    // On success, open the completion intent with the token response
+
                     completeIntent.putExtra(IdentityManager.TOKEN_RESPONSE, result.toString());
                     completeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -132,6 +144,8 @@ public class IdentityActivity extends Activity {
 
                 @Override
                 public void onError(String error) {
+                    // On error, open the completion intent with the token error
+
                     completeIntent.putExtra(IdentityManager.TOKEN_ERROR, error);
                     completeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     try {
@@ -145,6 +159,7 @@ public class IdentityActivity extends Activity {
                 }
             };
 
+            // Make an http request to exchange auth_code with the identity
             Cotter.authRequest.RequestIdentityToken(ctx, idReq.codeVerifier, authCode, challengeID, IdentityRequest.URL_SCHEME, callback);
         } else {
             Log.e("handleResponse", "uri null, finishing");
