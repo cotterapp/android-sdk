@@ -43,6 +43,7 @@ public class PinEnrollmentEnterPinActivity extends AppCompatActivity implements 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pin_enrollment_enter_pin);
 
+        name = ScreenNames.PinEnrollmentEnterPin;
         ActivityStrings = Cotter.strings.PinEnrollmentEnterPin;
         instance = this;
 
