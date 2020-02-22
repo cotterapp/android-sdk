@@ -35,9 +35,11 @@ import java.util.Map;
 
 public class AuthRequest {
     public String mainServerURL;
+
     public AuthRequest(String url) {
         mainServerURL = url;
     }
+
     public void GetUser(final Context context, final Callback callback) {
         if (!networkIsAvailable(context)) {
             showNetworkErrorDialogIfNecessary(context);
@@ -45,8 +47,8 @@ public class AuthRequest {
         }
 
         String url = mainServerURL + "/user/" + Cotter.UserID;
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
@@ -60,10 +62,10 @@ public class AuthRequest {
                         callback.onError(getErrorMessage(error));
                         Log.d("AUTH_REQUEST_GET_USER", "Error getting user: " + getErrorMessage(error));
                     }
-                }){
+                }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String>  params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<String, String>();
                 params.put("API_KEY_ID", Cotter.ApiKeyID);
                 params.put("API_SECRET_KEY", Cotter.ApiSecretKey);
 
@@ -74,19 +76,21 @@ public class AuthRequest {
         // Access the RequestQueue through your singleton class.
         VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
+
     public void EnrollMethod(Context context, String method, String code, final Callback callback) {
-        UpdateMethod(context, method, code, true,false, null, callback);
+        UpdateMethod(context, method, code, true, false, null, callback);
     }
 
     public void ChangeMethod(Context context, String method, String code, String currentCode, final Callback callback) {
-        UpdateMethod(context, method, code, true,true, currentCode, callback);
+        UpdateMethod(context, method, code, true, true, currentCode, callback);
     }
 
     public void DeleteMethod(Context context, String method, String code, final Callback callback) {
         UpdateMethod(context, method, code, false, false, null, callback);
     }
 
-    public void UpdateMethod(Context context, String method, String code, boolean enrolled, boolean changeCode, String currentCode, final Callback callback) {
+    public void UpdateMethod(Context context, String method, String code, boolean enrolled, boolean changeCode,
+            String currentCode, final Callback callback) {
         if (!networkIsAvailable(context)) {
             showNetworkErrorDialogIfNecessary(context);
             return;
@@ -108,8 +112,8 @@ public class AuthRequest {
             callback.onError(e.toString());
         }
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.PUT, url, req, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, req,
+                new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
@@ -121,10 +125,10 @@ public class AuthRequest {
                     public void onErrorResponse(VolleyError error) {
                         callback.onError(getErrorMessage(error));
                     }
-                }){
+                }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String>  params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<String, String>();
                 params.put("API_KEY_ID", Cotter.ApiKeyID);
                 params.put("API_SECRET_KEY", Cotter.ApiSecretKey);
 
@@ -144,11 +148,11 @@ public class AuthRequest {
 
         String url = mainServerURL + "/user/enrolled/" + Cotter.UserID + "/" + method;
         if (pubKey != null) {
-            url = url + "/"  + Base64.encodeToString(pubKey.getBytes(), Base64.DEFAULT);
+            url = url + "/" + Base64.encodeToString(pubKey.getBytes(), Base64.DEFAULT);
         }
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
@@ -162,10 +166,10 @@ public class AuthRequest {
                         Log.d("COTTER_ENROLLED_ERR", getErrorMessage(error));
                         callback.onError(getErrorMessage(error));
                     }
-                }){
+                }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String>  params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<String, String>();
                 params.put("API_KEY_ID", Cotter.ApiKeyID);
                 params.put("API_SECRET_KEY", Cotter.ApiSecretKey);
 
@@ -177,7 +181,6 @@ public class AuthRequest {
         VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
 
-
     public void GetRules(Context context, final Callback callback) {
         if (!networkIsAvailable(context)) {
             showNetworkErrorDialogIfNecessary(context);
@@ -185,8 +188,8 @@ public class AuthRequest {
         }
 
         String url = mainServerURL + "/rules";
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
@@ -200,10 +203,10 @@ public class AuthRequest {
                         callback.onError(getErrorMessage(error));
                         Log.d("AUTH_REQUEST_GET_RULES", "Success getting rules: " + getErrorMessage(error));
                     }
-                }){
+                }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String>  params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<String, String>();
                 params.put("API_KEY_ID", Cotter.ApiKeyID);
                 params.put("API_SECRET_KEY", Cotter.ApiSecretKey);
 
@@ -215,20 +218,14 @@ public class AuthRequest {
         VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
 
-
     public String ConstructApprovedEventMsg(String event, String timestamp, String method) {
-        String[] list = {
-                Cotter.getUser(Cotter.authRequest).client_user_id,
-                Cotter.ApiKeyID,
-                event,
-                timestamp,
-                method,
-                "true"
-        };
+        String[] list = { Cotter.getUser(Cotter.authRequest).client_user_id, Cotter.ApiKeyID, event, timestamp, method,
+                "true" };
         return TextUtils.join("", list);
     }
 
-    public JSONObject ConstructApprovedEventJSON(String event, String timestamp, String method, String code, String publicKey, final Callback callback) {
+    public JSONObject ConstructApprovedEventJSON(String event, String timestamp, String method, String code,
+            String publicKey, final Callback callback) {
         final JSONObject req = new JSONObject();
 
         try {
@@ -255,8 +252,8 @@ public class AuthRequest {
 
         String url = mainServerURL + "/event/create";
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.POST, url, req, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, req,
+                new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
@@ -268,12 +265,59 @@ public class AuthRequest {
                     public void onErrorResponse(VolleyError error) {
                         callback.onError(getErrorMessage(error));
                     }
-                }){
+                }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String>  params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<String, String>();
                 params.put("API_KEY_ID", Cotter.ApiKeyID);
                 params.put("API_SECRET_KEY", Cotter.ApiSecretKey);
+
+                return params;
+            }
+        };
+
+        // Access the RequestQueue through your singleton class.
+        VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
+
+    public void RequestIdentityToken(Context context, String codeVerifier, String authCode, int challengeID,
+            String redirectURL, final Callback callback) {
+        String url = mainServerURL + "/verify/get_identity";
+
+        JSONObject req = new JSONObject();
+
+        Log.e("URL RED URL", redirectURL);
+
+        try {
+            req.put("code_verifier", codeVerifier);
+            req.put("authorization_code", authCode);
+            req.put("challenge_id", challengeID);
+            req.put("redirect_url", redirectURL);
+        } catch (Exception e) {
+            callback.onError(e.toString());
+        }
+
+        Log.e("URL REQ ID", url);
+        Log.e("URL REQ", req.toString());
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, req,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callback.onSuccess(response);
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError(getErrorMessage(error));
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("API_KEY_ID", Cotter.ApiKeyID);
 
                 return params;
             }
@@ -303,18 +347,17 @@ public class AuthRequest {
     public static String getLocation(Activity act) {
         final List<Location> locContainer = new ArrayList<>();
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(act);
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(act, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            locContainer.add(location);
-                        }
-                    }
-                });
+        fusedLocationClient.getLastLocation().addOnSuccessListener(act, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                // Got last known location. In some rare situations this can be null.
+                if (location != null) {
+                    locContainer.add(location);
+                }
+            }
+        });
         Location loc = locContainer.get(0);
-        return loc.getLatitude() + " " +loc.getLongitude();
+        return loc.getLatitude() + " " + loc.getLongitude();
     }
 
     public static String getErrorMessage(VolleyError error) {
@@ -322,13 +365,13 @@ public class AuthRequest {
         String body = null;
 
         if (error.networkResponse != null) {
-            //get status code here
+            // get status code here
             statusCode = String.valueOf(error.networkResponse.statusCode);
 
-            //get response body and parse with appropriate encoding
-            if(error.networkResponse.data!=null) {
+            // get response body and parse with appropriate encoding
+            if (error.networkResponse.data != null) {
                 try {
-                    body = new String(error.networkResponse.data,"UTF-8");
+                    body = new String(error.networkResponse.data, "UTF-8");
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -347,12 +390,13 @@ public class AuthRequest {
                         .setTitle(Cotter.strings.NetworkError.get(Strings.DialogTitle))
                         .setMessage(Cotter.strings.NetworkError.get(Strings.DialogSubtitle))
                         .setIcon(Cotter.colors.NetworkErrorImage)
-                        .setPositiveButton(Cotter.strings.NetworkError.get(Strings.DialogPositiveButton), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        });
+                        .setPositiveButton(Cotter.strings.NetworkError.get(Strings.DialogPositiveButton),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.cancel();
+                                    }
+                                });
 
                 AlertDialog dialog = builder.create();
                 dialog.show();
@@ -373,12 +417,13 @@ public class AuthRequest {
                         .setTitle(Cotter.strings.HttpError.get(Strings.DialogTitle))
                         .setMessage(Cotter.strings.HttpError.get(Strings.DialogSubtitle))
                         .setIcon(Cotter.colors.HttpErrorImage)
-                        .setPositiveButton(Cotter.strings.HttpError.get(Strings.DialogPositiveButton), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        });
+                        .setPositiveButton(Cotter.strings.HttpError.get(Strings.DialogPositiveButton),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.cancel();
+                                    }
+                                });
 
                 AlertDialog dialog = builder.create();
                 dialog.show();
@@ -389,10 +434,9 @@ public class AuthRequest {
         }
     }
 
-
     private boolean networkIsAvailable(Context context) {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
