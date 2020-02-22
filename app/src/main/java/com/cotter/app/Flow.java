@@ -37,6 +37,7 @@ public class Flow {
         Context ctx = view.getContext();
         Intent in = new Intent(ctx, intent);
         in.putExtra("event", event);
+        in.putExtra("change_pin", false);
         ctx.startActivity(in);
     }
     public void startFlow(Context ctx, Class callBackIntent, String event) {
@@ -44,6 +45,7 @@ public class Flow {
         Class intent = ScreenNames.getClassFromName(listFlow[0]);
         Intent in = new Intent(ctx, intent);
         in.putExtra("event", event);
+        in.putExtra("change_pin", false);
         ctx.startActivity(in);
     }
 }
