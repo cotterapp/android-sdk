@@ -16,38 +16,31 @@ public class IdentityActivity extends Activity {
     static String STATE = "state";
     static String CHALLENGE_ID = "challenge_id";
     static String KEY_AUTHORIZATION_STARTED = "KEY_AUTHORIZATION_STARTED";
+    static String HANDLE_RESPONSE = "HANDLE_RESPONSE";
+    static String KEY_TWA_OPENED = "KEY_TWA_OPENED";
 
     private boolean mAuthorizationStarted = false;
+    private boolean twaOpened = false;
 
     @Override
     public void onCreate(Bundle savedInstanceBundle) {
         super.onCreate(savedInstanceBundle);
 
-
+        // on first open, set authorization started as false
         if (savedInstanceBundle != null) {
             mAuthorizationStarted = savedInstanceBundle.getBoolean(KEY_AUTHORIZATION_STARTED, false);
         }
 
-        Log.e("authstart on create", mAuthorizationStarted +"");
-        Intent intent = getIntent();
-        boolean openTwa = intent.getBooleanExtra(IdentityRequest.OPEN_TWA, false);
-        Log.e("OPEN TWA on create", openTwa +"");
-        if (openTwa && !mAuthorizationStarted) {
-            mAuthorizationStarted = true;
-            String url = intent.getStringExtra(IdentityRequest.TWA_URL);
-            new TwaLauncher(this).launch(Uri.parse(url));
-            Log.e("LAUNCHED TWA", url);
-            return;
-        }
-
-        Log.e("HANDLE RESP", "handle");
-        handleResponse(this, intent);
+        Log.i("COTTER_IDENTITY", "onCreate handleIntent");
+        handleIntent(getIntent());
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        Log.i("onSaveInstanceState", outState.toString());
         super.onSaveInstanceState(outState);
         outState.putBoolean(KEY_AUTHORIZATION_STARTED, mAuthorizationStarted);
+        outState.putBoolean(KEY_TWA_OPENED, twaOpened);
     }
 
 
@@ -55,36 +48,68 @@ public class IdentityActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        Log.e("authstart on resume", mAuthorizationStarted +"");
+        Log.i("COTTER_IDENTITY", "onResume handleIntent");
+        handleIntent(getIntent());
+    }
 
 
-        Intent intent = getIntent();
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+
+    public void handleIntent(Intent intent) {
         boolean openTwa = intent.getBooleanExtra(IdentityRequest.OPEN_TWA, false);
-        Log.e("OPEN TWA on resume", openTwa +"");
+        boolean handleResponse = intent.getBooleanExtra(HANDLE_RESPONSE, false);
+        Log.i("COTTER_IDENTITY", "handleIntent, openTwa: " + openTwa);
+        Log.i("COTTER_IDENTITY", "handleIntent, handleResponse: " + handleResponse);
+        Log.i("COTTER_IDENTITY", "handleIntent, mAuthorizationStarted: " + mAuthorizationStarted);
+        Log.i("COTTER_IDENTITY", "handleIntent, twaOpened: " + twaOpened);
 
+
+        // if open twa is true and authorization hasn't started, launch TWA
         if (openTwa && !mAuthorizationStarted) {
-            mAuthorizationStarted = true;
+            // launch TWA
             String url = intent.getStringExtra(IdentityRequest.TWA_URL);
             new TwaLauncher(this).launch(Uri.parse(url));
-            Log.e("LAUNCHED TWA", url);
+            Log.i("COTTER_IDENTITY", "handleIntent, Launched TWA" + url);
+            mAuthorizationStarted = true;
             return;
         }
 
-        Log.e("HANDLE RESP", "handle");
-        handleResponse(this, intent);
+        // if not open twa and auth already started, then this must be a respond
+        if (handleResponse) {
+            // Otherwise, handle the response from verification request
+            Log.i("COTTER_IDENTITY", "handleIntent, start handleResponse");
+            handleResponse(this, intent);
+            return;
+        }
+
+        if (openTwa && mAuthorizationStarted && !twaOpened) {
+            twaOpened = true;
+            Log.i("COTTER_IDENTITY", "handleIntent, openTwa && mAuthorizationStarted && !twaOpened -> set twaOpened true");
+            return;
+        }
+        if (openTwa && mAuthorizationStarted && twaOpened) {
+            Log.i("COTTER_IDENTITY", "handleIntent, openTwa && mAuthorizationStarted && twaOpened -> finish");
+            finish();
+        }
     }
 
     public void handleResponse(Context ctx, Intent intent) {
 
         Uri uri = intent.getData();
 
-
         if (uri != null) {
-            Log.e("handleResponse", uri.getQueryParameter(AUTH_CODE));
             String authCode = uri.getQueryParameter(AUTH_CODE);
             String state = uri.getQueryParameter(STATE);
             String challengeIDstr = uri.getQueryParameter(CHALLENGE_ID);
             int challengeID = Integer.parseInt(challengeIDstr);
+
+            Log.i("COTTER_IDENTITY", "authcode :" + authCode);
+            Log.i("COTTER_IDENTITY", "state :" + state);
+            Log.i("COTTER_IDENTITY", "challengeIDstr :" + challengeIDstr);
 
             Intent completeIntent = IdentityManager.getInstance().getPendingIntent(state);
             IdentityRequest idReq = IdentityManager.getInstance().getIdentityRequest(state);
@@ -97,12 +122,12 @@ public class IdentityActivity extends Activity {
 
                     try {
                         ctx.startActivity(completeIntent);
-//                        finish();
 
                     } catch (Exception e) {
-                        Log.e("Intent send response", e.toString());
+                        Log.e("COTTER_IDENTITY", "Starting completed intent error: " + e.toString());
                     }
-                    Log.e("ver code result", result.toString());
+                    Log.i("COTTER_IDENTITY", "RequestIdentityToken succeded");
+                    finish();
                 }
 
                 @Override
@@ -111,18 +136,19 @@ public class IdentityActivity extends Activity {
                     completeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     try {
                         ctx.startActivity(completeIntent);
-//                        finish();
 
                     } catch (Exception e) {
-                        Log.e("Intent send error", e.toString());
+                        Log.e("COTTER_IDENTITY", "Starting completed intent error: " + e.toString());
                     }
-                    Log.e("ver code error", error);
+                    Log.e("COTTER_IDENTITY", "RequestIdentityToken callback error: " + error);
+                    finish();
                 }
             };
 
             Cotter.authRequest.RequestIdentityToken(ctx, idReq.codeVerifier, authCode, challengeID, IdentityRequest.URL_SCHEME, callback);
         } else {
-            Log.e("handleResponse", "uri null");
+            Log.e("handleResponse", "uri null, finishing");
+            finish();
         }
     }
 

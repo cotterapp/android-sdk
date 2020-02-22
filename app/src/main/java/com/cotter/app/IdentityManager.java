@@ -29,26 +29,28 @@ public class IdentityManager {
 
 
     public void addPendingRequestIntent(String state, Intent intent, IdentityRequest req) {
-        Log.v("COTTER_INTENT_REQUEST", "Adding pending intent and identity request for state " + state);
+        Log.i("COTTER_INTENT_REQUEST", "Adding pending intent and identity request for state " + state);
         this.mIntents.put(state, intent);
         this.mIdentityRequests.put(state, req);
     }
 
     public Intent getPendingIntent(String state) {
-        Log.v("COTTER_PENDING_INTENT", "Retrieving pending complete intent for state " + state);
+        Log.i("COTTER_PENDING_INTENT", "Retrieving pending complete intent for state " + state);
         return (Intent)this.mIntents.remove(state);
     }
 
 
     public IdentityRequest getIdentityRequest(String state) {
-        Log.v("COTTER_ID_REQUEST", "Retrieving identity request for state " + state);
+        Log.i("COTTER_ID_REQUEST", "Retrieving identity request for state " + state);
         return (IdentityRequest)this.mIdentityRequests.remove(state);
     }
 
     public static Intent createResponseHandlingIntent(Context context, Uri responseUri) {
+        Log.i("createResponseIntent", responseUri.toString());
         Intent intent = new Intent(context, IdentityActivity.class);
         intent.setData(responseUri);
         intent.putExtra(IdentityRequest.OPEN_TWA, false);
+        intent.putExtra(IdentityActivity.HANDLE_RESPONSE, true);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return intent;
     }

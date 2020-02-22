@@ -12,7 +12,6 @@ import java.security.SecureRandom;
 public class IdentityRequest {
 
     static final String charSet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    public static String ACTION = "app.cotter.android.HANDLE_AUTHORIZATION_RESPONSE";
     public static String URL_SCHEME = "app.cotter.android://auth_callback";
     public static String OPEN_TWA = "OPEN_TWA";
     public static String TWA_URL = "TWA_URL";
@@ -27,8 +26,8 @@ public class IdentityRequest {
         codeVerifier = generateCodeVerifier();
         codeChallenge = generateCodeChallenge(codeVerifier);
 
-        Log.e("CODE VERIFIER", codeVerifier);
-        Log.e("CODE CHALLENGE", codeChallenge);
+        Log.i("CODE VERIFIER", codeVerifier);
+        Log.i("CODE CHALLENGE", codeChallenge);
         state = generateState();
     }
 
@@ -73,7 +72,7 @@ public class IdentityRequest {
         url = url + "&code_challenge=" + codeChallenge;
         url = url + "&state=" + state;
 
-        Log.e("LOGIN URL", url);
+        Log.i("COTTER_IDENTITY", "Login: " + url);
 
         // Add receiver intent here
         Intent completeIntent = new Intent(ctx, callbackClass);
@@ -96,7 +95,7 @@ public class IdentityRequest {
         url = url + "&state=" + state;
         url = url + "&input=" + input;
 
-        Log.e("LOGIN WITH INPUT URL", url);
+        Log.i("COTTER_IDENTITY", "Login with input: " + url);
 
         // Add receiver intent here
         Intent completeIntent = new Intent(ctx, callbackClass);
