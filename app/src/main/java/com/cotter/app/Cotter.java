@@ -70,7 +70,7 @@ public class Cotter {
     // Identity Request
     public static IdentityRequest getIdentity() {
         if (identity == null) {
-            Log.e("COTTER IDENTITY", "You need to call newIdentity when calling .login first, then getIdentity in .handleCallbackURL");
+            Log.e("COTTER IDENTITY", "You need to call newIdentity when calling .login");
             identity = new IdentityRequest(ctx);
         }
         return identity;
