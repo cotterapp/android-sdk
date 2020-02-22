@@ -33,7 +33,7 @@ public class IdentityRequest {
 
     public String generateCodeVerifier() {
         SecureRandom random = new SecureRandom();
-        byte[] bytes = new byte[32];
+        byte[] bytes = new byte[64];
         random.nextBytes(bytes);
         String codeVerifier = Base64.encodeToString(bytes, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
         return codeVerifier;
