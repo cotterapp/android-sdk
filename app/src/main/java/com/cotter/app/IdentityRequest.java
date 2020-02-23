@@ -21,10 +21,11 @@ public class IdentityRequest {
     String state;
     Context ctx;
 
-    public IdentityRequest(Context ctx) {
+    public IdentityRequest(Context ctx, String urlScheme) {
         this.ctx = ctx;
         codeVerifier = generateCodeVerifier();
         codeChallenge = generateCodeChallenge(codeVerifier);
+        this.URL_SCHEME = urlScheme;
 
         Log.i("CODE VERIFIER", codeVerifier);
         Log.i("CODE CHALLENGE", codeChallenge);

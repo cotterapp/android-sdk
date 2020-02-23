@@ -47,6 +47,16 @@ public class Cotter {
         methods = new CotterMethodHelper(context);
     }
 
+    // Init function for Identity Request (No user yet + using PKCE)
+    public static void init(Context context, String mainServerURL, String apiKeyID) {
+        ApiKeyID = apiKeyID;
+        ctx = context;
+        authRequest = new AuthRequest(mainServerURL);
+        strings = new Strings();
+        colors = new Colors();
+        methods = new CotterMethodHelper(context);
+    }
+
     public static User getUser(AuthRequest authRequest) {
         return User.getInstance(ctx, authRequest);
     }
@@ -68,15 +78,8 @@ public class Cotter {
 
 
     // Identity Request
-    public static IdentityRequest getIdentity() {
-        if (identity == null) {
-            Log.e("COTTER IDENTITY", "You need to call newIdentity when calling .login");
-            identity = new IdentityRequest(ctx);
-        }
-        return identity;
-    }
-    public static IdentityRequest newIdentity(Context ctx) {
-        identity = new IdentityRequest(ctx);
+    public static IdentityRequest newIdentity(Context ctx, String urlScheme) {
+        identity = new IdentityRequest(ctx, urlScheme);
         return identity;
     }
 }
