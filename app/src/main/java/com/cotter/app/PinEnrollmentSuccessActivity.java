@@ -67,7 +67,7 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
 
         // Set Colors
         button.setTextColor(Color.parseColor(Cotter.colors.ColorPrimary));
-        img.setBackgroundResource(Cotter.colors.SuccessImage);
+        img.setImageResource(Cotter.colors.SuccessImage);
         constraint.setBackgroundColor(Color.parseColor(Cotter.colors.ColorBackground));
 
         // Check that biometric is enabled

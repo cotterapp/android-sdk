@@ -17,6 +17,7 @@ public class Cotter {
     //    Methods
     public static String PinMethod = "PIN";
     public static String BiometricMethod = "BIOMETRIC";
+    public static String TrustedDeviceMethod = "TRUSTED_DEVICE";
 
     // Colors
     public static Colors colors;

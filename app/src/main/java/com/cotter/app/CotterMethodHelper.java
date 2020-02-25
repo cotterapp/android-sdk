@@ -39,7 +39,6 @@ public class CotterMethodHelper {
         });
     }
 
-    // TODO: "BIOMETRIC" in the array will be gone if any device disabled biometric
     // Check if biometric is enrolled in any device (not necessarily this device
     public void biometricEnrolledAny(final CotterMethodChecker callback) {
         Cotter.authRequest.GetUser(ctx, new Callback(){
@@ -126,5 +125,69 @@ public class CotterMethodHelper {
             }
         });
     }
+
+    // Check if trusted device is enrolled in this device
+    public void trustedDeviceEnrolled(final CotterMethodChecker callback) {
+        String pubKey = TrustedDeviceHelper.getPublicKey();
+
+        Cotter.authRequest.CheckEnrolledMethod(ctx, Cotter.TrustedDeviceMethod, pubKey, new Callback(){
+            public void onSuccess(JSONObject response){
+                try {
+                    if(response.getBoolean("enrolled") && response.getString("method").equals(Cotter.TrustedDeviceMethod)){
+                        callback.onCheck(true);
+                    } else {
+                        callback.onCheck(false);
+                    }
+                } catch (Exception e) {
+                    callback.onCheck(false);
+                    Log.e("COTTER_TRUST_ENROLLED", e.toString());
+                }
+            }
+            public void onError(String error){
+                Log.e("fetch User Error", error);
+            }
+        });
+    }
+
+    // Check if biometric is enrolled in any device (not necessarily this device
+    public void trustedDeviceEnrolledAny(final CotterMethodChecker callback) {
+        Cotter.authRequest.GetUser(ctx, new Callback(){
+            public void onSuccess(JSONObject response){
+                Gson gson = new Gson();
+                User user = gson.fromJson(response.toString(), User.class);
+
+                // Convert String Array to List
+                List<String> enrolled = Arrays.asList(user.enrolled);
+
+                if(enrolled.contains(Cotter.TrustedDeviceMethod)){
+                    callback.onCheck(true);
+                } else {
+                    callback.onCheck(false);
+                }
+            }
+            public void onError(String error){
+                Log.e("fetch User Error", error);
+            }
+        });
+    }
+
+    public void trustedDeviceDefault(final CotterMethodChecker callback) {
+        Cotter.authRequest.GetUser(ctx, new Callback(){
+            public void onSuccess(JSONObject response){
+                Gson gson = new Gson();
+                User user = gson.fromJson(response.toString(), User.class);
+
+                if(user.default_method != null && user.default_method.equals(Cotter.TrustedDeviceMethod)){
+                    callback.onCheck(true);
+                } else {
+                    callback.onCheck(false);
+                }
+            }
+            public void onError(String error){
+                Log.e("fetch User Error", error);
+            }
+        });
+    }
+
 
 }

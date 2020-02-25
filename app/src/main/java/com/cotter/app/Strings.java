@@ -19,6 +19,8 @@ public class Strings {
     public Map<String, String> NetworkError = new HashMap<>();
     public Map<String, String> HttpError = new HashMap<>();
 
+    public Map<String, String> ApproveRequest = new HashMap<>();
+
     // Pin Enrollment
     public static String Title = "TITLE";
     public static String Subtitle = "SUBTITLE";
@@ -45,6 +47,10 @@ public class Strings {
     public static String DefaultNetworkErrorTitle = "Connection Lost";
     public static String DefaultNetworkErrorSubtitle = "Please establish a stronger internet connection and try again.";
     public static String DefaultNetworkPositiveButton = "Try Again";
+
+    // Trusted Device
+    public static String ButtonNo = "BUTTON_NO";
+    public static String ButtonYes = "BUTTON_YES";
 
     public Strings() {
 
@@ -138,6 +144,12 @@ public class Strings {
         HttpError.put(DialogTitle, "Something went wrong");
         HttpError.put(DialogSubtitle, "Looks like there's an error on our end. Please try again.");
         HttpError.put(DialogPositiveButton, "Try Again");
+
+        // Approve login from Non-Trusted Device
+        ApproveRequest.put(Title, "Are you trying to sign in?");
+        ApproveRequest.put(Subtitle, "Someone is trying to sign in to your account from another device.");
+        ApproveRequest.put(ButtonYes, "Yes");
+        ApproveRequest.put(ButtonNo, "No, it's not me");
     }
 
 

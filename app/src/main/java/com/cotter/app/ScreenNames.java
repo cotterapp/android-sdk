@@ -11,6 +11,7 @@ public class ScreenNames {
     public static String PinChangeEnterPin = "PinChangeEnterPin";
     public static String PinChangeReEnterPin = "PinChangeReEnterPin";
     public static String PinChangeSuccess = "PinChangeSuccess";
+    public static String ApproveRequest = "ApproveRequest";
 
     public static HashMap<String, Class> nameToScreen = new HashMap<>();
     static {
@@ -22,6 +23,7 @@ public class ScreenNames {
         nameToScreen.put(PinChangeEnterPin, PinEnrollmentEnterPinActivity.class);
         nameToScreen.put(PinChangeReEnterPin, PinEnrollmentReEnterPinActivity.class);
         nameToScreen.put(PinChangeSuccess, PinEnrollmentSuccessActivity.class);
+        nameToScreen.put(ApproveRequest, ApproveRequestActivity.class);
     }
 
     public static Class getClassFromName(String name) {
