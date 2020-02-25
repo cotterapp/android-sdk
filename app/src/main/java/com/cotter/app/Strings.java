@@ -20,6 +20,7 @@ public class Strings {
     public Map<String, String> HttpError = new HashMap<>();
 
     public Map<String, String> ApproveRequest = new HashMap<>();
+    public Map<String, String> RequestAuth = new HashMap<>();
 
     // Pin Enrollment
     public static String Title = "TITLE";
@@ -150,6 +151,10 @@ public class Strings {
         ApproveRequest.put(Subtitle, "Someone is trying to sign in to your account from another device.");
         ApproveRequest.put(ButtonYes, "Yes");
         ApproveRequest.put(ButtonNo, "No, it's not me");
+
+        // Request Auth
+        RequestAuth.put(DialogTitle, "Approve this login from your phone");
+        RequestAuth.put(DialogSubtitle, "A notification is sent to your trusted device to confirm it's you.");
     }
 
 

@@ -490,8 +490,6 @@ public class AuthRequest {
 
         JSONObject req = new JSONObject();
 
-        Log.e("URL RED URL", redirectURL);
-
         try {
             req.put("code_verifier", codeVerifier);
             req.put("authorization_code", authCode);
@@ -500,9 +498,6 @@ public class AuthRequest {
         } catch (Exception e) {
             callback.onError(e.toString());
         }
-
-        Log.e("URL REQ ID", url);
-        Log.e("URL REQ", req.toString());
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, req,
                 new Response.Listener<JSONObject>() {

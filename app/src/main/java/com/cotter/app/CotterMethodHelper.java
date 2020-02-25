@@ -128,7 +128,7 @@ public class CotterMethodHelper {
 
     // Check if trusted device is enrolled in this device
     public void trustedDeviceEnrolled(final CotterMethodChecker callback) {
-        String pubKey = TrustedDeviceHelper.getPublicKey();
+        String pubKey = TrustedDeviceHelper.getPublicKey(ctx);
 
         Cotter.authRequest.CheckEnrolledMethod(ctx, Cotter.TrustedDeviceMethod, pubKey, new Callback(){
             public void onSuccess(JSONObject response){

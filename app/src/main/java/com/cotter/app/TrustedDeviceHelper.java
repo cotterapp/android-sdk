@@ -10,6 +10,8 @@ import android.security.keystore.KeyProperties;
 import android.util.Base64;
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -32,6 +34,7 @@ public class TrustedDeviceHelper {
     private static String signatureAlgo = "SHA256withECDSA";
     private static String signatureAlgoRSA = "SHA256withRSA";
     public static String EVENT_KEY = "EVENT";
+    public static String EVENT_ERROR = "EVENT_ERROR";
 
     public static String getKeyStoreAlias() {
         Log.i("COTTER_TRUSTDEV", "Keystore Alias: " + keyStoreAlias + Cotter.ApiKeyID + Cotter.UserID);
@@ -106,7 +109,7 @@ public class TrustedDeviceHelper {
     }
 
     // Get Public Key
-    public static String getPublicKey() {
+    public static String getPublicKey(Context ctx) {
         try {
 
             KeyStore keyStore = KeyStore.getInstance(androidKeyStore);
@@ -114,6 +117,8 @@ public class TrustedDeviceHelper {
 
             PublicKey publicKey = keyStore.getCertificate(getKeyStoreAlias()).getPublicKey();
             return Base64.encodeToString(publicKey.getEncoded(), Base64.DEFAULT);
+        } catch (NullPointerException e) {
+            return generateKeyPair(ctx);
         } catch (Exception e) {
             Log.e("COTTER_TRUSTED_DEV", "getPublicKey error: " + e.toString());
         }
@@ -121,8 +126,9 @@ public class TrustedDeviceHelper {
     }
 
     // Get algorithm used
-    public static String getAlgorithm() {
+    public static String getAlgorithm(Context ctx) {
         try {
+            getPublicKey(ctx);
             KeyStore keyStore = KeyStore.getInstance(androidKeyStore);
             keyStore.load(null);
 
@@ -158,10 +164,8 @@ public class TrustedDeviceHelper {
         return null;
     }
 
-    // TODO: PROVIDE CALLBACK METHOD
-    public static void enrollDevice(Context ctx) {
-
-        String publicKey = getPublicKey();
+    public static void enrollDevice(Context ctx, Callback callback) {
+        String publicKey = getPublicKey(ctx);
         if (publicKey == null) {
             // Generate keypair that can only be accessed by biometrics
             publicKey = generateKeyPair(ctx);
@@ -171,57 +175,38 @@ public class TrustedDeviceHelper {
         Callback cb = new Callback(){
             public void onSuccess(JSONObject response){
                 Log.e("COTTER_TRUSTED_DEV", "Enroll Success: " + response.toString());
-                // callback.onSuccess(true);
                 User.refetchUser(ctx, Cotter.authRequest);
+                callback.onSuccess(response);
             }
             public void onError(String error){
                 Log.e("COTTER_TRUSTED_DEV", "Enroll error: " + error);
-                //  invalidEnrollBiometric();
-                //  callback.onError(error);
                 User.refetchUser(ctx, Cotter.authRequest);
+                callback.onError(error);
             }
         };
 
-        Cotter.authRequest.EnrollMethod(ctx, Cotter.TrustedDeviceMethod, publicKey, getAlgorithm(), cb);
+        Cotter.authRequest.EnrollMethod(ctx, Cotter.TrustedDeviceMethod, publicKey, getAlgorithm(ctx), cb);
     }
 
 
-    public static void authorizeDevice(Context ctx, String event) {
-
-        // Verify Device
-        Callback cb = new Callback(){
-            public void onSuccess(JSONObject response){
-                Boolean valid;
-                try {
-                    valid = response.getBoolean("approved");
-                    Log.i("COTTER_TRUSTED_DEV", "verifyDevice > onSuccess > Response Success: " + response.toString());
-                } catch (Exception e) {
-                    valid = false;
-                    Log.e("COTTER_TRUSTED_DEV", "verifyDevice > onSuccess > Response ERROR: " + response.toString());
-                }
-                if (valid) {
-                    Log.i("COTTER_TRUSTED_DEV", "verifyDevice Approved Success: " + response.toString());
-                } else {
-                    Log.i("COTTER_TRUSTED_DEV", "verifyDevice Not Approved: " + response.toString());
-                }
-            }
-            public void onError(String error){
-                Log.e("COTTER_TRUSTED_DEV", "onSubmitBio > onError: " + error);
-            }
-        };
-
-
-        Date now = new Date();
-        long timestamp = now.getTime() / 1000L;
-        String strTimestamp = Long.toString(timestamp);
-        String stringToSign = Cotter.authRequest.ConstructApprovedEventMsg(event, strTimestamp, Cotter.TrustedDeviceMethod);
-        String signature = sign(stringToSign);
-        JSONObject req = Cotter.authRequest.ConstructApprovedEventJSON(event, strTimestamp, Cotter.TrustedDeviceMethod, signature, getPublicKey(), getAlgorithm(), cb);
-        Cotter.authRequest.CreateApprovedEventRequest(ctx, req, cb);
+    public static boolean checkApprovedResponse(JSONObject response) {
+        Boolean valid;
+        try {
+            valid = response.getBoolean("approved");
+            Log.i("COTTER_TRUSTED_DEV", "verifyDevice > onSuccess > Response Success: " + response.toString());
+        } catch (Exception e) {
+            valid = false;
+            Log.e("COTTER_TRUSTED_DEV", "verifyDevice > onSuccess > Response ERROR: " + response.toString());
+        }
+        if (valid) {
+            Log.i("COTTER_TRUSTED_DEV", "verifyDevice Approved Success: " + response.toString());
+        } else {
+            Log.i("COTTER_TRUSTED_DEV", "verifyDevice Not Approved: " + response.toString());
+        }
+        return valid;
     }
 
-
-    public static void enrollOtherDevice(Context ctx, String newPublicKeyAndAlgo) {
+    public static void enrollOtherDevice(Context ctx, String newPublicKeyAndAlgo, Callback callback) {
 
         String[] strs = newPublicKeyAndAlgo.split(":");
         if (strs.length < 2) {
@@ -231,74 +216,93 @@ public class TrustedDeviceHelper {
 
         String newPublicKey = strs[0];
         String newAlgo = strs[1];
-        // Verify Device
-        Callback cb = new Callback(){
-            public void onSuccess(JSONObject response){
-                Boolean valid;
-                try {
-                    valid = response.getBoolean("approved");
-                    Log.i("COTTER_TRUSTED_DEV", "enrollOtherDevice > onSuccess > Response Success: " + response.toString());
-                } catch (Exception e) {
-                    valid = false;
-                    Log.e("COTTER_TRUSTED_DEV", "enrollOtherDevice > onSuccess > Response ERROR: " + response.toString());
-                }
-                if (valid) {
-                    Log.i("COTTER_TRUSTED_DEV", "enrollOtherDevice Approved Success: " + response.toString());
-                } else {
-                    Log.i("COTTER_TRUSTED_DEV", "enrollOtherDevice Not Approved signature: " + response.toString());
-                }
-            }
-            public void onError(String error){
-                Log.e("COTTER_TRUSTED_DEV", "enrollOtherDevice > onError: " + error);
-            }
-        };
 
-
-        String event = "ENROLL NEW TRUSTED DEVICE";
+        String event = "ENROLL_NEW_TRUSTED_DEVICE";
         Date now = new Date();
         long timestamp = now.getTime() / 1000L;
         String strTimestamp = Long.toString(timestamp);
         String stringToSign = Cotter.authRequest.ConstructApprovedEventMsg(event, strTimestamp, Cotter.TrustedDeviceMethod) + newPublicKey;
         String signature = sign(stringToSign);
-        JSONObject req = Cotter.authRequest.ConstructRegisterNewDeviceJSON(event, strTimestamp, Cotter.TrustedDeviceMethod, signature, getPublicKey(), getAlgorithm(), newPublicKey, newAlgo, cb);
-        Cotter.authRequest.CreateApprovedEventRequest(ctx, req, cb);
+        JSONObject req = Cotter.authRequest.ConstructRegisterNewDeviceJSON(event, strTimestamp, Cotter.TrustedDeviceMethod, signature, getPublicKey(ctx), getAlgorithm(ctx), newPublicKey, newAlgo, callback);
+        Cotter.authRequest.CreateApprovedEventRequest(ctx, req, callback);
     }
 
 
-    public static void removeDevice(Context ctx) {
-        String pubKey = getPublicKey();
+    public static void removeDevice(Context ctx, Callback callback) {
 
-        // Signature is null for enrollment
-        // Enroll Biometric
-        Callback cb = new Callback(){
-            public void onSuccess(JSONObject response){
-                Log.e("COTTER_TRUSTED_DEV", "Delete trusted device success " + response.toString());
-                User.refetchUser(ctx, Cotter.authRequest);
-//                callback.onSuccess(false);
-            }
-            public void onError(String error){
-                Log.e("COTTER_TRUSTED_DEV", "Delete trusted device error " + error);
-//                invalidDisableBiometric();
-                User.refetchUser(ctx, Cotter.authRequest);
-//                callback.onError(error);
-            }
-        };
+        Cotter.methods.trustedDeviceEnrolled(new CotterMethodChecker() {
+            @Override
+            public void onCheck(boolean enrolledThisDevice) {
+                // Check if TrustedDevice available and enabled
+                if (enrolledThisDevice) {
+                    // Can only remove this device if this device is a trusted device
+                    String pubKey = getPublicKey(ctx);
 
-        Cotter.authRequest.DeleteMethod(ctx, Cotter.TrustedDeviceMethod, pubKey, cb);
+                    // Signature is null for enrollment
+                    // Enroll Biometric
+                    Callback cb = new Callback(){
+                        public void onSuccess(JSONObject response){
+                            Log.e("COTTER_TRUSTED_DEV", "Delete trusted device success " + response.toString());
+                            User.refetchUser(ctx, Cotter.authRequest);
+                            callback.onSuccess(response);
+                        }
+                        public void onError(String error){
+                            Log.e("COTTER_TRUSTED_DEV", "Delete trusted device error " + error);
+                            User.refetchUser(ctx, Cotter.authRequest);
+                            callback.onError(error);
+                        }
+                    };
+
+                    Cotter.authRequest.DeleteMethod(ctx, Cotter.TrustedDeviceMethod, pubKey, cb);
+                } else {
+                    callback.onError("This device is not a trusted device");
+                }
+            }
+        });
+
+    }
+
+    public static void requestAuth(Context ctx, String event, AppCompatActivity act, Class callbackClass, Callback callback) {
+        Cotter.methods.trustedDeviceEnrolled(new CotterMethodChecker() {
+            @Override
+            public void onCheck(boolean enrolledThisDevice) {
+                // Check if TrustedDevice available and enabled
+                if (enrolledThisDevice) {
+                    authorizeDevice(ctx, event, callback);
+                } else {
+                    requestAuthFromNonTrusted(ctx, event, act, callbackClass, callback);
+                }
+            }
+        });
+    }
+
+    public static void authorizeDevice(Context ctx, String event, Callback callback) {
+        Date now = new Date();
+        long timestamp = now.getTime() / 1000L;
+        String strTimestamp = Long.toString(timestamp);
+        String stringToSign = Cotter.authRequest.ConstructApprovedEventMsg(event, strTimestamp, Cotter.TrustedDeviceMethod);
+        String signature = sign(stringToSign);
+        JSONObject req = Cotter.authRequest.ConstructApprovedEventJSON(event, strTimestamp, Cotter.TrustedDeviceMethod, signature, getPublicKey(ctx), getAlgorithm(ctx), callback);
+        Cotter.authRequest.CreateApprovedEventRequest(ctx, req, callback);
     }
 
 
-
-    public static void requestAuthFromNonTrusted(Context ctx, String event) {
+    public static void requestAuthFromNonTrusted(Context ctx, String event, AppCompatActivity act, Class callbackClass, Callback callback) {
         Callback cb = new Callback(){
             public void onSuccess(JSONObject response){
-                Boolean approved;
                 try {
-                    approved = response.getBoolean("approved");
                     Log.i("COTTER_TRUSTED_DEV", "requestAuthFromNonTrusted > onSuccess > Response Success: " + response.toString());
+
+                    // Show the bottom sheet to show prompt for approval from other Trusted Device
+                    String eventID = Integer.toString(response.getInt("ID"));
+                    RequestAuthSheet requestAuthPrompt = RequestAuthSheet.newInstance();
+                    requestAuthPrompt.setEventID(eventID);
+                    requestAuthPrompt.setCallbackClass(callbackClass);
+                    requestAuthPrompt.setCallback(callback);
+                    requestAuthPrompt.show(act.getSupportFragmentManager(), RequestAuthSheet.TAG);
                 } catch (Exception e) {
-                    approved = false;
-                    Log.e("COTTER_TRUSTED_DEV", "requestAuthFromNonTrusted > onSuccess > Response ERROR: " + response.toString());
+                    callback.onError(e.toString());
+                    Log.e("COTTER_TRUSTED_DEV", "requestAuthFromNonTrusted > onSuccess > Response ERROR: " + response.toString() + ", Exception: " + e.toString());
                 }
             }
             public void onError(String error){
@@ -315,53 +319,89 @@ public class TrustedDeviceHelper {
     }
 
     public static void getNewEvent(Context ctx, Activity act) {
-        // Get new login/auth events for this user
-        // CAN ONLY BE APPROVED BY A TRUSTED DEVICE
-        Callback cb = new Callback(){
-            public void onSuccess(JSONObject response){
-                try {
-                    Log.i("COTTER_TRUSTED_DEV", "getNewEvent > onSuccess > Response Success: " + response.toString());
+        Cotter.methods.trustedDeviceEnrolled(new CotterMethodChecker() {
+            @Override
+            public void onCheck(boolean enrolledThisDevice) {
+                // Check if TrustedDevice available and enabled
+                if (enrolledThisDevice) {
+                    // Get new login/auth events for this user
+                    // CAN ONLY BE APPROVED BY A TRUSTED DEVICE
+                    Callback cb = new Callback(){
+                        public void onSuccess(JSONObject response){
+                            try {
+                                Log.i("COTTER_TRUSTED_DEV", "getNewEvent > onSuccess > Response Success: " + response.toString());
 
-                    Intent in = new Intent(ctx, ApproveRequestActivity.class);
-                    in.putExtra(EVENT_KEY, response.toString());
-                    ctx.startActivity(in);
-                    act.overridePendingTransition(R.anim.push_up_in, R.anim.push_up_out);
-                    return;
+                                Intent in = new Intent(ctx, ApproveRequestActivity.class);
+                                in.putExtra(EVENT_KEY, response.toString());
+                                act.startActivity(in);
+                                act.overridePendingTransition(R.anim.push_up_in, R.anim.push_up_out);
+                            } catch (Exception e) {
+                                Log.e("COTTER_TRUSTED_DEV", "getNewEvent > onSuccess > Response ERROR: " + response.toString() + ", Exception: " + e.toString());
+                            }
+                        }
+                        public void onError(String error){
+                            Log.e("COTTER_TRUSTED_DEV", "getNewEvent > onError: " + error);
+                        }
+                    };
 
-                } catch (Exception e) {
-                    Log.e("COTTER_TRUSTED_DEV", "getNewEvent > onSuccess > Response ERROR: " + response.toString());
+                    Cotter.authRequest.GetNewEvent(ctx, cb);
                 }
             }
-            public void onError(String error){
-                Log.e("COTTER_TRUSTED_DEV", "getNewEvent > onError: " + error);
-            }
-        };
+        });
+    }
 
-        Cotter.authRequest.GetNewEvent(ctx, cb);
+    public static void getEvent(Context ctx, String eventID, Callback callback) {
+        // Get login/auth events for this user for this eventID
+        Cotter.authRequest.GetEvent(ctx, eventID, callback);
     }
 
     public static void approveEvent(Context ctx, String eventString, boolean approved) {
-        // Get new login/auth events for this user
-        Callback cb = new Callback(){
-            public void onSuccess(JSONObject response){
-                try {
-                    Log.i("COTTER_TRUSTED_DEV", "getNewEvent > onSuccess > Response Success: " + response.toString());
-                } catch (Exception e) {
-                    Log.e("COTTER_TRUSTED_DEV", "getNewEvent > onSuccess > Response ERROR: " + response.toString());
-                }
-            }
-            public void onError(String error){
-                Log.e("COTTER_TRUSTED_DEV", "getNewEvent > onError: " + error);
-            }
-        };
-
-
         Gson gson = new Gson();
         Event ev = gson.fromJson(eventString, Event.class);
 
+
+        Callback cb = new Callback(){
+            public void onSuccess(JSONObject response){
+                try {
+                    Log.i("COTTER_TRUSTED_DEV", "approveEvent > onSuccess > Response Success: " + response.toString());
+                } catch (Exception e) {
+                    Log.e("COTTER_TRUSTED_DEV", "approveEvent > onSuccess > Response ERROR: " + response.toString() + ", Exception: " + e.toString());
+                }
+            }
+            public void onError(String error){
+                Log.e("COTTER_TRUSTED_DEV", "approveEvent > onError: " + error);
+            }
+        };
+
         String stringToSign = Cotter.authRequest.ConstructRespondEventMsg(ev.event, ev.timestamp, Cotter.TrustedDeviceMethod, approved);
         String signature = sign(stringToSign);
-        JSONObject req = Cotter.authRequest.ConstructRespondEventJSON(ev, Cotter.TrustedDeviceMethod, signature, getPublicKey(), getAlgorithm(), approved, cb);
+        JSONObject req = Cotter.authRequest.ConstructRespondEventJSON(ev, Cotter.TrustedDeviceMethod, signature, getPublicKey(ctx), getAlgorithm(ctx), approved, cb);
         Cotter.authRequest.CreateRespondEventRequest(ctx, ev.ID, req, cb);
+    }
+
+    public static TrustedDeviceResponse handleResponse(Intent intent) {
+        TrustedDeviceResponse resp = null;
+        if (intent.hasExtra(EVENT_KEY)) {
+            resp = new TrustedDeviceResponse();
+            String response = intent.getStringExtra(EVENT_KEY);
+
+            resp.response = response;
+            resp.event = Event.getEventFromString(response);
+
+            try {
+                resp.approved = checkApprovedResponse(new JSONObject(response));
+            } catch (Exception e) {
+                Log.e("COTTER_TRUSTED_DEV", "handleResponse > exception on checkApprovedResponse: " + e.toString());
+                resp.approved = false;
+            }
+        }
+
+        if (intent.hasExtra(EVENT_ERROR)) {
+            if (resp == null) {
+                resp = new TrustedDeviceResponse();
+            }
+            resp.error = intent.getStringExtra(EVENT_ERROR);
+        }
+        return resp;
     }
 }

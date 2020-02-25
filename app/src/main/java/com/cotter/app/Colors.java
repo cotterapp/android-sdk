@@ -10,6 +10,7 @@ public class Colors {
     public int NetworkErrorImage;
     public int HttpErrorImage;
     public int Logo;
+    public int Tap;
 
     public Colors() {
         ColorBackground = "#FFFFFF";
@@ -20,6 +21,7 @@ public class Colors {
         NetworkErrorImage = R.drawable.ic_cloud_off_black_24dp;
         HttpErrorImage = R.drawable.ic_error_outline_black_24dp;
         Logo = R.drawable.cotter_logo;
+        Tap = R.drawable.tap_device;
     }
 
     public void setColorPrimary(String color) {
