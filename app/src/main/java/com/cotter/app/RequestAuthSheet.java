@@ -19,6 +19,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import org.json.JSONObject;
 
+import java.util.Map;
+
 public class RequestAuthSheet extends BottomSheetDialogFragment {
     public static final String TAG = "ActionBottomDialog";
     private TextView title;
@@ -30,6 +32,8 @@ public class RequestAuthSheet extends BottomSheetDialogFragment {
     private Callback callback;
     private Handler handler;
 
+    public Map<String, String> ActivityStrings;
+
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -40,8 +44,10 @@ public class RequestAuthSheet extends BottomSheetDialogFragment {
         subtitle = v.findViewById(R.id.subtitle);
         tapDevice = v.findViewById(R.id.tap_device_image);
 
-        title.setText(Cotter.strings.RequestAuth.get(Strings.DialogTitle));
-        subtitle.setText(Cotter.strings.RequestAuth.get(Strings.DialogSubtitle));
+        ActivityStrings = Cotter.strings.RequestAuth;
+
+        title.setText(ActivityStrings.get(Strings.DialogTitle));
+        subtitle.setText(ActivityStrings.get(Strings.DialogSubtitle));
         tapDevice.setImageResource(Cotter.colors.Tap);
 
         pollingEvent(eventID);

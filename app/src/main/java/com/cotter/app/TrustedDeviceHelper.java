@@ -404,4 +404,14 @@ public class TrustedDeviceHelper {
         }
         return resp;
     }
+
+    public static void startEnrollOtherDeviceAsTrusted(Context ctx, Activity act) {
+        Intent in = new Intent(ctx, RegisterDeviceQRScannerActivity.class);
+        act.startActivity(in);
+    }
+
+    public static void startEnrollThisDeviceAsTrusted(Context ctx, Activity act) {
+        Intent in = new Intent(ctx, RegisterDeviceQRShowActivity.class);
+        act.startActivity(in);
+    }
 }

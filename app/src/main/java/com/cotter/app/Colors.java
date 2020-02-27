@@ -7,6 +7,7 @@ public class Colors {
     public String ColorDanger;
     public String ColorBackground;
     public int SuccessImage;
+    public int ErrorImage;
     public int NetworkErrorImage;
     public int HttpErrorImage;
     public int Logo;
@@ -22,6 +23,7 @@ public class Colors {
         HttpErrorImage = R.drawable.ic_error_outline_black_24dp;
         Logo = R.drawable.cotter_logo;
         Tap = R.drawable.tap_device;
+        ErrorImage = R.drawable.warning;
     }
 
     public void setColorPrimary(String color) {

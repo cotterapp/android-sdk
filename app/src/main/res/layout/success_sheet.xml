@@ -22,7 +22,7 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Approve this login from your phone"
+        android:text="Success Enrolling New Device"
         android:textSize="20dp"
         android:layout_marginBottom="10dp"
         android:textColor="@color/colorBlack"
@@ -31,10 +31,10 @@
         android:id="@+id/subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="A notification is sent to your trusted device to confirm it's you."
+        android:text="You can now access your account from your new device without needing approval."
         />
     <ImageView
-        android:id="@+id/tap_device_image"
+        android:id="@+id/success_image"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:scaleType="centerInside"

@@ -21,6 +21,9 @@ public class Strings {
 
     public Map<String, String> ApproveRequest = new HashMap<>();
     public Map<String, String> RequestAuth = new HashMap<>();
+    public Map<String, String> SuccessSheet = new HashMap<>();
+    public Map<String, String> SuccessSheetError = new HashMap<>();
+    public Map<String, String> QRCodeShow = new HashMap<>();
 
     // Pin Enrollment
     public static String Title = "TITLE";
@@ -155,6 +158,16 @@ public class Strings {
         // Request Auth
         RequestAuth.put(DialogTitle, "Approve this login from your phone");
         RequestAuth.put(DialogSubtitle, "A notification is sent to your trusted device to confirm it's you.");
+
+        // Success Sheet
+        SuccessSheet.put(DialogTitle, "Success Registering New Device");
+        SuccessSheet.put(DialogSubtitle, "You can now use your new device to access your account without approval.");
+        SuccessSheetError.put(DialogTitle, "Unable to Register New Device");
+        SuccessSheetError.put(DialogSubtitle, "Please try again.");
+
+        // QR Code Show
+        QRCodeShow.put(Title, "Register this Device");
+        QRCodeShow.put(Subtitle, "Please scan this QR Code from a Trusted Device.");
     }
 
 
