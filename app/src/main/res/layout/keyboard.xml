@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v7.widget.GridLayout xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_gravity="center"
-    app:columnCount="3"
-    app:orientation="horizontal"
-    app:useDefaultMargins="true"
+    android:stretchColumns="0,1,2"
     android:background="@color/colorWhite">
 
 
+    <TableRow
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:layout_weight="1">
     <Button
         android:id="@+id/keyboard_1"
-        android:layout_width="0dp"
-        app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         android:gravity="center"
-        app:layout_gravity="center_vertical"
         android:text="1"
         android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
@@ -27,11 +24,7 @@
     />
     <Button
         android:id="@+id/keyboard_2"
-        android:layout_width="0dp"
-        app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         android:gravity="center"
-        app:layout_gravity="center_vertical"
         android:text="2"
         android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
@@ -42,11 +35,7 @@
         />
     <Button
         android:id="@+id/keyboard_3"
-        android:layout_width="0dp"
-        app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         android:gravity="center"
-        app:layout_gravity="center_vertical"
         android:text="3"
         android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
@@ -55,13 +44,15 @@
         android:textSize="24dp"
 
         />
+    </TableRow>
+
+    <TableRow
+        android:gravity="center"
+        android:layout_height="0dp"
+        android:layout_weight="1">
     <Button
         android:id="@+id/keyboard_4"
-        android:layout_width="0dp"
-        app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         android:gravity="center"
-        app:layout_gravity="center_vertical"
         android:text="4"
         android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
@@ -72,11 +63,7 @@
         />
     <Button
         android:id="@+id/keyboard_5"
-        android:layout_width="0dp"
-        app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         android:gravity="center"
-        app:layout_gravity="center_vertical"
         android:text="5"
         android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
@@ -87,11 +74,7 @@
         />
     <Button
         android:id="@+id/keyboard_6"
-        android:layout_width="0dp"
-        app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         android:gravity="center"
-        app:layout_gravity="center_vertical"
         android:text="6"
         android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
@@ -100,13 +83,14 @@
         android:textSize="24dp"
 
         />
+    </TableRow>
+    <TableRow
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:layout_weight="1">
     <Button
         android:id="@+id/keyboard_7"
-        android:layout_width="0dp"
-        app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         android:gravity="center"
-        app:layout_gravity="center_vertical"
         android:text="7"
         android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
@@ -117,11 +101,7 @@
         />
     <Button
         android:id="@+id/keyboard_8"
-        android:layout_width="0dp"
-        app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         android:gravity="center"
-        app:layout_gravity="center_vertical"
         android:text="8"
         android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
@@ -132,11 +112,7 @@
         />
     <Button
         android:id="@+id/keyboard_9"
-        android:layout_width="0dp"
-        app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         android:gravity="center"
-        app:layout_gravity="center_vertical"
         android:text="9"
         android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
@@ -145,12 +121,14 @@
         android:textSize="24dp"
 
         />
-    <ImageButton
-        android:layout_width="0dp"
-        app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
+    </TableRow>
+
+    <TableRow
+        android:layout_height="0dp"
         android:gravity="center"
-        app:layout_gravity="center_vertical"
+        android:layout_weight="1">
+    <ImageButton
+        android:gravity="center"
         android:id="@+id/keyboard_biometric"
         android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
@@ -159,11 +137,7 @@
         />
     <Button
         android:id="@+id/keyboard_0"
-        android:layout_width="0dp"
-        app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         android:gravity="center"
-        app:layout_gravity="center_vertical"
         android:text="0"
         android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
@@ -174,11 +148,7 @@
         />
     <ImageButton
         android:src="@drawable/backspace"
-        android:layout_width="0dp"
-        app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         android:gravity="center"
-        app:layout_gravity="center_vertical"
         android:id="@+id/keyboard_backspace"
         android:background="@color/colorWhite"
         style="?android:attr/borderlessButtonStyle"
@@ -187,4 +157,5 @@
         android:tint="@color/colorBlack"
 
         />
-</android.support.v7.widget.GridLayout>
+    </TableRow>
+</TableLayout>
