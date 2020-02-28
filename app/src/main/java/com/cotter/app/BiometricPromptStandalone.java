@@ -87,9 +87,9 @@ public class BiometricPromptStandalone implements BiometricInterface {
                 Log.e("Submit Key Error", error);
                 if (!error.equals(AuthRequest.NETWORK_ERROR_MESSAGE)) {
                     invalidEnrollBiometric();
+                    User.refetchUser(ctx, Cotter.authRequest);
                 }
                 callback.onError(error);
-                User.refetchUser(ctx, Cotter.authRequest);
             }
         };
 
@@ -222,8 +222,8 @@ public class BiometricPromptStandalone implements BiometricInterface {
                 Log.e("Delete Key Error", error);
                 if (!error.equals(AuthRequest.NETWORK_ERROR_MESSAGE)) {
                     invalidDisableBiometric();
+                    User.refetchUser(ctx, Cotter.authRequest);
                 }
-                User.refetchUser(ctx, Cotter.authRequest);
                 callback.onError(error);
             }
         };
