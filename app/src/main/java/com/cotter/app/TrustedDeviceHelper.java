@@ -209,13 +209,24 @@ public class TrustedDeviceHelper {
     public static void enrollOtherDevice(Context ctx, String newPublicKeyAndAlgo, Callback callback) {
 
         String[] strs = newPublicKeyAndAlgo.split(":");
-        if (strs.length < 2) {
+        if (strs.length < 4) {
             Log.e("COTTER_TRUSTED_DEV", "enrollOtherDevice, invalid newPublicKeyAndAlgo string. Should be of format <publickey>:<algo>");
             return;
         }
 
         String newPublicKey = strs[0];
         String newAlgo = strs[1];
+        String newIssuer = strs[2];
+        String newUserID = strs[3];
+
+        if (!newIssuer.equals(Cotter.ApiKeyID)) {
+            callback.onError("This QR Code belongs to another app, and cannot be registered for this app.");
+            return;
+        }
+        if (!newUserID.equals(Cotter.UserID)) {
+            callback.onError("This QR Code belongs to another user, and cannot be registered for this user.");
+            return;
+        }
 
         String event = "ENROLL_NEW_TRUSTED_DEVICE";
         Date now = new Date();

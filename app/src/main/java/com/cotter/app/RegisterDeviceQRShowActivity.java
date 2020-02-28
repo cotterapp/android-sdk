@@ -57,7 +57,7 @@ public class RegisterDeviceQRShowActivity extends AppCompatActivity {
         title.setText(ActivityStrings.get(Strings.Title));
         subtitle.setText(ActivityStrings.get(Strings.Subtitle));
 
-        String qrCode = TrustedDeviceHelper.getPublicKey(this) + ":" + TrustedDeviceHelper.getAlgorithm(this);
+        String qrCode = TrustedDeviceHelper.getPublicKey(this) + ":" + TrustedDeviceHelper.getAlgorithm(this) + ":" + Cotter.ApiKeyID + ":" + Cotter.UserID;
 
         try {
             bitmap = TextToImageEncode(qrCode);
@@ -97,6 +97,7 @@ public class RegisterDeviceQRShowActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle arrow click here
         if (item.getItemId() == android.R.id.home) {
+            handler.removeCallbacksAndMessages(null);
             finish(); // close this activity and return to preview activity (if there is any)
         }
 

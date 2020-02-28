@@ -136,6 +136,7 @@ public class RegisterDeviceQRScannerActivity extends AppCompatActivity {
                                         }
                                     });
                                     successSheet.show(getSupportFragmentManager(), SuccessSheet.TAG);
+                                    Log.i("COTTER_TRUST_DEV", "Success enrollOtherDevice: "+  result.toString());
                                 }
 
                                 @Override
@@ -148,6 +149,7 @@ public class RegisterDeviceQRScannerActivity extends AppCompatActivity {
                                         }
                                     });
                                     successSheet.show(getSupportFragmentManager(), SuccessSheet.TAG);
+                                    Log.e("COTTER_TRUST_DEV", "Error enrollOtherDevice: "+  error);
                                 }
                             });
                         }
@@ -155,6 +157,39 @@ public class RegisterDeviceQRScannerActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+
+        switch (requestCode) {
+            case REQUEST_CAMERA_PERMISSION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    initialiseDetectorsAndSources();
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                    SuccessSheet successSheet = SuccessSheet.newInstance(Cotter.strings.SuccessSheetError, Cotter.colors.ErrorImage);
+                    successSheet.setRunnableOnDismiss(new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                        }
+                    });
+                    successSheet.show(getSupportFragmentManager(), SuccessSheet.TAG);
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
     }
 
 

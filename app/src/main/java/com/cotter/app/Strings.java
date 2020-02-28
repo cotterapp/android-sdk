@@ -200,4 +200,28 @@ public class Strings {
     public void setNetworkErrorStrings(String key, String value) {
         NetworkError.put(key, value);
     }
+
+
+    // Trusted Devices
+    public void setApproveRequestStrings(String key, String value) {
+        ApproveRequest.put(key, value);
+    }
+    public void setRequestAuthStrings(String key, String value) {
+        RequestAuth.put(key, value);
+    }
+    public void setRequestAuthErrorStrings(String key, String value) {
+        RequestAuthError.put(key, value);
+    }
+    public void setSuccessSheetStrings(String key, String value) {
+        SuccessSheet.put(key, value);
+    }
+    public void setSuccessSheetErrorStrings(String key, String value) {
+        SuccessSheetError.put(key, value);
+    }
+    public void setQRCodeShowStrings(String key, String value) {
+        QRCodeShow.put(key, value);
+    }
+    public void setQRCodeShowErrorStrings(String key, String value) {
+        QRCodeShowError.put(key, value);
+    }
 }
