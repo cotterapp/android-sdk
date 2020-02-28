@@ -34,6 +34,11 @@ public class RequestAuthSheet extends BottomSheetDialogFragment {
 
     public Map<String, String> ActivityStrings;
 
+    private int MILLI_SECONDS_TO_ERROR = 60000;
+    private int MILLI_SECONDS_TO_RETRY = 1000;
+    private boolean stopPolling = false;
+
+
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -51,6 +56,13 @@ public class RequestAuthSheet extends BottomSheetDialogFragment {
         tapDevice.setImageResource(Cotter.colors.Tap);
 
         pollingEvent(eventID);
+
+        Handler stopHandler = new Handler();
+        stopHandler.postDelayed(new Runnable() {
+            public void run() {
+                stopPolling();
+            }
+        }, MILLI_SECONDS_TO_ERROR);
 
         return v;
     }
@@ -92,12 +104,14 @@ public class RequestAuthSheet extends BottomSheetDialogFragment {
                         in.putExtra(TrustedDeviceHelper.EVENT_KEY, response.toString());
                         startActivity(in);
                         dismiss();
-                    } else {
+                    } else if (!stopPolling){
                         handler.postDelayed(new Runnable() {
                             public void run() {
                                 pollingEvent(eventID);
                             }
-                        }, 1000);
+                        }, MILLI_SECONDS_TO_RETRY);
+                    } else {
+                        handler.removeCallbacksAndMessages(null);
                     }
                 } catch (Exception e) {
                     approved = false;
@@ -112,6 +126,20 @@ public class RequestAuthSheet extends BottomSheetDialogFragment {
         };
 
         Cotter.authRequest.GetEvent(this.getContext(), eventID, cb);
+    }
+
+    public void stopPolling() {
+        handler.removeCallbacksAndMessages(null);
+        stopPolling = true;
+        // Show error message
+        ActivityStrings = Cotter.strings.RequestAuthError;
+
+        title.setText(ActivityStrings.get(Strings.DialogTitle));
+        subtitle.setText(ActivityStrings.get(Strings.DialogSubtitle));
+        tapDevice.setImageResource(Cotter.colors.ErrorImage);
+
+        // call error callback
+        callback.onError("Event is not approved");
     }
 
 }

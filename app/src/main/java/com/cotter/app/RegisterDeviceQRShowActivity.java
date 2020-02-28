@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Display;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ import com.google.zxing.common.BitMatrix;
 import java.util.Map;
 
 public class RegisterDeviceQRShowActivity extends AppCompatActivity {
+    public static String name = ScreenNames.RegisterDeviceQRShow;
     public int QRcodeWidth;
     Bitmap bitmap;
 
@@ -29,6 +31,10 @@ public class RegisterDeviceQRShowActivity extends AppCompatActivity {
     private Handler handler;
 
     public Map<String, String> ActivityStrings;
+
+    private int MILLI_SECONDS_TO_ERROR = 60000 * 3;
+    private int MILLI_SECONDS_TO_RETRY = 3000;
+    private boolean stopPolling = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +67,41 @@ public class RegisterDeviceQRShowActivity extends AppCompatActivity {
             Log.e("COTTER_TRUST_DEV", "Error showing QR Code, " + e.toString());
         }
         pollingEvent();
+
+        Handler stopHandler = new Handler();
+        stopHandler.postDelayed(new Runnable() {
+            public void run() {
+                stopPolling();
+            }
+        }, MILLI_SECONDS_TO_ERROR);
+
+        setupToolBar();
     }
 
+
+    // Set up and show toolbar
+    private void setupToolBar() {
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(Cotter.strings.Headers.get(name));
+
+        if (toolbar == null) return;
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
+    }
+
+    // Handle back button
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle arrow click here
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // close this activity and return to preview activity (if there is any)
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     private Bitmap TextToImageEncode(String Value) throws WriterException {
         BitMatrix bitMatrix;
@@ -110,15 +149,35 @@ public class RegisterDeviceQRShowActivity extends AppCompatActivity {
                         public void run() {
                             finish();
                         }
-                    }, 3000);
+                    }, MILLI_SECONDS_TO_RETRY);
                 } else {
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
-                            pollingEvent();
-                        }
-                    }, 1000);
+                     if (!stopPolling){
+                         handler.postDelayed(new Runnable() {
+                             public void run() {
+                                 pollingEvent();
+                             }
+                         }, MILLI_SECONDS_TO_RETRY);
+                    } else {
+                        handler.removeCallbacksAndMessages(null);
+                    }
                 }
             }
         });
+    }
+
+
+
+    public void stopPolling() {
+        handler.removeCallbacksAndMessages(null);
+        stopPolling = true;
+        // Show error message
+        ActivityStrings = Cotter.strings.QRCodeShowError;
+
+        title.setText(ActivityStrings.get(Strings.Title));
+        subtitle.setText(ActivityStrings.get(Strings.Subtitle));
+        qrCodeImage.requestLayout();
+        qrCodeImage.getLayoutParams().width = 200;
+        qrCodeImage.getLayoutParams().height = 200;
+        qrCodeImage.setImageResource(Cotter.colors.ErrorImage);
     }
 }

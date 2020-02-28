@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -21,6 +22,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public class RegisterDeviceQRScannerActivity extends AppCompatActivity {
+    public static String name = ScreenNames.RegisterDeviceQRScanner;
     SurfaceView surfaceView;
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
@@ -33,6 +35,32 @@ public class RegisterDeviceQRScannerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register_device_qrscanner);
 
         initViews();
+        setupToolBar();
+    }
+
+
+    // Set up and show toolbar
+    private void setupToolBar() {
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(Cotter.strings.Headers.get(name));
+
+        if (toolbar == null) return;
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
+    }
+
+    // Handle back button
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle arrow click here
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // close this activity and return to preview activity (if there is any)
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void initViews() {

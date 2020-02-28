@@ -21,9 +21,11 @@ public class Strings {
 
     public Map<String, String> ApproveRequest = new HashMap<>();
     public Map<String, String> RequestAuth = new HashMap<>();
+    public Map<String, String> RequestAuthError = new HashMap<>();
     public Map<String, String> SuccessSheet = new HashMap<>();
     public Map<String, String> SuccessSheetError = new HashMap<>();
     public Map<String, String> QRCodeShow = new HashMap<>();
+    public Map<String, String> QRCodeShowError = new HashMap<>();
 
     // Pin Enrollment
     public static String Title = "TITLE";
@@ -64,6 +66,8 @@ public class Strings {
         Headers.put(ScreenNames.PinChangeVerifyPin, "Change Pin");
         Headers.put(ScreenNames.PinChangeEnterPin, "Enter New Pin");
         Headers.put(ScreenNames.PinChangeReEnterPin, "Confirm New Pin");
+        Headers.put(ScreenNames.RegisterDeviceQRScanner, "Scan QR Code");
+        Headers.put(ScreenNames.RegisterDeviceQRShow, "");
 
         // Pin Enrollment Default Strings
         PinEnrollmentEnterPin.put(Title, "Enter Pin");
@@ -158,6 +162,8 @@ public class Strings {
         // Request Auth
         RequestAuth.put(DialogTitle, "Approve this login from your phone");
         RequestAuth.put(DialogSubtitle, "A notification is sent to your trusted device to confirm it's you.");
+        RequestAuthError.put(DialogTitle, "Something went wrong");
+        RequestAuthError.put(DialogSubtitle, "We're unable to confirm that it's you. Please try again.");
 
         // Success Sheet
         SuccessSheet.put(DialogTitle, "Success Registering New Device");
@@ -168,6 +174,8 @@ public class Strings {
         // QR Code Show
         QRCodeShow.put(Title, "Register this Device");
         QRCodeShow.put(Subtitle, "Please scan this QR Code from a Trusted Device.");
+        QRCodeShowError.put(Title, "Something went wrong");
+        QRCodeShowError.put(Subtitle, "The request timed out. Please try again.");
     }
 
 
