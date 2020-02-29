@@ -27,7 +27,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".RegisterDeviceQRShowActivity"></activity>
         <activity android:name=".RegisterDeviceQRScannerActivity" />
-        <activity android:name=".ApproveRequestActivity" />
+        <activity android:name=".ApproveRequestActivity" android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".PinChangeVerifyPinActivity" />
         <activity android:name=".PinEnrollmentSuccessActivity" />
         <activity android:name=".PinVerificationActivity" />
