@@ -25,8 +25,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RegisterDeviceQRShowActivity"></activity>
-        <activity android:name=".RegisterDeviceQRScannerActivity" />
+        <activity android:name=".RegisterDeviceQRShowActivity" android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".RegisterDeviceQRScannerActivity" android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity android:name=".ApproveRequestActivity" android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".PinChangeVerifyPinActivity" />
         <activity android:name=".PinEnrollmentSuccessActivity" />

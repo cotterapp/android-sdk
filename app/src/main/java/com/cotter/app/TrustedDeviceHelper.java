@@ -209,7 +209,7 @@ public class TrustedDeviceHelper {
     public static void enrollOtherDevice(Context ctx, String newPublicKeyAndAlgo, Callback callback) {
 
         String[] strs = newPublicKeyAndAlgo.split(":");
-        if (strs.length < 4) {
+        if (strs.length < 5) {
             Log.e("COTTER_TRUSTED_DEV", "enrollOtherDevice, invalid newPublicKeyAndAlgo string. Should be of format <publickey>:<algo>");
             return;
         }
@@ -218,6 +218,23 @@ public class TrustedDeviceHelper {
         String newAlgo = strs[1];
         String newIssuer = strs[2];
         String newUserID = strs[3];
+        String strTimeStamp = strs[4];
+
+        try {
+            Integer qrTimetstamp = Integer.parseInt(strTimeStamp);
+
+            Date now = new Date();
+            long timestamp = now.getTime() / 1000L;
+            Integer expireSeconds = 60 * 3; // Expire in 3 minutes;
+
+            if (qrTimetstamp < timestamp - (expireSeconds)) {
+                callback.onError("The QR Code is expired. Current timestamp = " + timestamp + ", QRCode was created at " + qrTimetstamp);
+                return;
+            }
+        } catch (Exception e) {
+            callback.onError("The QR Code timestamp is invalid: " + strTimeStamp);
+            return;
+        }
 
         if (!newIssuer.equals(Cotter.ApiKeyID)) {
             callback.onError("This QR Code belongs to another app, and cannot be registered for this app.");

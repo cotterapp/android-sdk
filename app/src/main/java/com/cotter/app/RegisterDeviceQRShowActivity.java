@@ -17,6 +17,7 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
+import java.util.Date;
 import java.util.Map;
 
 public class RegisterDeviceQRShowActivity extends AppCompatActivity {
@@ -57,15 +58,13 @@ public class RegisterDeviceQRShowActivity extends AppCompatActivity {
         title.setText(ActivityStrings.get(Strings.Title));
         subtitle.setText(ActivityStrings.get(Strings.Subtitle));
 
-        String qrCode = TrustedDeviceHelper.getPublicKey(this) + ":" + TrustedDeviceHelper.getAlgorithm(this) + ":" + Cotter.ApiKeyID + ":" + Cotter.UserID;
+        Date now = new Date();
+        long timestamp = now.getTime() / 1000L;
+        String strTimestamp = Long.toString(timestamp);
+        String qrCode = TrustedDeviceHelper.getPublicKey(this) + ":" + TrustedDeviceHelper.getAlgorithm(this) + ":" + Cotter.ApiKeyID + ":" + Cotter.UserID + ":" + strTimestamp;
 
-        try {
-            bitmap = TextToImageEncode(qrCode);
-            qrCodeImage.setImageBitmap(bitmap);
-        } catch (WriterException e) {
-            e.printStackTrace();
-            Log.e("COTTER_TRUST_DEV", "Error showing QR Code, " + e.toString());
-        }
+        setQRCode(qrCode);
+
         pollingEvent();
 
         Handler stopHandler = new Handler();
@@ -78,6 +77,18 @@ public class RegisterDeviceQRShowActivity extends AppCompatActivity {
         setupToolBar();
     }
 
+    private void setQRCode(String qrCode) {
+        try {
+            bitmap = TextToImageEncode(qrCode);
+            qrCodeImage.setImageBitmap(bitmap);
+            Log.i("COTTER_TRUST_DEV", "QR Code size = " + QRcodeWidth);
+        } catch (WriterException e) {
+            e.printStackTrace();
+            Log.e("COTTER_TRUST_DEV", "Error showing QR Code, " + e.toString());
+        } catch (OutOfMemoryError e) {
+            Log.e("COTTER_TRUST_DEV", "Error showing QR Code, " + e.toString());
+        }
+    }
 
     // Set up and show toolbar
     private void setupToolBar() {
