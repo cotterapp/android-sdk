@@ -85,9 +85,11 @@ public class BiometricPromptStandalone implements BiometricInterface {
             }
             public void onError(String error){
                 Log.e("Submit Key Error", error);
-                invalidEnrollBiometric();
+                if (!error.equals(AuthRequest.NETWORK_ERROR_MESSAGE)) {
+                    invalidEnrollBiometric();
+                    User.refetchUser(ctx, Cotter.authRequest);
+                }
                 callback.onError(error);
-                User.refetchUser(ctx, Cotter.authRequest);
             }
         };
 
@@ -158,6 +160,24 @@ public class BiometricPromptStandalone implements BiometricInterface {
 
     // Open Biometric Prompt
     public void enableBiometric() {
+
+        // Show Network Error if needed
+        if (!AuthRequest.networkIsAvailable(ctx)) {
+            Callback cb = new Callback() {
+                @Override
+                public void onSuccess(JSONObject result) {
+                }
+
+                @Override
+                public void onError(String error) {
+                    callback.onError(error);
+                }
+            };
+            AuthRequest.showNetworkErrorDialogIfNecessary(ctx, cb);
+            return;
+        }
+
+        // Continue showing Biometric Prompt
         final BiometricInterface bi = this;
         Cotter.methods.pinEnrolled(new CotterMethodChecker() {
             @Override
@@ -200,8 +220,10 @@ public class BiometricPromptStandalone implements BiometricInterface {
             }
             public void onError(String error){
                 Log.e("Delete Key Error", error);
-                invalidDisableBiometric();
-                User.refetchUser(ctx, Cotter.authRequest);
+                if (!error.equals(AuthRequest.NETWORK_ERROR_MESSAGE)) {
+                    invalidDisableBiometric();
+                    User.refetchUser(ctx, Cotter.authRequest);
+                }
                 callback.onError(error);
             }
         };
