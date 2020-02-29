@@ -28,11 +28,11 @@
         <activity android:name=".RegisterDeviceQRShowActivity" android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity android:name=".RegisterDeviceQRScannerActivity" android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity android:name=".ApproveRequestActivity" android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity android:name=".PinChangeVerifyPinActivity" />
-        <activity android:name=".PinEnrollmentSuccessActivity" />
-        <activity android:name=".PinVerificationActivity" />
-        <activity android:name=".PinEnrollmentReEnterPinActivity" />
-        <activity android:name=".PinEnrollmentEnterPinActivity" />
+        <activity android:name=".PinChangeVerifyPinActivity" android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".PinEnrollmentSuccessActivity" android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".PinVerificationActivity" android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".PinEnrollmentReEnterPinActivity" android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".PinEnrollmentEnterPinActivity" android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity android:name=".MainActivity" />
         <activity
             android:name=".IdentityActivity"
