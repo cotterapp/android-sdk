@@ -279,7 +279,7 @@ public class TrustedDeviceHelper {
             public void onCheck(boolean enrolledThisDevice) {
                 // Check if TrustedDevice available and enabled
                 if (enrolledThisDevice) {
-                    authorizeDevice(ctx, event, callback);
+                    authorizeDevice(ctx, event, callback, callbackClass);
                 } else {
                     requestAuthFromNonTrusted(ctx, event, act, callbackClass, callback);
                 }
@@ -287,14 +287,38 @@ public class TrustedDeviceHelper {
         });
     }
 
-    public static void authorizeDevice(Context ctx, String event, Callback callback) {
+    public static void authorizeDevice(Context ctx, String event, Callback callback, Class callbackClass) {
+
+        Callback cb = new Callback(){
+            public void onSuccess(JSONObject response){
+                try {
+                    boolean valid = checkApprovedResponse(response);
+                    if (valid) {
+                        Intent in = new Intent(ctx, callbackClass);
+                        in.putExtra(TrustedDeviceHelper.EVENT_KEY, response.toString());
+                        ctx.startActivity(in);
+                    } else {
+                        callback.onError("Request invalid " + response.toString());
+                    }
+                } catch (Exception e) {
+                    callback.onError(e.toString());
+                    Log.e("COTTER_TRUSTED_DEV", "authorizeDevice > onSuccess Exception > Response: " + response.toString() + ", Exception: " + e.toString());
+                }
+            }
+            public void onError(String error){
+                Log.e("COTTER_TRUSTED_DEV", "authorizeDevice > onError: " + error);
+                callback.onError(error);
+            }
+        };
+
         Date now = new Date();
         long timestamp = now.getTime() / 1000L;
         String strTimestamp = Long.toString(timestamp);
         String stringToSign = Cotter.authRequest.ConstructApprovedEventMsg(event, strTimestamp, Cotter.TrustedDeviceMethod);
         String signature = sign(stringToSign);
-        JSONObject req = Cotter.authRequest.ConstructApprovedEventJSON(event, strTimestamp, Cotter.TrustedDeviceMethod, signature, getPublicKey(ctx), getAlgorithm(ctx), callback);
-        Cotter.authRequest.CreateApprovedEventRequest(ctx, req, callback);
+        JSONObject req = Cotter.authRequest.ConstructApprovedEventJSON(event, strTimestamp, Cotter.TrustedDeviceMethod, signature, getPublicKey(ctx), getAlgorithm(ctx), cb);
+        Cotter.authRequest.CreateApprovedEventRequest(ctx, req, cb);
+
     }
 
 
