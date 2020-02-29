@@ -412,7 +412,7 @@ public class AuthRequest {
     // Checking for new un-approved event for this user
     public void GetNewEvent(Context context, final Callback callback) {
         if (!networkIsAvailable(context)) {
-            showNetworkErrorDialogIfNecessary(context);
+            showNetworkErrorDialogIfNecessary(context, callback);
             return;
         }
 
@@ -450,7 +450,7 @@ public class AuthRequest {
     // Get event of a specific id
     public void GetEvent(Context context, String eventID, final Callback callback) {
         if (!networkIsAvailable(context)) {
-            showNetworkErrorDialogIfNecessary(context);
+            showNetworkErrorDialogIfNecessary(context, callback);
             return;
         }
 

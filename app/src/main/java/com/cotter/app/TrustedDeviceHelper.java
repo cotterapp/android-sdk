@@ -311,6 +311,7 @@ public class TrustedDeviceHelper {
                 try {
                     boolean valid = checkApprovedResponse(response);
                     if (valid) {
+                        callback.onSuccess(response);
                         Intent in = new Intent(ctx, callbackClass);
                         in.putExtra(TrustedDeviceHelper.EVENT_KEY, response.toString());
                         ctx.startActivity(in);
@@ -343,6 +344,7 @@ public class TrustedDeviceHelper {
         Callback cb = new Callback(){
             public void onSuccess(JSONObject response){
                 try {
+                    callback.onSuccess(response);
                     Log.i("COTTER_TRUSTED_DEV", "requestAuthFromNonTrusted > onSuccess > Response Success: " + response.toString());
 
                     // Show the bottom sheet to show prompt for approval from other Trusted Device
