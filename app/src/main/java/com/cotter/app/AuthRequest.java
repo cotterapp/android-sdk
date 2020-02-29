@@ -35,6 +35,7 @@ import java.util.Map;
 
 public class AuthRequest {
     public String mainServerURL;
+    public static String NETWORK_ERROR_MESSAGE = "Network Error";
 
     public AuthRequest(String url) {
         mainServerURL = url;
@@ -42,7 +43,7 @@ public class AuthRequest {
 
     public void GetUser(final Context context, final Callback callback) {
         if (!networkIsAvailable(context)) {
-            showNetworkErrorDialogIfNecessary(context);
+            showNetworkErrorDialogIfNecessary(context, callback);
             return;
         }
 
@@ -102,7 +103,7 @@ public class AuthRequest {
     public void UpdateMethod(Context context, String method, String code, boolean enrolled, boolean changeCode,
             String currentCode, String algorithm, final Callback callback) {
         if (!networkIsAvailable(context)) {
-            showNetworkErrorDialogIfNecessary(context);
+            showNetworkErrorDialogIfNecessary(context, callback);
             return;
         }
 
@@ -158,7 +159,7 @@ public class AuthRequest {
 
     public void CheckEnrolledMethod(Context context, String method, String pubKey, final Callback callback) {
         if (!networkIsAvailable(context)) {
-            showNetworkErrorDialogIfNecessary(context);
+            showNetworkErrorDialogIfNecessary(context, callback);
             return;
         }
 
@@ -200,7 +201,7 @@ public class AuthRequest {
 
     public void GetRules(Context context, final Callback callback) {
         if (!networkIsAvailable(context)) {
-            showNetworkErrorDialogIfNecessary(context);
+            showNetworkErrorDialogIfNecessary(context, callback);
             return;
         }
 
@@ -371,7 +372,7 @@ public class AuthRequest {
 
     public void CreateEventRequest(Context context, JSONObject req, String path, final Callback callback) {
         if (!networkIsAvailable(context)) {
-            showNetworkErrorDialogIfNecessary(context);
+            showNetworkErrorDialogIfNecessary(context, callback);
             return;
         }
 
@@ -486,6 +487,12 @@ public class AuthRequest {
 
     public void RequestIdentityToken(Context context, String codeVerifier, String authCode, int challengeID,
             String redirectURL, final Callback callback) {
+
+        if (!networkIsAvailable(context)) {
+            showNetworkErrorDialogIfNecessary(context, callback);
+            return;
+        }
+
         String url = mainServerURL + "/verify/get_identity";
 
         JSONObject req = new JSONObject();
@@ -579,7 +586,8 @@ public class AuthRequest {
         return "Status Code: " + statusCode + " Body: " + body;
     }
 
-    private void showNetworkErrorDialogIfNecessary(Context context) {
+    public static void showNetworkErrorDialogIfNecessary(Context context, Callback callback) {
+        callback.onError(NETWORK_ERROR_MESSAGE);
         if (context == null || Cotter.strings == null) {
             Log.e("COTTER_NETWORK_ERROR", "Cotter cannot be initialized because there is no connection");
             return;
@@ -633,7 +641,7 @@ public class AuthRequest {
         }
     }
 
-    private boolean networkIsAvailable(Context context) {
+    public static boolean networkIsAvailable(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
