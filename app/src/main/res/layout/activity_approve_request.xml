@@ -73,6 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:textColor="@color/colorDarkGrey"
                 android:text="Some one is trying to sign in to your account from another device"
                 android:textSize="17dp" />
         </LinearLayout>

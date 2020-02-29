@@ -31,6 +31,7 @@
         android:id="@+id/subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/colorDarkGrey"
         android:text="You can now access your account from your new device without needing approval."
         />
     <ImageView
