@@ -121,8 +121,8 @@ public class AuthRequest {
             }
             // TODO: Add device type and name
             req.put("algorithm", algorithm);
-            req.put("device_name", "deviceName");
-            req.put("device_type", "deviceType");
+            req.put("device_name", getDeviceName());
+            req.put("device_type", getDeviceType());
         } catch (Exception e) {
             callback.onError(e.toString());
         }
@@ -303,8 +303,8 @@ public class AuthRequest {
             // TODO: Add device type and name
             req.put("register_new_device", true);
             req.put("new_device_public_key", newPublicKey);
-            req.put("device_type", "deviceType");
-            req.put("device_name", "deviceName");
+            req.put("device_type", getDeviceType());
+            req.put("device_name", getDeviceName());
             req.put("new_device_algorithm", newAlgo);
         } catch (Exception e) {
             callback.onError(e.toString());
@@ -646,5 +646,13 @@ public class AuthRequest {
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public static String getDeviceType() {
+        return android.os.Build.MANUFACTURER;
+    }
+
+    public static String getDeviceName() {
+        return android.os.Build.MODEL + " " + android.os.Build.VERSION.RELEASE;
     }
 }
