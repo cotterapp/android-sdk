@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cotter.app">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -17,26 +25,35 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PinChangeVerifyPinActivity"></activity>
-        <activity android:name=".PinEnrollmentSuccessActivity" />
-        <activity android:name=".PinVerificationActivity" />
-        <activity android:name=".PinEnrollmentReEnterPinActivity" />
-        <activity android:name=".PinEnrollmentEnterPinActivity" />
+        <activity android:name=".RegisterDeviceQRShowActivity" android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".RegisterDeviceQRScannerActivity" android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".ApproveRequestActivity" android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity android:name=".PinChangeVerifyPinActivity" android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".PinEnrollmentSuccessActivity" android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".PinVerificationActivity" android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".PinEnrollmentReEnterPinActivity" android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".PinEnrollmentEnterPinActivity" android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity android:name=".MainActivity" />
-
-
-        <activity android:name=".IdentityActivity"
+        <activity
+            android:name=".IdentityActivity"
             android:exported="false"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
-        <activity android:name=".RedirectUriReceiverActivity" android:exported="true">
+        <activity
+            android:name=".RedirectUriReceiverActivity"
+            android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="app.cotter.android"/>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="app.cotter.android" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="barcode" />
     </application>
 
 </manifest>

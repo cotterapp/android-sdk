@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.cotterapp'
+group = 'com.github.cotterapp'
 
 android {
     compileSdkVersion 29
@@ -39,4 +39,7 @@ dependencies {
     implementation 'androidx.biometric:biometric:1.0.1'
 
     implementation 'com.google.androidbrowserhelper:androidbrowserhelper:1.0.0'
+    implementation 'com.google.android.material:material:1.2.0-alpha05'
+    implementation 'com.google.android.gms:play-services-vision:19.0.0'
+    implementation 'com.google.zxing:core:3.4.0'
 }

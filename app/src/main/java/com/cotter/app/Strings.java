@@ -19,6 +19,14 @@ public class Strings {
     public Map<String, String> NetworkError = new HashMap<>();
     public Map<String, String> HttpError = new HashMap<>();
 
+    public Map<String, String> ApproveRequest = new HashMap<>();
+    public Map<String, String> RequestAuth = new HashMap<>();
+    public Map<String, String> RequestAuthError = new HashMap<>();
+    public Map<String, String> SuccessSheet = new HashMap<>();
+    public Map<String, String> SuccessSheetError = new HashMap<>();
+    public Map<String, String> QRCodeShow = new HashMap<>();
+    public Map<String, String> QRCodeShowError = new HashMap<>();
+
     // Pin Enrollment
     public static String Title = "TITLE";
     public static String Subtitle = "SUBTITLE";
@@ -46,6 +54,10 @@ public class Strings {
     public static String DefaultNetworkErrorSubtitle = "Please establish a stronger internet connection and try again.";
     public static String DefaultNetworkPositiveButton = "Try Again";
 
+    // Trusted Device
+    public static String ButtonNo = "BUTTON_NO";
+    public static String ButtonYes = "BUTTON_YES";
+
     public Strings() {
 
         Headers.put(ScreenNames.PinEnrollmentEnterPin, "Activate Pin");
@@ -54,6 +66,8 @@ public class Strings {
         Headers.put(ScreenNames.PinChangeVerifyPin, "Change Pin");
         Headers.put(ScreenNames.PinChangeEnterPin, "Enter New Pin");
         Headers.put(ScreenNames.PinChangeReEnterPin, "Confirm New Pin");
+        Headers.put(ScreenNames.RegisterDeviceQRScanner, "Scan QR Code");
+        Headers.put(ScreenNames.RegisterDeviceQRShow, "");
 
         // Pin Enrollment Default Strings
         PinEnrollmentEnterPin.put(Title, "Enter Pin");
@@ -138,6 +152,30 @@ public class Strings {
         HttpError.put(DialogTitle, "Something went wrong");
         HttpError.put(DialogSubtitle, "Looks like there's an error on our end. Please try again.");
         HttpError.put(DialogPositiveButton, "Try Again");
+
+        // Approve login from Non-Trusted Device
+        ApproveRequest.put(Title, "Are you trying to sign in?");
+        ApproveRequest.put(Subtitle, "Someone is trying to sign in to your account from another device.");
+        ApproveRequest.put(ButtonYes, "Yes");
+        ApproveRequest.put(ButtonNo, "No, it's not me");
+
+        // Request Auth
+        RequestAuth.put(DialogTitle, "Approve this login from your phone");
+        RequestAuth.put(DialogSubtitle, "A notification is sent to your trusted device to confirm it's you.");
+        RequestAuthError.put(DialogTitle, "Something went wrong");
+        RequestAuthError.put(DialogSubtitle, "We're unable to confirm that it's you. Please try again.");
+
+        // Success Sheet
+        SuccessSheet.put(DialogTitle, "Success Registering New Device");
+        SuccessSheet.put(DialogSubtitle, "You can now use your new device to access your account without approval.");
+        SuccessSheetError.put(DialogTitle, "Unable to Register New Device");
+        SuccessSheetError.put(DialogSubtitle, "Please try again.");
+
+        // QR Code Show
+        QRCodeShow.put(Title, "Register this Device");
+        QRCodeShow.put(Subtitle, "Please scan this QR Code from a Trusted Device.");
+        QRCodeShowError.put(Title, "Something went wrong");
+        QRCodeShowError.put(Subtitle, "The request timed out. Please try again.");
     }
 
 
@@ -161,5 +199,29 @@ public class Strings {
 
     public void setNetworkErrorStrings(String key, String value) {
         NetworkError.put(key, value);
+    }
+
+
+    // Trusted Devices
+    public void setApproveRequestStrings(String key, String value) {
+        ApproveRequest.put(key, value);
+    }
+    public void setRequestAuthStrings(String key, String value) {
+        RequestAuth.put(key, value);
+    }
+    public void setRequestAuthErrorStrings(String key, String value) {
+        RequestAuthError.put(key, value);
+    }
+    public void setSuccessSheetStrings(String key, String value) {
+        SuccessSheet.put(key, value);
+    }
+    public void setSuccessSheetErrorStrings(String key, String value) {
+        SuccessSheetError.put(key, value);
+    }
+    public void setQRCodeShowStrings(String key, String value) {
+        QRCodeShow.put(key, value);
+    }
+    public void setQRCodeShowErrorStrings(String key, String value) {
+        QRCodeShowError.put(key, value);
     }
 }

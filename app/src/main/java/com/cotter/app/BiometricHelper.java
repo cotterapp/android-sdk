@@ -27,7 +27,7 @@ public class BiometricHelper {
     private static String signatureAlgo = "SHA256withECDSA";
 
     public static String getKeyStoreAlias() {
-        Log.e("KEYSTORE ALIAS", keyStoreAlias + Cotter.ApiKeyID + Cotter.UserID);
+        Log.i("COTTER_BIOMETRIC", "Keystore Alias: " + keyStoreAlias + Cotter.ApiKeyID + Cotter.UserID);
         return keyStoreAlias + Cotter.ApiKeyID + Cotter.UserID;
 
     }
@@ -132,7 +132,6 @@ public class BiometricHelper {
             PrivateKey privateKey = (PrivateKey) keyStore.getKey(getKeyStoreAlias(), null);
             // PublicKey publicKey = keyStore.getCertificate("alias").getPublicKey();
 
-            Log.d("getPrivateKey", privateKey.toString());
             return privateKey;
         } catch (Exception e) {
             Log.d("getPrivateKey", e.toString());

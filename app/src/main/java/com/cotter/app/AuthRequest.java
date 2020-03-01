@@ -82,6 +82,11 @@ public class AuthRequest {
         UpdateMethod(context, method, code, true, false, null, callback);
     }
 
+    // For trusted devices
+    public void EnrollMethod(Context context, String method, String code, String algorithm, final Callback callback) {
+        UpdateMethod(context, method, code, true, false, null, algorithm, callback);
+    }
+
     public void ChangeMethod(Context context, String method, String code, String currentCode, final Callback callback) {
         UpdateMethod(context, method, code, true, true, currentCode, callback);
     }
@@ -91,7 +96,12 @@ public class AuthRequest {
     }
 
     public void UpdateMethod(Context context, String method, String code, boolean enrolled, boolean changeCode,
-            String currentCode, final Callback callback) {
+                             String currentCode, final Callback callback) {
+        UpdateMethod(context, method, code, enrolled, changeCode, currentCode, null, callback);
+    }
+
+    public void UpdateMethod(Context context, String method, String code, boolean enrolled, boolean changeCode,
+            String currentCode, String algorithm, final Callback callback) {
         if (!networkIsAvailable(context)) {
             showNetworkErrorDialogIfNecessary(context, callback);
             return;
@@ -109,9 +119,15 @@ public class AuthRequest {
                 req.put("change_code", changeCode);
                 req.put("current_code", currentCode);
             }
+
+            req.put("algorithm", algorithm);
+            req.put("device_name", getDeviceName());
+            req.put("device_type", getDeviceType());
         } catch (Exception e) {
             callback.onError(e.toString());
         }
+
+        Log.e("COTTER REQ", req.toString());
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, req,
                 new Response.Listener<JSONObject>() {
@@ -149,8 +165,9 @@ public class AuthRequest {
 
         String url = mainServerURL + "/user/enrolled/" + Cotter.UserID + "/" + method;
         if (pubKey != null) {
-            url = url + "/" + Base64.encodeToString(pubKey.getBytes(), Base64.DEFAULT);
+            url = url + "/" + Base64.encodeToString(pubKey.getBytes(), Base64.URL_SAFE | Base64.NO_WRAP);
         }
+        Log.d("COTTER_ENROLLED_URL", url);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -226,6 +243,27 @@ public class AuthRequest {
     }
 
     public JSONObject ConstructApprovedEventJSON(String event, String timestamp, String method, String code,
+                                                 String publicKey, String algorithm, final Callback callback) {
+        final JSONObject req = new JSONObject();
+
+        try {
+            req.put("client_user_id", Cotter.getUser(Cotter.authRequest).client_user_id);
+            req.put("issuer", Cotter.ApiKeyID);
+            req.put("event", event);
+            req.put("ip", getLocalIpAddress());
+            req.put("timestamp", timestamp);
+            req.put("method", method);
+            req.put("code", code);
+            req.put("approved", true);
+            req.put("public_key", publicKey);
+            req.put("algorithm", algorithm);
+        } catch (Exception e) {
+            callback.onError(e.toString());
+        }
+        return req;
+    }
+
+    public JSONObject ConstructApprovedEventJSON(String event, String timestamp, String method, String code,
             String publicKey, final Callback callback) {
         final JSONObject req = new JSONObject();
 
@@ -245,13 +283,102 @@ public class AuthRequest {
         return req;
     }
 
+    public JSONObject ConstructRegisterNewDeviceJSON(String event, String timestamp, String method, String code,
+                                                 String publicKey, String algorithm, String newPublicKey, String newAlgo, final Callback callback) {
+        final JSONObject req = new JSONObject();
+
+        try {
+            req.put("client_user_id", Cotter.getUser(Cotter.authRequest).client_user_id);
+            req.put("issuer", Cotter.ApiKeyID);
+            req.put("event", event);
+            req.put("ip", getLocalIpAddress());
+            req.put("timestamp", timestamp);
+            req.put("method", method);
+            req.put("code", code);
+            req.put("approved", true);
+            req.put("public_key", publicKey);
+            req.put("algorithm", algorithm);
+
+            // Registered Devices
+            req.put("register_new_device", true);
+            req.put("new_device_public_key", newPublicKey);
+            req.put("device_type", getDeviceType());
+            req.put("device_name", getDeviceName());
+            req.put("new_device_algorithm", newAlgo);
+        } catch (Exception e) {
+            callback.onError(e.toString());
+        }
+        return req;
+    }
+
     public void CreateApprovedEventRequest(Context context, JSONObject req, final Callback callback) {
+        String path = "/event/create";
+        CreateEventRequest(context, req, path, callback);
+    }
+
+
+    public JSONObject ConstructEventJSON(String event, String timestamp, String method, final Callback callback) {
+        final JSONObject req = new JSONObject();
+        try {
+            req.put("client_user_id", Cotter.getUser(Cotter.authRequest).client_user_id);
+            req.put("issuer", Cotter.ApiKeyID);
+            req.put("event", event);
+            req.put("ip", getLocalIpAddress());
+            req.put("timestamp", timestamp);
+            req.put("method", method);
+        } catch (Exception e) {
+            callback.onError(e.toString());
+        }
+        return req;
+    }
+
+    public void CreatePendingEventRequest(Context context, JSONObject req, final Callback callback) {
+        String path = "/event/create_pending";
+        CreateEventRequest(context, req, path, callback);
+    }
+
+    public JSONObject ConstructRespondEventJSON(Event ev, String method, String signature,
+                                                 String publicKey, String algorithm, boolean approved, final Callback callback) {
+        final JSONObject req = new JSONObject();
+
+        try {
+            req.put("client_user_id", Cotter.getUser(Cotter.authRequest).client_user_id);
+            req.put("issuer", Cotter.ApiKeyID);
+            req.put("event", ev.event);
+            req.put("ip", ev.ip);
+            req.put("timestamp", ev.timestamp);
+            req.put("method", method);
+            req.put("code", signature);
+            req.put("approved", approved);
+            req.put("public_key", publicKey);
+            req.put("algorithm", algorithm);
+        } catch (Exception e) {
+            callback.onError(e.toString());
+        }
+        return req;
+    }
+
+    public String ConstructRespondEventMsg(String event, String timestamp, String method, boolean approved) {
+        String[] list = {Cotter.getUser(Cotter.authRequest).client_user_id, Cotter.ApiKeyID, event, timestamp, method,
+                approved + ""};
+        return TextUtils.join("", list);
+    }
+
+    public void CreateRespondEventRequest(Context context, int eventID, JSONObject req, final Callback callback) {
+        String path = "/event/respond/" + eventID;
+        CreateEventRequest(context, req, path, callback);
+    }
+
+    public void CreateEventRequest(Context context, JSONObject req, String path, final Callback callback) {
         if (!networkIsAvailable(context)) {
             showNetworkErrorDialogIfNecessary(context, callback);
             return;
         }
 
-        String url = mainServerURL + "/event/create";
+        String url = mainServerURL + path;
+
+        Log.e("CreateEventRequest", url);
+        Log.e("CreateEventRequest req", req.toString());
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, req,
                 new Response.Listener<JSONObject>() {
@@ -262,11 +389,87 @@ public class AuthRequest {
                     }
                 }, new Response.ErrorListener() {
 
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.onError(getErrorMessage(error));
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("API_KEY_ID", Cotter.ApiKeyID);
+                params.put("API_SECRET_KEY", Cotter.ApiSecretKey);
+
+                return params;
+            }
+        };
+
+        // Access the RequestQueue through your singleton class.
+        VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
+
+    // Checking for new un-approved event for this user
+    public void GetNewEvent(Context context, final Callback callback) {
+        if (!networkIsAvailable(context)) {
+            showNetworkErrorDialogIfNecessary(context, callback);
+            return;
+        }
+
+        String url = mainServerURL + "/event/new/" + Cotter.UserID;
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+
                     @Override
-                    public void onErrorResponse(VolleyError error) {
-                        callback.onError(getErrorMessage(error));
+                    public void onResponse(JSONObject response) {
+                        callback.onSuccess(response);
+                        Log.i("COTTER_AUTH_REQUEST", "Success checking new event: " + response.toString());
                     }
-                }) {
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.onError(getErrorMessage(error));
+                Log.e("COTTER_AUTH_REQUEST", "Error checking new event: " + getErrorMessage(error));
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("API_KEY_ID", Cotter.ApiKeyID);
+                params.put("API_SECRET_KEY", Cotter.ApiSecretKey);
+
+                return params;
+            }
+        };
+
+        // Access the RequestQueue through your singleton class.
+        VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
+
+    // Get event of a specific id
+    public void GetEvent(Context context, String eventID, final Callback callback) {
+        if (!networkIsAvailable(context)) {
+            showNetworkErrorDialogIfNecessary(context, callback);
+            return;
+        }
+
+        String url = mainServerURL + "/event/get/" + eventID;
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callback.onSuccess(response);
+                        Log.i("COTTER_AUTH_REQUEST", "Success getting event: " + response.toString());
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.onError(getErrorMessage(error));
+                Log.e("COTTER_AUTH_REQUEST", "Error getting event: " + getErrorMessage(error));
+            }
+        }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
@@ -293,8 +496,6 @@ public class AuthRequest {
 
         JSONObject req = new JSONObject();
 
-        Log.e("URL RED URL", redirectURL);
-
         try {
             req.put("code_verifier", codeVerifier);
             req.put("authorization_code", authCode);
@@ -303,9 +504,6 @@ public class AuthRequest {
         } catch (Exception e) {
             callback.onError(e.toString());
         }
-
-        Log.e("URL REQ ID", url);
-        Log.e("URL REQ", req.toString());
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, req,
                 new Response.Listener<JSONObject>() {
@@ -447,5 +645,13 @@ public class AuthRequest {
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public static String getDeviceType() {
+        return android.os.Build.MANUFACTURER;
+    }
+
+    public static String getDeviceName() {
+        return android.os.Build.MODEL + " " + android.os.Build.VERSION.RELEASE;
     }
 }

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
+    android:padding="30dp"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
+        >
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Success Enrolling New Device"
+        android:textSize="20dp"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/colorBlack"
+        />
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorDarkGrey"
+        android:text="You can now access your account from your new device without needing approval."
+        />
+    <ImageView
+        android:id="@+id/success_image"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:scaleType="centerInside"
+        android:adjustViewBounds="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
