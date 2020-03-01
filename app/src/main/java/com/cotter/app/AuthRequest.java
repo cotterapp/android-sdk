@@ -119,7 +119,7 @@ public class AuthRequest {
                 req.put("change_code", changeCode);
                 req.put("current_code", currentCode);
             }
-            // TODO: Add device type and name
+
             req.put("algorithm", algorithm);
             req.put("device_name", getDeviceName());
             req.put("device_type", getDeviceType());
@@ -300,7 +300,6 @@ public class AuthRequest {
             req.put("algorithm", algorithm);
 
             // Registered Devices
-            // TODO: Add device type and name
             req.put("register_new_device", true);
             req.put("new_device_public_key", newPublicKey);
             req.put("device_type", getDeviceType());
