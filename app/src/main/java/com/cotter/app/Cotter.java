@@ -29,6 +29,8 @@ public class Cotter {
     public static CotterMethodHelper methods;
     public static IdentityRequest identity;
 
+    public static boolean allowClosePinEnrollment = false;
+
 
     private static Context ctx;
     public static Flow PinEnrollment = new Flow(new String[] { ScreenNames.PinEnrollmentEnterPin, ScreenNames.PinEnrollmentReEnterPin, ScreenNames.PinEnrollmentSuccess });
@@ -82,5 +84,8 @@ public class Cotter {
     public static IdentityRequest newIdentity(Context ctx, String urlScheme) {
         identity = new IdentityRequest(ctx, urlScheme);
         return identity;
+    }
+    public static void setAllowClosePinEnrollment(boolean allow) {
+        allowClosePinEnrollment = allow;
     }
 }
