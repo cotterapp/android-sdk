@@ -74,8 +74,27 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
         biometricAvailable = BiometricHelper.checkBiometricAvailable(this) && !changePin;
 
         if (biometricAvailable) {
+
+
+            CotterBiometricCallback callbackBiometric = new CotterBiometricCallback() {
+                @Override
+                public void onSuccess(boolean biometricEnabled) {
+
+                }
+
+                @Override
+                public void onCanceled() {
+                    Log.i("COTTER_BIOMETRIC", "CANCELLED");
+                    onContinue();
+                }
+
+                @Override
+                public void onError(String error) {
+
+                }
+            };
             // Setup Biometric Handlers for onAuthSuccess, or onAuthFail, etc.
-            BiometricHelper.setupEnrollBiometricHandler(this, this, this, this, null);
+            BiometricHelper.setupEnrollBiometricHandler(this, this, this, this, callbackBiometric);
 
             // Create Biometric Prompt
             promptInfo = new BiometricPrompt.PromptInfo.Builder()

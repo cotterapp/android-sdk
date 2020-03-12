@@ -82,7 +82,16 @@ public class PinEnrollmentEnterPinActivity extends AppCompatActivity implements 
         textError.setTextColor(Color.parseColor(Cotter.colors.ColorDanger));
 
         // Set up and show toolbar
-        setupToolBar();
+        if (Cotter.allowClosePinEnrollment) {
+            setupToolBar();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (Cotter.allowClosePinEnrollment) {
+            super.onBackPressed();
+        }
     }
 
     // Set up and show toolbar
