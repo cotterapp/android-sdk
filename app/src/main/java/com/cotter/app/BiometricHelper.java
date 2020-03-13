@@ -63,7 +63,7 @@ public class BiometricHelper {
             public void onAuthenticationError(int errorCode,
                                               @NonNull CharSequence errString) {
                 super.onAuthenticationError(errorCode, errString);
-                if (callback != null) {
+                if (errorCode == 13 && callback != null) {
                     callback.onCanceled();
                 }
                 Log.d("COTTER_BIOMETRIC_HELPER", "onAuthenticationError: " + errString);
