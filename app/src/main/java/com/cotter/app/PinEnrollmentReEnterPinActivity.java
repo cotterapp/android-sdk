@@ -39,6 +39,11 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
     private boolean changePin = false;
     private String currentPin = "";
 
+    private boolean resetPin = false;
+    private int challengeID;
+    private String challenge;
+    private String resetCode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,10 +57,18 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
         Intent intent = getIntent();
         changePin = intent.getExtras().getBoolean("change_pin");
         currentPin = intent.getExtras().getString("current_pin");
+        resetPin = intent.getExtras().getBoolean("reset_pin");
         if (changePin) {
             name = ScreenNames.PinChangeReEnterPin;
             ActivityStrings = Cotter.strings.PinChangeReEnterPin;
+        } else if (resetPin) {
+            name = ScreenNames.PinResetReEnterPin;
+            ActivityStrings = Cotter.strings.PinResetReEnterPin;
+            Cotter.PinReset.addActivityStack(this);
         }
+        challenge = intent.getExtras().getString("challenge");
+        challengeID = intent.getExtras().getInt("challenge_id");
+        resetCode = intent.getExtras().getString("reset_code");
 
         // set pins objects
         pins.add((TextView)findViewById(R.id.input_1));
@@ -142,6 +155,8 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
 
         if (changePin) {
             Cotter.authRequest.ChangeMethod(this, Cotter.PinMethod, pin, currentPin, cb);
+        } else if (resetPin) {
+            Cotter.authRequest.ResetRespond(this, Cotter.PinMethod, resetCode, challengeID, challenge, pin, cb);
         } else {
             Cotter.authRequest.EnrollMethod(this, Cotter.PinMethod, pin, cb);
         }
@@ -153,11 +168,18 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
         Class nextScreen = Cotter.PinEnrollment.nextStep(name);
         if (changePin) {
             nextScreen = Cotter.PinChange.nextStep(name);
+        } else if (resetPin) {
+            nextScreen = Cotter.PinReset.nextStep(name);
         }
         Intent in = new Intent(this, nextScreen);
         if (changePin) {
+            in.putExtra("reset_pin", false);
             in.putExtra("change_pin", true);
+        } else if (resetPin) {
+            in.putExtra("reset_pin", true);
+            in.putExtra("change_pin", false);
         } else {
+            in.putExtra("reset_pin", false);
             in.putExtra("change_pin", false);
         }
         startActivity(in);

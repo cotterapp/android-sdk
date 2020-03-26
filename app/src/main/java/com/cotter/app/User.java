@@ -14,6 +14,10 @@ public class User {
     public String[] enrolled = new String[]{};
     public String default_method;
 
+    public String name;
+    public String sendingDestination;
+    public String sendingMethod;
+
     private static User instance;
 
     public static User getInstance(Context context, AuthRequest authRequest) {
@@ -21,7 +25,9 @@ public class User {
             authRequest.GetUser(context, new Callback(){
                 public void onSuccess(JSONObject response){
                     Gson gson = new Gson();
-                    instance = gson.fromJson(response.toString(), User.class);
+                    User updatedUser = gson.fromJson(response.toString(), User.class);
+                    instance = updateUser(updatedUser);
+                    Cotter.setUser(instance);
                     Log.i("Init User Success", response.toString());
                 }
                 public void onError(String error){
@@ -35,7 +41,9 @@ public class User {
         authRequest.GetUser(context, new Callback(){
             public void onSuccess(JSONObject response){
                 Gson gson = new Gson();
-                instance = gson.fromJson(response.toString(), User.class);
+                User updatedUser = gson.fromJson(response.toString(), User.class);
+                instance = updateUser(updatedUser);
+                Cotter.setUser(instance);
                 Log.i("Init User Success", response.toString());
             }
             public void onError(String error){
@@ -43,5 +51,24 @@ public class User {
             }
         });
         return instance;
+    }
+
+    public static User updateUser(User updatedUser) {
+        if (instance == null) {
+            instance = updatedUser;
+        } else {
+            instance.ID = updatedUser.ID;
+            instance.issuer = updatedUser.issuer;
+            instance.client_user_id = updatedUser.client_user_id;
+            instance.enrolled = updatedUser.enrolled;
+            instance.default_method = updatedUser.default_method;
+        }
+        return instance;
+    }
+
+    public void setUserInformation(String Name, String SendingDestination, String SendingMethod) {
+        name = Name;
+        sendingDestination = SendingDestination;
+        sendingMethod = SendingMethod;
     }
 }

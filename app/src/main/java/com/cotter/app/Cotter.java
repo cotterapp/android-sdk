@@ -2,7 +2,6 @@ package com.cotter.app;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -19,6 +18,10 @@ public class Cotter {
     public static String BiometricMethod = "BIOMETRIC";
     public static String TrustedDeviceMethod = "TRUSTED_DEVICE";
 
+    // Sending Methods
+    public static String EmailSendingMethod = "EMAIL";
+    public static String SMSSendinngMethod = "SMS";
+
     // Colors
     public static Colors colors;
 
@@ -31,11 +34,14 @@ public class Cotter {
 
     public static boolean allowClosePinEnrollment = false;
 
+    public static User user;
+
 
     private static Context ctx;
     public static Flow PinEnrollment = new Flow(new String[] { ScreenNames.PinEnrollmentEnterPin, ScreenNames.PinEnrollmentReEnterPin, ScreenNames.PinEnrollmentSuccess });
-    public static Flow PinVerification= new Flow(new String[] { ScreenNames.PinVerification });
+    public static Flow PinVerification = new Flow(new String[] { ScreenNames.PinVerification });
     public static Flow PinChange = new Flow(new String[] { ScreenNames.PinChangeVerifyPin, ScreenNames.PinChangeEnterPin, ScreenNames.PinChangeReEnterPin, ScreenNames.PinChangeSuccess });
+    public static Flow PinReset = new Flow(new String[] { ScreenNames.PinReset, ScreenNames.PinResetEnterPin, ScreenNames.PinResetReEnterPin, ScreenNames.PinResetSuccess });
 
     public static void init(Context context, String mainServerURL, String userID, String apiKeyID, String apiSecretKey) {
         UserID = userID;
@@ -48,6 +54,11 @@ public class Cotter {
         strings = new Strings();
         colors = new Colors();
         methods = new CotterMethodHelper(context);
+    }
+
+
+    public static void setUser(User nUser) {
+        user = nUser;
     }
 
     // Init function for Identity Request (No user yet + using PKCE)
@@ -65,10 +76,7 @@ public class Cotter {
     }
 
     public static User getUser() {
-        if (authRequest == null) {
-            Log.e("COTTER_NOT_INITIALIZED", "Cotter is not yet initialized!");
-        }
-        return User.getInstance(ctx, authRequest);
+        return user;
     }
 
     public static Rules getRules(AuthRequest authRequest) {

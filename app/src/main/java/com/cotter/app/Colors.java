@@ -3,9 +3,13 @@ package com.cotter.app;
 public class Colors {
 
     public String ColorPrimary;
+    public String ColorPrimaryLight;
     public String ColorAccent;
     public String ColorDanger;
+    public String ColorDangerLight;
     public String ColorBackground;
+    public String ColorBlack;
+    public String ColorSuperLightGrey;
     public int SuccessImage;
     public int ErrorImage;
     public int NetworkErrorImage;
@@ -15,9 +19,13 @@ public class Colors {
 
     public Colors() {
         ColorBackground = "#FFFFFF";
+        ColorBlack = "#000000";
         ColorPrimary = "#21ce99";
         ColorAccent = "#21ce99";
         ColorDanger = "#D92C59";
+        ColorDangerLight = "#F7E5E8";
+        ColorPrimaryLight = "#DAEDC6";
+        ColorSuperLightGrey = "#F5F5F5";
         SuccessImage = R.drawable.check;
         NetworkErrorImage = R.drawable.ic_cloud_off_black_24dp;
         HttpErrorImage = R.drawable.ic_error_outline_black_24dp;

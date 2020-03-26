@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
-    tools:context=".PinEnrollmentEnterPinActivity">
+    tools:context=".PinResetActivity">
 
 
     <androidx.appcompat.widget.Toolbar
@@ -65,43 +65,61 @@
         android:gravity="center"
         >
 
-    <TextView
-        android:id="@+id/text_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/akkurat_bold"
-        android:text="Enter Pin"
-        android:textColor="@color/colorDarkGrey"
-        android:textSize="15dp" />
+        <TextView
+            android:id="@+id/text_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/akkurat_bold"
+            android:text="Verification Code"
+            android:textColor="@color/colorDarkGrey"
+            android:textSize="18dp"
+            android:paddingBottom="10dp"
+            />
 
-    <include
-        layout="@layout/pin_input"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/text_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/akkurat"
+            android:text="We have sent a code to"
+            android:textColor="@color/colorDarkGrey"
+            android:textSize="15dp" />
+        <TextView
+            android:id="@+id/text_subtitle_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/akkurat_bold"
+            android:textColor="@color/colorAccent"
+            android:textSize="15dp" />
 
-    <TextView
-        android:id="@+id/text_show"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/akkurat_bold"
-        android:paddingBottom="20dp"
-        android:text="Show Pin"
-        android:onClick="onToggleShowPin"
-        android:textColor="@color/colorBlack"
-        android:textSize="15dp" />
+        <include
+            layout="@layout/pin_input_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/text_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/akkurat_bold"
-        android:paddingBottom="20dp"
-        android:text=""
-        android:textAlignment="center"
-        android:paddingHorizontal="20dp"
-        android:textColor="@color/colorDanger"
-        android:textSize="15dp"
-        android:visibility="gone"/>
+        <TextView
+            android:id="@+id/text_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/akkurat_bold"
+            android:paddingBottom="10dp"
+            android:text=""
+            android:textAlignment="center"
+            android:paddingHorizontal="20dp"
+            android:textColor="@color/colorDanger"
+            android:textSize="15dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/text_resend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/akkurat_bold"
+            android:paddingBottom="20dp"
+            android:text="Resend Code"
+            android:onClick="onResendCode"
+            android:textColor="@color/colorPrimary"
+            android:textSize="15dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -116,13 +134,14 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guideline_mid_vertical">
 
-    <include
-        android:id="@+id/keyboard"
-        layout="@layout/keyboard"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent" />
+        <include
+            android:id="@+id/keyboard"
+            layout="@layout/keyboard"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent" />
     </LinearLayout>
 
 
+    <include layout="@layout/loading_overlay" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

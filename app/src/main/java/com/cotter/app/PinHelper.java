@@ -59,10 +59,31 @@ public class PinHelper {
         Button b = (Button)v;
         String t = b.getText().toString();
         String pin = pinInterface.getPin();
+        if (pin.length() > 5) {
+            pin = "";
+            pinInterface.onDeleteKey(v);
+        }
         pin = pin + t;
         pinInterface.setPin(pin);
         pinInterface.setBullet();
         if (pin.length() > 5) {
+            pinInterface.onSubmitPin();
+        }
+    }
+
+    // Called when keyboard is pressed
+    public static void onPressKey( View v , PinInterface pinInterface, int maxLength) {
+        Button b = (Button)v;
+        String t = b.getText().toString();
+        String pin = pinInterface.getPin();
+        if (pin.length() > maxLength-1) {
+            pin = "";
+            pinInterface.onDeleteKey(v);
+        }
+        pin = pin + t;
+        pinInterface.setPin(pin);
+        pinInterface.setBullet();
+        if (pin.length() > maxLength-1) {
             pinInterface.onSubmitPin();
         }
     }
@@ -142,7 +163,9 @@ public class PinHelper {
 
         // hide textShow and show error text
         pinInterface.setPinError(true);
-        textShow.setVisibility(View.GONE);
+        if (textShow != null) {
+            textShow.setVisibility(View.GONE);
+        }
         textError.setVisibility(View.VISIBLE);
         textError.setText(errorString);
     }
