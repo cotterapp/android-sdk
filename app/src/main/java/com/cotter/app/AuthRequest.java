@@ -532,6 +532,153 @@ public class AuthRequest {
         VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
 
+    public void ResetStart(Context context, String method, String sendingMethod, String sendingDestination, String name, final Callback callback) {
+        if (!networkIsAvailable(context)) {
+            showNetworkErrorDialogIfNecessary(context, callback);
+            return;
+        }
+
+        String url = mainServerURL + "/user/reset/start/" + Cotter.UserID;
+
+        JSONObject req = new JSONObject();
+        try {
+            req.put("method", method);
+            req.put("sending_method", sendingMethod);
+            req.put("sending_destination", sendingDestination);
+            req.put("name", name);
+        } catch (Exception e) {
+            callback.onError(e.toString());
+        }
+
+        Log.e("COTTER RESET REQ", req.toString());
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, req,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callback.onSuccess(response);
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.onError(getErrorMessage(error));
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("API_KEY_ID", Cotter.ApiKeyID);
+                params.put("API_SECRET_KEY", Cotter.ApiSecretKey);
+
+                return params;
+            }
+        };
+
+        // Access the RequestQueue through your singleton class.
+        VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
+
+
+    public void ResetVerify(Context context, String method, String resetCode, int challengeID, String challenge, final Callback callback) {
+        if (!networkIsAvailable(context)) {
+            showNetworkErrorDialogIfNecessary(context, callback);
+            return;
+        }
+
+        String url = mainServerURL + "/user/reset/verify/" + Cotter.UserID;
+        Log.d("COTTER AUTH REQ", "Reset Verify: " + url);
+
+        JSONObject req = new JSONObject();
+        try {
+            req.put("method", method);
+            req.put("reset_code", resetCode);
+            req.put("challenge_id", challengeID);
+            req.put("challenge", challenge);
+        } catch (Exception e) {
+            callback.onError(e.toString());
+        }
+
+        Log.e("COTTER RESET VERIFY", req.toString());
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, req,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callback.onSuccess(response);
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.onError(getErrorMessage(error));
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("API_KEY_ID", Cotter.ApiKeyID);
+                params.put("API_SECRET_KEY", Cotter.ApiSecretKey);
+
+                return params;
+            }
+        };
+
+        // Access the RequestQueue through your singleton class.
+        VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
+
+    public void ResetRespond(Context context, String method, String resetCode, int challengeID, String challenge, String newCode, final Callback callback) {
+        if (!networkIsAvailable(context)) {
+            showNetworkErrorDialogIfNecessary(context, callback);
+            return;
+        }
+
+        String url = mainServerURL + "/user/reset/respond/" + Cotter.UserID;
+
+        JSONObject req = new JSONObject();
+        try {
+            req.put("method", method);
+            req.put("reset_code", resetCode);
+            req.put("challenge_id", challengeID);
+            req.put("challenge", challenge);
+            req.put("new_code", newCode);
+        } catch (Exception e) {
+            callback.onError(e.toString());
+        }
+
+        Log.e("COTTER RESET RESP", req.toString());
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, req,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callback.onSuccess(response);
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.onError(getErrorMessage(error));
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("API_KEY_ID", Cotter.ApiKeyID);
+                params.put("API_SECRET_KEY", Cotter.ApiSecretKey);
+
+                return params;
+            }
+        };
+
+        // Access the RequestQueue through your singleton class.
+        VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
+
     public static String getLocalIpAddress() {
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {

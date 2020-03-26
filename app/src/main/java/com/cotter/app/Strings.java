@@ -11,10 +11,12 @@ public class Strings {
     public Map<String, String> PinEnrollmentReEnterPin = new HashMap<>();
     public Map<String, String> PinEnrollmentSuccess = new HashMap<>();
     public Map<String, String> PinVerification = new HashMap<>();
+
     public Map<String, String> PinChangeVerifyPin = new HashMap<>();
     public Map<String, String> PinChangeEnterPin = new HashMap<>();
     public Map<String, String> PinChangeReEnterPin = new HashMap<>();
     public Map<String, String> PinChangeSuccess = new HashMap<>();
+
     public Map<String, String> BiometricChange = new HashMap<>();
     public Map<String, String> NetworkError = new HashMap<>();
     public Map<String, String> HttpError = new HashMap<>();
@@ -26,6 +28,11 @@ public class Strings {
     public Map<String, String> SuccessSheetError = new HashMap<>();
     public Map<String, String> QRCodeShow = new HashMap<>();
     public Map<String, String> QRCodeShowError = new HashMap<>();
+
+    public Map<String, String> PinReset = new HashMap<>();
+    public Map<String, String> PinResetEnterPin = new HashMap<>();
+    public Map<String, String> PinResetReEnterPin = new HashMap<>();
+    public Map<String, String> PinResetSuccess = new HashMap<>();
 
     // Pin Enrollment
     public static String Title = "TITLE";
@@ -44,6 +51,9 @@ public class Strings {
     public static String DialogPositiveButton = "POSITIVE_BUTTON_TEXT";
     public static String DialogNegativeButton = "NEGATIVE_BUTTON_TEXT";
 
+    // Pin Verification
+    public static String ForgotPin = "FORGOT_PIN";
+
     // Biometric enrollment
     public static String BiometricTitle = "BIOMETRIC_TITLE";
     public static String BiometricSubtitle = "BIOMETRIC_SUBTITLE";
@@ -58,6 +68,9 @@ public class Strings {
     public static String ButtonNo = "BUTTON_NO";
     public static String ButtonYes = "BUTTON_YES";
 
+    // Pin Reset
+    public static String ResendCode = "RESEND_CODE";
+
     public Strings() {
 
         Headers.put(ScreenNames.PinEnrollmentEnterPin, "Activate Pin");
@@ -68,6 +81,9 @@ public class Strings {
         Headers.put(ScreenNames.PinChangeReEnterPin, "Confirm New Pin");
         Headers.put(ScreenNames.RegisterDeviceQRScanner, "Scan QR Code");
         Headers.put(ScreenNames.RegisterDeviceQRShow, "");
+        Headers.put(ScreenNames.PinReset, "Forgot Pin");
+        Headers.put(ScreenNames.PinResetEnterPin, "Enter New Pin");
+        Headers.put(ScreenNames.PinResetReEnterPin, "Confirm New Pin");
 
         // Pin Enrollment Default Strings
         PinEnrollmentEnterPin.put(Title, "Enter Pin");
@@ -98,9 +114,9 @@ public class Strings {
 
         // Pin Verification default strings
         PinVerification.put(Title, "Enter Pin");
-        PinVerification.put(ShowPin, "Show Pin");
-        PinVerification.put(HidePin, "Hide Pin");
+        PinVerification.put(ForgotPin, "Forgot Pin");
         PinVerification.put(ErrorInvalid, "Your PIN is invalid");
+        PinVerification.put(ErrorOther, "Something went wrong.");
         PinVerification.put(BiometricTitle, "Verify Biometric");
         PinVerification.put(BiometricSubtitle, "Verify your biometric to continue");
         PinVerification.put(BiometricNegativeButton, "Input Pin");
@@ -176,6 +192,31 @@ public class Strings {
         QRCodeShow.put(Subtitle, "Please scan this QR Code from a Trusted Device.");
         QRCodeShowError.put(Title, "Something went wrong");
         QRCodeShowError.put(Subtitle, "The request timed out. Please try again.");
+
+        // Reset Pin
+        PinReset.put(Title, "Verification Code");
+        PinReset.put(Subtitle, "We have sent a code to");
+        PinReset.put(ResendCode, "Resend Code");
+        PinReset.put(ErrorInvalid, "The code you entered is invalid");
+        PinReset.put(ErrorOther, "Something went wrong");
+
+        PinResetEnterPin.put(Title, "Enter New Pin");
+        PinResetEnterPin.put(ShowPin, "Show Pin");
+        PinResetEnterPin.put(HidePin, "Hide Pin");
+        PinResetEnterPin.put(ErrorCombination, "Your PIN is weak. Please enter a stronger PIN.");
+        PinResetEnterPin.put(DialogTitle, "Are you sure you don't want to setup your new PIN?");
+        PinResetEnterPin.put(DialogSubtitle, "You will be able to use your old PIN if you don't setup a new PIN.");
+        PinResetEnterPin.put(DialogPositiveButton, "Setup New PIN");
+        PinResetEnterPin.put(DialogNegativeButton, "Next Time");
+
+        PinResetReEnterPin.put(Title, "Re-Enter New Pin");
+        PinResetReEnterPin.put(ShowPin, "Show Pin");
+        PinResetReEnterPin.put(HidePin, "Hide Pin");
+        PinResetReEnterPin.put(ErrorNoMatch, "Your PIN doesn't match your previous PIN.");
+
+        PinResetSuccess.put(Title, "Successfully made a new Pin");
+        PinResetSuccess.put(Subtitle, "You can now use your new PIN to unlock your account");
+        PinResetSuccess.put(ButtonText, "Done");
     }
 
 
@@ -195,6 +236,35 @@ public class Strings {
     }
     public void setPinVerificationStrings(String key, String value) {
         PinVerification.put(key, value);
+    }
+
+    public void setPinChangeVerifyPin(String key, String value) {
+        PinChangeVerifyPin.put(key, value);
+    }
+    public void setPinChangeEnterPin(String key, String value) {
+        PinChangeEnterPin.put(key, value);
+    }
+
+    public void setPinChangeReEnterPin(String key, String value) {
+        PinChangeReEnterPin.put(key, value);
+    }
+    public void setPinChangeSuccess(String key, String value) {
+        PinChangeSuccess.put(key, value);
+    }
+
+
+    public void setPinReset(String key, String value) {
+        PinReset.put(key, value);
+    }
+    public void setPinResetEnterPin(String key, String value) {
+        PinResetEnterPin.put(key, value);
+    }
+
+    public void setPinResetReEnterPin(String key, String value) {
+        PinResetReEnterPin.put(key, value);
+    }
+    public void setPinResetSuccess(String key, String value) {
+        PinResetSuccess.put(key, value);
     }
 
     public void setNetworkErrorStrings(String key, String value) {

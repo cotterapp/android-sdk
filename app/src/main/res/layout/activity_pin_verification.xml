@@ -31,14 +31,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.9026764" />
+        app:layout_constraintGuide_percent="0.90" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1504788" />
+        app:layout_constraintGuide_percent="0.15" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_bottom"
@@ -80,17 +80,6 @@
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/text_show"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/akkurat_bold"
-            android:paddingBottom="20dp"
-            android:text="Show Pin"
-            android:onClick="onToggleShowPin"
-            android:textColor="@color/colorBlack"
-            android:textSize="15dp" />
-
-        <TextView
             android:id="@+id/text_error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -102,6 +91,18 @@
             android:textColor="@color/colorDanger"
             android:textSize="15dp"
             android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/text_forgot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/akkurat_bold"
+            android:paddingBottom="20dp"
+            android:text="Forgot Pin"
+            android:onClick="onForgotPin"
+            android:textColor="@color/colorPrimary"
+            android:textSize="15dp" />
+
     </LinearLayout>
 
 
@@ -125,4 +126,5 @@
             android:layout_height="fill_parent" />
     </LinearLayout>
 
+    <include layout="@layout/loading_overlay" />
 </androidx.constraintlayout.widget.ConstraintLayout>

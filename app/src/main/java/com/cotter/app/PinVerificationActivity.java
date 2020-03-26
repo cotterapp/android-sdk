@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -35,10 +36,11 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
     private boolean showPin = false;
 
     private TextView textTitle;
-    private TextView textShow;
+    private TextView textForgot;
     private TextView textError;
     private ConstraintLayout container;
     private LinearLayout bullet;
+    private FrameLayout loadingOverlay;
 
     public Map<String, String> ActivityStrings;
 
@@ -55,6 +57,7 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
         setContentView(R.layout.activity_pin_verification);
 
         ActivityStrings = Cotter.strings.PinVerification;
+        Cotter.PinVerification.addActivityStack(this);
 
         // Refetch user
         User.refetchUser(getApplicationContext(), Cotter.authRequest);
@@ -71,18 +74,20 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
 
         bullet = findViewById(R.id.bullet);
 
+        // set loading overlay
+        loadingOverlay = findViewById(R.id.loading_overlay);
 
         // Set strings
         textTitle = findViewById(R.id.text_title);
-        textShow = findViewById(R.id.text_show);
+        textForgot = findViewById(R.id.text_forgot);
         textError = findViewById(R.id.text_error);
         textTitle.setText(ActivityStrings.get(Strings.Title));
-        textShow.setText(ActivityStrings.get(Strings.ShowPin));
+        textForgot.setText(ActivityStrings.get(Strings.ForgotPin));
 
         // Set colors
         container = findViewById(R.id.container);
         container.setBackgroundColor(Color.parseColor(Cotter.colors.ColorBackground));
-        textShow.setTextColor(Color.parseColor(Cotter.colors.ColorPrimary));
+        textForgot.setTextColor(Color.parseColor(Cotter.colors.ColorPrimary));
         textError.setTextColor(Color.parseColor(Cotter.colors.ColorDanger));
 
         // Set up and show toolbar
@@ -148,6 +153,10 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
         super.onResume();
         pin = "";
         wrong = 0;
+        pinError = false;
+        textError.setText("");
+        textError.setVisibility(View.GONE);
+        setShowPinText(false);
         setBullet();
     }
 
@@ -224,7 +233,7 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
         }
 
         String errorString = ActivityStrings.get(Strings.ErrorInvalid);
-        PinHelper.shakePin(bullet, pins, errorString, textShow, textError, this, this);
+        PinHelper.shakePin(bullet, pins, errorString, null, textError, this, this);
     }
 
     // Set the bullets to the correct color based on entered pin length,
@@ -240,7 +249,7 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
 
     // called when delete key is pressed
     public void onDeleteKey(View v) {
-        PinHelper.onDeleteKey(textError, textShow, this);
+        PinHelper.onDeleteKey(textError, textForgot, this);
     }
 
     // Toggle showing pin or not
@@ -251,7 +260,7 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
 
     // Set showPin to a certain value
     public void setShowPinText(boolean show) {
-        PinHelper.setShowPinText(show, textShow, ActivityStrings.get(Strings.ShowPin), ActivityStrings.get(Strings.HidePin), this);
+        PinHelper.setShowPinText(show, textForgot, ActivityStrings.get(Strings.ForgotPin), ActivityStrings.get(Strings.ForgotPin), this);
     }
 
     // ------- BIOMETRIC HANDLERS ---------
@@ -339,5 +348,64 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
+    }
+
+
+    // ------- FORGOT PIN ---------
+
+    public void error() {
+        String errorString = ActivityStrings.get(Strings.ErrorOther);
+        PinHelper.shakePin(bullet, pins, errorString, null, textError, this, this);
+    }
+
+    // Send reset code and go to ResetPin flow
+    public void onForgotPin(View view) {
+        setLoading(true);
+        User user = Cotter.getUser();
+        String name = user.name;
+        String sendingMethod = user.sendingMethod;
+        String sendingDestination = user.sendingDestination;
+        // Verify Pin
+        Callback cb = new Callback(){
+            public void onSuccess(JSONObject response){
+                Class callBack = Cotter.PinVerification.goToCallback();
+                Intent nextIntent = Cotter.PinReset.startFlowWithIntent(PinVerificationActivity.this, callBack, "PIN RESET");
+                try {
+                    nextIntent.putExtra("challenge", response.getString("challenge"));
+                    nextIntent.putExtra("challenge_id", response.getInt("challenge_id"));
+                    nextIntent.putExtra("sending_method", sendingMethod);
+                    nextIntent.putExtra("sending_destination", sendingDestination);
+                    startActivity(nextIntent);
+                    setLoading(false);
+                } catch (Exception e) {
+                    setLoading(false);
+                    error();
+                    Log.e("COTTER RESET PIN", "Error parsing response from pin reset start");
+                }
+            }
+            public void onError(String error){
+                setLoading(false);
+                Log.e("Verify Pin Error", error);
+                error();
+            }
+        };
+
+
+        if (name != null && sendingMethod != null && sendingDestination != null) {
+            Cotter.authRequest.ResetStart(this, Cotter.PinMethod, sendingMethod, sendingDestination, name, cb);
+        } else {
+            setLoading(false);
+            error();
+            Log.e("COTTER RESET PIN", "Please set user's name, sending method and destination. Use `Cotter.getUser().setUserInformation()`" + name + sendingDestination + sendingMethod);
+        }
+    }
+
+    // add loading overlay
+    public void setLoading(boolean loading) {
+        if (loading) {
+            loadingOverlay.setVisibility(View.VISIBLE);
+        } else {
+            loadingOverlay.setVisibility(View.GONE);
+        }
     }
 }

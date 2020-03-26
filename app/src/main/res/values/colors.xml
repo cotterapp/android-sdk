@@ -11,5 +11,7 @@
     <color name="colorDarkGrey">#666666</color>
     <color name="colorDanger">#D92C59</color>
     <color name="colorTransparent">#00000000</color>
+    <color name="colorSuperLightGrey">#F5F5F5</color>
+
 
 </resources>

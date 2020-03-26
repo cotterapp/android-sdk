@@ -39,6 +39,7 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
     public Map<String, String> ActivityStrings;
 
     private boolean changePin = false;
+    private boolean resetPin = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +50,14 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
 
         Intent intent = getIntent();
         changePin = intent.getExtras().getBoolean("change_pin");
+        resetPin = intent.getExtras().getBoolean("reset_pin");
         if (changePin) {
             name = ScreenNames.PinChangeSuccess;
             ActivityStrings = Cotter.strings.PinChangeSuccess;
+        } else if (resetPin) {
+            name = ScreenNames.PinResetSuccess;
+            ActivityStrings = Cotter.strings.PinResetSuccess;
+            Cotter.PinReset.addActivityStack(this);
         }
 
         textTitle = findViewById(R.id.title);
@@ -71,7 +77,7 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
         constraint.setBackgroundColor(Color.parseColor(Cotter.colors.ColorBackground));
 
         // Check that biometric is enabled
-        biometricAvailable = BiometricHelper.checkBiometricAvailable(this) && !changePin;
+        biometricAvailable = BiometricHelper.checkBiometricAvailable(this) && !changePin && !resetPin;
 
         if (biometricAvailable) {
 
@@ -110,6 +116,11 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
                 publicKey = BiometricHelper.generateKeyPair();
             }
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
     }
 
     // SETTER AND GETTER
@@ -167,6 +178,10 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
         Class nextScreen = Cotter.PinEnrollment.nextStep(name);
         if (changePin) {
             nextScreen = Cotter.PinChange.nextStep(name);
+        } else if (resetPin) {
+            nextScreen = Cotter.PinReset.nextStep(name);
+            Cotter.PinVerification.removeAllActivityStack();
+            Cotter.PinReset.removeAllActivityStack();
         }
         Intent in = new Intent(this, nextScreen);
         startActivity(in);

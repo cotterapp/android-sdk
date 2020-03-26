@@ -34,7 +34,12 @@ public class PinEnrollmentEnterPinActivity extends AppCompatActivity implements 
     public Map<String, String> ActivityStrings;
 
     private boolean changePin = false;
+    private boolean resetPin = false;
     private String currentPin = "";
+
+    private int challengeID;
+    private String challenge;
+    private String resetCode;
 
     public static PinEnrollmentEnterPinActivity instance;
 
@@ -51,10 +56,19 @@ public class PinEnrollmentEnterPinActivity extends AppCompatActivity implements 
         Intent intent = getIntent();
         changePin = intent.getExtras().getBoolean("change_pin");
         currentPin = intent.getExtras().getString("current_pin");
+        resetPin = intent.getExtras().getBoolean("reset_pin");
         if (changePin) {
             name = ScreenNames.PinChangeEnterPin;
             ActivityStrings = Cotter.strings.PinChangeEnterPin;
+        } else if (resetPin) {
+            name = ScreenNames.PinResetEnterPin;
+            ActivityStrings = Cotter.strings.PinResetEnterPin;
+            Cotter.PinReset.addActivityStack(this);
         }
+        challenge = intent.getExtras().getString("challenge");
+        challengeID = intent.getExtras().getInt("challenge_id");
+        resetCode = intent.getExtras().getString("reset_code");
+
 
         pin = "";
         // set pins objects
@@ -82,14 +96,12 @@ public class PinEnrollmentEnterPinActivity extends AppCompatActivity implements 
         textError.setTextColor(Color.parseColor(Cotter.colors.ColorDanger));
 
         // Set up and show toolbar
-        if (Cotter.allowClosePinEnrollment) {
-            setupToolBar();
-        }
+        setupToolBar();
     }
 
     @Override
     public void onBackPressed() {
-        if (Cotter.allowClosePinEnrollment) {
+        if (Cotter.allowClosePinEnrollment || changePin || resetPin) {
             super.onBackPressed();
         }
     }
@@ -102,9 +114,12 @@ public class PinEnrollmentEnterPinActivity extends AppCompatActivity implements 
         if (toolbar == null) return;
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
+
+        if (Cotter.allowClosePinEnrollment || changePin || resetPin) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
+        }
     }
 
     // Handle back button
@@ -127,7 +142,7 @@ public class PinEnrollmentEnterPinActivity extends AppCompatActivity implements 
                         public void onClick(DialogInterface dialog, int which) {
                             // Continue to callback class if PinEnrollment
                             // otherwise if PinChange, go back
-                            if (!changePin) {
+                            if (!changePin && !resetPin) {
                                 Class nextScreen = Cotter.PinEnrollment.goToCallback();
                                 Intent in = new Intent(getApplicationContext(), nextScreen);
                                 startActivity(in);
@@ -168,12 +183,24 @@ public class PinEnrollmentEnterPinActivity extends AppCompatActivity implements 
         Class nextScreen = Cotter.PinEnrollment.nextStep(name);
         if (changePin) {
             nextScreen = Cotter.PinChange.nextStep(name);
+        } else if (resetPin) {
+            nextScreen = Cotter.PinReset.nextStep(name);
         }
         Intent in = new Intent(this, nextScreen);
         in.putExtra("pin", pin);
         if (changePin) {
             in.putExtra("current_pin", currentPin);
+            in.putExtra("reset_pin", false);
             in.putExtra("change_pin", true);
+        } else if (resetPin) {
+            in.putExtra("reset_pin", true);
+            in.putExtra("change_pin", false);
+            in.putExtra("challenge", challenge);
+            in.putExtra("challenge_id", challengeID);
+            in.putExtra("reset_code", resetCode);
+        } else {
+            in.putExtra("reset_pin", false);
+            in.putExtra("change_pin", false);
         }
         startActivity(in);
     }
