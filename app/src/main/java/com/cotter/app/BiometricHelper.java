@@ -2,6 +2,7 @@ package com.cotter.app;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
@@ -98,21 +99,41 @@ public class BiometricHelper {
     // Generate KeyPair
     public static String generateKeyPair() {
         try {
-            KeyGenParameterSpec keyGenParameterSpec = new KeyGenParameterSpec.Builder(
-                    getKeyStoreAlias(),
-                    KeyProperties.PURPOSE_SIGN | KeyProperties.PURPOSE_VERIFY)
-                    .setDigests(KeyProperties.DIGEST_SHA256,
-                            KeyProperties.DIGEST_SHA512)
-                    .setUserAuthenticationRequired(true)
-                    .setInvalidatedByBiometricEnrollment(true)
-                    .build();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                KeyGenParameterSpec keyGenParameterSpec = new KeyGenParameterSpec.Builder(
+                        getKeyStoreAlias(),
+                        KeyProperties.PURPOSE_SIGN | KeyProperties.PURPOSE_VERIFY)
+                        .setDigests(KeyProperties.DIGEST_SHA256,
+                                KeyProperties.DIGEST_SHA512)
+                        .setUserAuthenticationRequired(true)
+                        .setInvalidatedByBiometricEnrollment(false)
+                        .build();
 
-            KeyPairGenerator kpg = KeyPairGenerator.getInstance(
-                    KeyProperties.KEY_ALGORITHM_EC, androidKeyStore);
-            kpg.initialize(keyGenParameterSpec);
+                KeyPairGenerator kpg = KeyPairGenerator.getInstance(
+                        KeyProperties.KEY_ALGORITHM_EC, androidKeyStore);
+                kpg.initialize(keyGenParameterSpec);
 
-            KeyPair kp = kpg.generateKeyPair();
-            return Base64.encodeToString(kp.getPublic().getEncoded(), Base64.DEFAULT);
+                KeyPair kp = kpg.generateKeyPair();
+                return Base64.encodeToString(kp.getPublic().getEncoded(), Base64.DEFAULT);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                KeyGenParameterSpec keyGenParameterSpec = new KeyGenParameterSpec.Builder(
+                        getKeyStoreAlias(),
+                        KeyProperties.PURPOSE_SIGN | KeyProperties.PURPOSE_VERIFY)
+                        .setDigests(KeyProperties.DIGEST_SHA256,
+                                KeyProperties.DIGEST_SHA512)
+                        .setUserAuthenticationRequired(true)
+                        .build();
+
+                KeyPairGenerator kpg = KeyPairGenerator.getInstance(
+                        KeyProperties.KEY_ALGORITHM_EC, androidKeyStore);
+                kpg.initialize(keyGenParameterSpec);
+
+                KeyPair kp = kpg.generateKeyPair();
+                return Base64.encodeToString(kp.getPublic().getEncoded(), Base64.DEFAULT);
+            } else {
+                Log.d("generateKeyPair", "API Level is lower than 23, KeGenParameterSpec is not available.");
+            }
         }   catch (Exception e) {
             Log.d("generateKeyPair", e.toString());
         }
