@@ -237,7 +237,7 @@ public class AuthRequest {
     }
 
     public String ConstructApprovedEventMsg(String event, String timestamp, String method) {
-        String[] list = { Cotter.getUser(Cotter.authRequest).client_user_id, Cotter.ApiKeyID, event, timestamp, method,
+        String[] list = { Cotter.UserID, Cotter.ApiKeyID, event, timestamp, method,
                 "true" };
         return TextUtils.join("", list);
     }
@@ -247,7 +247,7 @@ public class AuthRequest {
         final JSONObject req = new JSONObject();
 
         try {
-            req.put("client_user_id", Cotter.getUser(Cotter.authRequest).client_user_id);
+            req.put("client_user_id", Cotter.UserID);
             req.put("issuer", Cotter.ApiKeyID);
             req.put("event", event);
             req.put("ip", getLocalIpAddress());
@@ -268,7 +268,7 @@ public class AuthRequest {
         final JSONObject req = new JSONObject();
 
         try {
-            req.put("client_user_id", Cotter.getUser(Cotter.authRequest).client_user_id);
+            req.put("client_user_id", Cotter.UserID);
             req.put("issuer", Cotter.ApiKeyID);
             req.put("event", event);
             req.put("ip", getLocalIpAddress());
@@ -288,7 +288,7 @@ public class AuthRequest {
         final JSONObject req = new JSONObject();
 
         try {
-            req.put("client_user_id", Cotter.getUser(Cotter.authRequest).client_user_id);
+            req.put("client_user_id", Cotter.UserID);
             req.put("issuer", Cotter.ApiKeyID);
             req.put("event", event);
             req.put("ip", getLocalIpAddress());
@@ -320,7 +320,7 @@ public class AuthRequest {
     public JSONObject ConstructEventJSON(String event, String timestamp, String method, final Callback callback) {
         final JSONObject req = new JSONObject();
         try {
-            req.put("client_user_id", Cotter.getUser(Cotter.authRequest).client_user_id);
+            req.put("client_user_id", Cotter.UserID);
             req.put("issuer", Cotter.ApiKeyID);
             req.put("event", event);
             req.put("ip", getLocalIpAddress());
@@ -342,7 +342,7 @@ public class AuthRequest {
         final JSONObject req = new JSONObject();
 
         try {
-            req.put("client_user_id", Cotter.getUser(Cotter.authRequest).client_user_id);
+            req.put("client_user_id", Cotter.UserID);
             req.put("issuer", Cotter.ApiKeyID);
             req.put("event", ev.event);
             req.put("ip", ev.ip);
@@ -359,7 +359,7 @@ public class AuthRequest {
     }
 
     public String ConstructRespondEventMsg(String event, String timestamp, String method, boolean approved) {
-        String[] list = {Cotter.getUser(Cotter.authRequest).client_user_id, Cotter.ApiKeyID, event, timestamp, method,
+        String[] list = {Cotter.UserID, Cotter.ApiKeyID, event, timestamp, method,
                 approved + ""};
         return TextUtils.join("", list);
     }

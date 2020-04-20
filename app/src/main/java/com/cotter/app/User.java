@@ -22,6 +22,9 @@ public class User {
 
     public static User getInstance(Context context, AuthRequest authRequest) {
         if (instance == null) {
+            instance = new User();
+            instance.issuer = Cotter.ApiKeyID;
+            instance.client_user_id = Cotter.UserID;
             authRequest.GetUser(context, new Callback(){
                 public void onSuccess(JSONObject response){
                     Gson gson = new Gson();
@@ -35,8 +38,10 @@ public class User {
                 }
             });
         }
+        Cotter.setUser(instance);
         return instance;
     }
+
     public static User refetchUser(Context context, AuthRequest authRequest) {
         authRequest.GetUser(context, new Callback(){
             public void onSuccess(JSONObject response){
@@ -50,6 +55,7 @@ public class User {
                 Log.e("Init User Error", error);
             }
         });
+        Cotter.setUser(instance);
         return instance;
     }
 
@@ -63,6 +69,7 @@ public class User {
             instance.enrolled = updatedUser.enrolled;
             instance.default_method = updatedUser.default_method;
         }
+        Cotter.setUser(instance);
         return instance;
     }
 
