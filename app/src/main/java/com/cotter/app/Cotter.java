@@ -36,6 +36,8 @@ public class Cotter {
 
     public static User user;
 
+    public static String sharedPreferenceFileKeyPrefix = "com.cotter.app.COTTER_PREFERENCES";
+
 
     private static Context ctx;
     public static Flow PinEnrollment = new Flow(new String[] { ScreenNames.PinEnrollmentEnterPin, ScreenNames.PinEnrollmentReEnterPin, ScreenNames.PinEnrollmentSuccess });
@@ -54,6 +56,11 @@ public class Cotter {
         strings = new Strings();
         colors = new Colors();
         methods = new CotterMethodHelper(context);
+    }
+
+
+    public static String getSharedPreferenceFileKeyPrefix() {
+        return sharedPreferenceFileKeyPrefix + "_" + Cotter.ApiKeyID + "_" + Cotter.UserID;
     }
 
 

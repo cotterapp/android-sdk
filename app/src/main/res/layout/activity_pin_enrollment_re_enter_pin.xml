@@ -124,4 +124,5 @@
             android:layout_height="fill_parent" />
     </LinearLayout>
 
+    <include layout="@layout/loading_overlay" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -19,6 +20,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
@@ -28,6 +30,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -134,6 +137,27 @@ public class AuthRequest {
 
                     @Override
                     public void onResponse(JSONObject response) {
+
+                        // Update shared preferences
+                        if (method == Cotter.BiometricMethod) {
+                            SharedPreferences sharedPref = context.getSharedPreferences(
+                                    Cotter.getSharedPreferenceFileKeyPrefix(), Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+
+                            editor.putBoolean(CotterMethodHelper.BiometricEnrolledThisDeviceKey, enrolled);
+
+                            Gson gson = new Gson();
+                            User user = gson.fromJson(response.toString(), User.class);
+                            List<String> enrolledMethods = Arrays.asList(user.enrolled);
+                            boolean bioEnrolledAny = enrolledMethods.contains(Cotter.BiometricMethod);
+                            boolean bioDefault = user.default_method != null && user.default_method.equals(Cotter.BiometricMethod);
+                            editor.putBoolean(CotterMethodHelper.BiometricEnrolledAnyKey, bioEnrolledAny);
+                            editor.putBoolean(CotterMethodHelper.BiometricEnrolledDefaultKey, bioDefault);
+
+
+                            editor.commit();
+                        }
+
                         callback.onSuccess(response);
                     }
                 }, new Response.ErrorListener() {

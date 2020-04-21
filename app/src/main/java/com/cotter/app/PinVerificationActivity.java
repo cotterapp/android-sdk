@@ -163,6 +163,7 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
     // ------- PIN HANDLERS ---------
     // Submit the pin to check thru Cotter server
     public void onSubmitPin() {
+        setLoading(true);
         // Verify Pin
         Callback cb = new Callback(){
             public void onSuccess(JSONObject response){
@@ -174,12 +175,15 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
                 }
                 if (valid) {
                     onContinue();
+                    setLoading(false);
                 } else {
+                    setLoading(false);
                     invalidPin();
                 }
             }
             public void onError(String error){
                 Log.e("Verify Pin Error", error);
+                setLoading(false);
                 invalidPin();
             }
         };
@@ -295,6 +299,7 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
 
     // Submit the signature from biometric
     public void onSubmitBio(String signature) {
+        setLoading(true);
         // Verify Pin
         Callback cb = new Callback(){
             public void onSuccess(JSONObject response){
@@ -309,13 +314,16 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
                 if (valid) {
                     Log.d("COTTER_PIN_VERIFICATION", "onSubmitBio Valid Success Signature: " + response.toString());
                     onContinue();
+                    setLoading(false);
                 } else {
+                    setLoading(false);
                     invalidSignature();
                 }
             }
             public void onError(String error){
                 Log.d("COTTER_PIN_VERIFICATION", "onSubmitBio > onError: " + error);
                 Log.e("Verify Signature Error", error);
+                setLoading(false);
                 invalidSignature();
             }
         };

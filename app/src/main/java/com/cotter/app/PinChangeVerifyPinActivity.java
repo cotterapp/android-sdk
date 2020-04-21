@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -35,6 +36,7 @@ public class PinChangeVerifyPinActivity extends AppCompatActivity implements Pin
     private TextView textError;
     private ConstraintLayout container;
     private LinearLayout bullet;
+    private FrameLayout loadingOverlay;
 
     public Map<String, String> ActivityStrings;
 
@@ -59,6 +61,9 @@ public class PinChangeVerifyPinActivity extends AppCompatActivity implements Pin
         pins.add((TextView)findViewById(R.id.input_6));
 
         bullet = findViewById(R.id.bullet);
+
+        // set loading overlay
+        loadingOverlay = findViewById(R.id.loading_overlay);
 
         // Set strings
         textTitle = findViewById(R.id.text_title);
@@ -116,6 +121,7 @@ public class PinChangeVerifyPinActivity extends AppCompatActivity implements Pin
     // ------- PIN HANDLERS ---------
     // Submit the pin to check thru Cotter server
     public void onSubmitPin() {
+        setLoading(true);
         // Verify Pin
         Callback cb = new Callback(){
             public void onSuccess(JSONObject response){
@@ -127,12 +133,15 @@ public class PinChangeVerifyPinActivity extends AppCompatActivity implements Pin
                 }
                 if (valid) {
                     onContinue();
+                    setLoading(false);
                 } else {
+                    setLoading(false);
                     invalidPin();
                 }
             }
             public void onError(String error){
                 Log.e("Verify Pin Error", error);
+                setLoading(false);
                 invalidPin();
             }
         };
@@ -219,4 +228,12 @@ public class PinChangeVerifyPinActivity extends AppCompatActivity implements Pin
         PinHelper.setShowPinText(show, textShow, ActivityStrings.get(Strings.ShowPin), ActivityStrings.get(Strings.HidePin), this);
     }
 
+    // add loading overlay
+    public void setLoading(boolean loading) {
+        if (loading) {
+            loadingOverlay.setVisibility(View.VISIBLE);
+        } else {
+            loadingOverlay.setVisibility(View.GONE);
+        }
+    }
 }

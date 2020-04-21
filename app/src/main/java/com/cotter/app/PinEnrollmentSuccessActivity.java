@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,6 +34,7 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
     private BiometricPrompt biometricPrompt;
     private BiometricPrompt.PromptInfo promptInfo;
     private String publicKey;
+    private FrameLayout loadingOverlay;
 
     private boolean biometricAvailable = false;
 
@@ -65,6 +67,10 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
         button = findViewById(R.id.button);
         img = findViewById(R.id.success_image);
         constraint = findViewById(R.id.container);
+
+
+        // set loading overlay
+        loadingOverlay = findViewById(R.id.loading_overlay);
 
         // Set Strings
         textTitle.setText(ActivityStrings.get(Strings.Title));
@@ -154,15 +160,18 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
 
 
     public void onSubmitBio(String signature) {
+        setLoading(true);
         // Signature is null for enrollment
         // Enroll Biometric
         Callback cb = new Callback(){
             public void onSuccess(JSONObject response){
                 Log.i("Submit Key Success", response.toString());
                 onContinue();
+                setLoading(false);
             }
             public void onError(String error){
                 Log.e("Submit Key Error", error);
+                setLoading(false);
                 invalidEnrollBiometric();
             }
         };
@@ -215,5 +224,14 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
+    }
+
+    // add loading overlay
+    public void setLoading(boolean loading) {
+        if (loading) {
+            loadingOverlay.setVisibility(View.VISIBLE);
+        } else {
+            loadingOverlay.setVisibility(View.GONE);
+        }
     }
 }

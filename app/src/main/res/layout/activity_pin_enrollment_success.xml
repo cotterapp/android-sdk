@@ -75,4 +75,5 @@
             />
 
     </LinearLayout>
+    <include layout="@layout/loading_overlay" />
 </androidx.constraintlayout.widget.ConstraintLayout>

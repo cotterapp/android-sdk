@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -30,6 +31,7 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
     private TextView textShow;
     private TextView textError;
     private ConstraintLayout container;
+    private FrameLayout loadingOverlay;
 
     private boolean pinError = false;
     private boolean showPin = false;
@@ -77,6 +79,9 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
         pins.add((TextView)findViewById(R.id.input_4));
         pins.add((TextView)findViewById(R.id.input_5));
         pins.add((TextView)findViewById(R.id.input_6));
+
+        // set loading overlay
+        loadingOverlay = findViewById(R.id.loading_overlay);
 
         // set bullet obj and original pin from PinEnrollmentEnterPinActivity
         bullet = findViewById(R.id.bullet);
@@ -141,13 +146,17 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
             return;
         }
 
+        setLoading(true);
+
         // Enroll Pin
         Callback cb = new Callback(){
             public void onSuccess(JSONObject response){
                 Log.i("Submit Pin Success", response.toString());
                 onContinue();
+                setLoading(false);
             }
             public void onError(String error){
+                setLoading(false);
                 errorOther();
                 Log.e("Submit Pin Error", error);
             }
@@ -260,6 +269,15 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
     // Set showPin to a certain value
     public void setShowPinText(boolean show) {
         PinHelper.setShowPinText(show, textShow, ActivityStrings.get(Strings.ShowPin), ActivityStrings.get(Strings.HidePin), this);
+    }
+
+    // add loading overlay
+    public void setLoading(boolean loading) {
+        if (loading) {
+            loadingOverlay.setVisibility(View.VISIBLE);
+        } else {
+            loadingOverlay.setVisibility(View.GONE);
+        }
     }
 
 }
