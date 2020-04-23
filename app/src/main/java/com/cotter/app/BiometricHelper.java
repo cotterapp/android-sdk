@@ -167,10 +167,15 @@ public class BiometricHelper {
             KeyStore keyStore = KeyStore.getInstance(androidKeyStore);
             keyStore.load(null);
 
-             PublicKey publicKey = keyStore.getCertificate(getKeyStoreAlias()).getPublicKey();
-            return Base64.encodeToString(publicKey.getEncoded(), Base64.DEFAULT);
+            PrivateKey privateKey = (PrivateKey) keyStore.getKey(getKeyStoreAlias(), null);
+            if (privateKey != null) {
+                PublicKey publicKey = keyStore.getCertificate(getKeyStoreAlias()).getPublicKey();
+                return Base64.encodeToString(publicKey.getEncoded(), Base64.DEFAULT);
+            } else {
+                Log.e("COTTER_BIOMETRIC_HELPER", "getPublicKey: PrivateKey is null, that means there's no keypair for this user");
+            }
         } catch (Exception e) {
-            Log.e("getPublicKey", e.toString());
+            Log.e("COTTER_BIOMETRIC_HELPER", "getPublicKey: " + e.toString());
         }
         return null;
     }

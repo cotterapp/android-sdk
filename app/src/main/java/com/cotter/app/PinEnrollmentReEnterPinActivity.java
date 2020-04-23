@@ -232,13 +232,6 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
 
     // Invoked when pin is invalid
     public void invalidPin() {
-        // Allow 3 times wrong pin before closes the page and back to beginning
-        wrong = wrong + 1;
-        if (wrong >= 3) {
-            finish();
-            return;
-        }
-
         String errorString = ActivityStrings.get(Strings.ErrorNoMatch);
         PinHelper.shakePin(bullet, pins, errorString, textShow, textError, this, this);
 

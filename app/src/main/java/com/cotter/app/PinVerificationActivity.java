@@ -230,12 +230,6 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
     }
 
     public void invalidPin() {
-        wrong = wrong + 1;
-        if (wrong >= 3) {
-            finish();
-            return;
-        }
-
         String errorString = ActivityStrings.get(Strings.ErrorInvalid);
         PinHelper.shakePin(bullet, pins, errorString, null, textError, this, this);
     }

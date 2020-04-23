@@ -23,19 +23,26 @@ public class CotterMethodHelper {
 
     // Check if biometric is enrolled in this device
     public void biometricEnrolled(final CotterMethodChecker callback) {
+        biometricEnrolledForce(callback, false);
+    }
+
+    // Check if biometric is enrolled in this device
+    public void biometricEnrolledForce(final CotterMethodChecker callback, boolean forceFetch) {
 
         // check in shared preferences
         SharedPreferences sharedPref = ctx.getSharedPreferences(
                 Cotter.getSharedPreferenceFileKeyPrefix(), Context.MODE_PRIVATE);
 
         // if shared preferences exist
-        if (sharedPref.contains(BiometricEnrolledThisDeviceKey)) {
+        if (sharedPref.contains(BiometricEnrolledThisDeviceKey) && !forceFetch) {
+            Log.d("COTTER_BIO_ENROLLED", "Getting data from shared preferences, sharedPref contain: " + sharedPref.contains(BiometricEnrolledThisDeviceKey) + ", force: " + forceFetch);
             boolean enrolledThisDevice = sharedPref.getBoolean(BiometricEnrolledThisDeviceKey, false);
             callback.onCheck(enrolledThisDevice);
             return;
         }
 
         // otherwise, check and save
+        Log.d("COTTER_BIO_ENROLLED", "Getting data from server, sharedPref contain: " + sharedPref.contains(BiometricEnrolledThisDeviceKey) + ", force: " + forceFetch);
         String pubKey = BiometricHelper.getPublicKey();
         Cotter.authRequest.CheckEnrolledMethod(ctx, Cotter.BiometricMethod, pubKey, new Callback(){
             public void onSuccess(JSONObject response){
@@ -45,18 +52,21 @@ public class CotterMethodHelper {
                     if(response.getBoolean("enrolled") && response.getString("method").equals(Cotter.BiometricMethod)){
                         callback.onCheck(true);
                         editor.putBoolean(BiometricEnrolledThisDeviceKey, true);
+                        Log.d("COTTER_BIO_ENROLLED", "Result true: Success updating data to shared pref");
                     } else {
                         callback.onCheck(false);
                         editor.putBoolean(BiometricEnrolledThisDeviceKey, false);
+                        Log.d("COTTER_BIO_ENROLLED", "Result false: Success updating data to shared pref");
                     }
                     editor.commit();
                 } catch (Exception e) {
                     callback.onCheck(false);
-                    Log.e("COTTER_REQ_BIO_ENROLLED", e.toString());
+                    Log.e("COTTER_BIO_ENROLLED","Exception: " +  e.toString());
                 }
             }
             public void onError(String error){
-                Log.e("fetch User Error", error);
+                callback.onCheck(false);
+                Log.e("COTTER_BIO_ENROLLED", "onError: " + error);
             }
         });
     }
@@ -95,6 +105,8 @@ public class CotterMethodHelper {
                 editor.commit();
             }
             public void onError(String error){
+
+                callback.onCheck(false);
                 Log.e("fetch User Error", error);
             }
         });

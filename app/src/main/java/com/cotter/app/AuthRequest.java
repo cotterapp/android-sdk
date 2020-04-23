@@ -164,6 +164,12 @@ public class AuthRequest {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Cotter.methods.biometricEnrolledForce(new CotterMethodChecker() {
+                            @Override
+                            public void onCheck(boolean result) {
+                                Log.d("COTTER_BIO_AUTH_REQ", "Update biometric enrolled in shared pref: " + result);
+                            }
+                        }, true);
                         callback.onError(getErrorMessage(error));
                     }
                 }) {
