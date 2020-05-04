@@ -20,7 +20,6 @@
         android:onClick="onPressKey"
         android:textColor="@color/colorBlack"
         android:textSize="24dp"
-
     />
     <Button
         android:id="@+id/keyboard_2"

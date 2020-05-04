@@ -307,9 +307,10 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
                 }
                 if (valid) {
                     Log.d("COTTER_PIN_VERIFICATION", "onSubmitBio Valid Success Signature: " + response.toString());
-                    onContinue();
                     setLoading(false);
+                    onContinue();
                 } else {
+                    Log.e("COTTER_PIN_VERIFICATION", "onSubmitBio Invalid Signature: " + response.toString());
                     setLoading(false);
                     invalidSignature();
                 }

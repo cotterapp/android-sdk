@@ -105,7 +105,6 @@ public class CotterMethodHelper {
                 editor.commit();
             }
             public void onError(String error){
-
                 callback.onCheck(false);
                 Log.e("fetch User Error", error);
             }
@@ -142,6 +141,7 @@ public class CotterMethodHelper {
                 editor.commit();
             }
             public void onError(String error){
+                callback.onCheck(false);
                 Log.e("fetch User Error", error);
             }
         });
@@ -170,6 +170,7 @@ public class CotterMethodHelper {
                 }
             }
             public void onError(String error){
+                callback.onCheck(false);
                 Log.e("COTTER_REQ_PIN_ENROLLED", error);
             }
         });
@@ -188,6 +189,7 @@ public class CotterMethodHelper {
                 }
             }
             public void onError(String error){
+                callback.onCheck(false);
                 Log.e("fetch User Error", error);
             }
         });
@@ -211,6 +213,7 @@ public class CotterMethodHelper {
                 }
             }
             public void onError(String error){
+                callback.onCheck(false);
                 Log.e("fetch User Error", error);
             }
         });
@@ -233,6 +236,7 @@ public class CotterMethodHelper {
                 }
             }
             public void onError(String error){
+                callback.onCheck(false);
                 Log.e("fetch User Error", error);
             }
         });
@@ -251,6 +255,7 @@ public class CotterMethodHelper {
                 }
             }
             public void onError(String error){
+                callback.onCheck(false);
                 Log.e("fetch User Error", error);
             }
         });

@@ -104,6 +104,11 @@ public class PinEnrollmentSuccessActivity extends AppCompatActivity implements B
                 public void onError(String error) {
 
                 }
+
+                @Override
+                public void onLoading(boolean loading) {
+
+                }
             };
             // Setup Biometric Handlers for onAuthSuccess, or onAuthFail, etc.
             BiometricHelper.setupEnrollBiometricHandler(this, this, this, this, callbackBiometric);

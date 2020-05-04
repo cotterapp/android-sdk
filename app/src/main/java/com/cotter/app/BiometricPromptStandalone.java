@@ -75,6 +75,7 @@ public class BiometricPromptStandalone implements BiometricInterface {
     }
 
     public void onSubmitBio(String signature) {
+        callback.onLoading(true);
         // Signature is null for enrollment
         // Enroll Biometric
         Callback cb = new Callback(){
@@ -82,6 +83,7 @@ public class BiometricPromptStandalone implements BiometricInterface {
                 Log.e("Submit Key Success", response.toString());
                 callback.onSuccess(true);
                 User.refetchUser(ctx, Cotter.authRequest);
+                callback.onLoading(false);
             }
             public void onError(String error){
                 Log.e("Submit Key Error", error);
@@ -90,6 +92,7 @@ public class BiometricPromptStandalone implements BiometricInterface {
                     User.refetchUser(ctx, Cotter.authRequest);
                 }
                 callback.onError(error);
+                callback.onLoading(false);
             }
         };
 
@@ -208,6 +211,8 @@ public class BiometricPromptStandalone implements BiometricInterface {
             Log.e("COTTER BIOMETRIC PROMPT", "Biometric is not available on this device");
             return;
         }
+        callback.onLoading(true);
+
         String pubKey = BiometricHelper.getPublicKey();
 
         // Signature is null for enrollment
@@ -217,6 +222,7 @@ public class BiometricPromptStandalone implements BiometricInterface {
                 Log.e("Delete Key Success", response.toString());
                 User.refetchUser(ctx, Cotter.authRequest);
                 callback.onSuccess(false);
+                callback.onLoading(false);
             }
             public void onError(String error){
                 Log.e("Delete Key Error", error);
@@ -225,6 +231,7 @@ public class BiometricPromptStandalone implements BiometricInterface {
                     User.refetchUser(ctx, Cotter.authRequest);
                 }
                 callback.onError(error);
+                callback.onLoading(false);
             }
         };
 

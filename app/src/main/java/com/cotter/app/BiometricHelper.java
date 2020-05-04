@@ -67,7 +67,7 @@ public class BiometricHelper {
                 if (errorCode == 13 && callback != null) {
                     callback.onCanceled();
                 }
-                Log.d("COTTER_BIOMETRIC_HELPER", "onAuthenticationError: " + errString);
+                Log.e("COTTER_BIOMETRIC_HELPER", "onAuthenticationError: " + errString);
             }
 
             @Override
@@ -77,8 +77,9 @@ public class BiometricHelper {
 
                 try {
                       biometricInterface.onSubmitBio(null);
+                    Log.d("COTTER_BIOMETRIC_HELPER", "onAuthenticationSucceeded success");
                 }    catch (Exception e) {
-                    Log.d("onAuthSucceeded", e.toString());
+                    Log.e("COTTER_BIOMETRIC_HELPER","onAuthenticationSucceeded fail " + e.toString());
                 }
             }
 
@@ -88,7 +89,7 @@ public class BiometricHelper {
                 if (callback != null) {
                     callback.onError("Biometric authentication failed: onAuthenticationFailed");
                 }
-                Log.d("COTTER_BIOMETRIC_HELPER", "onAuthenticationFailed");
+                Log.e("COTTER_BIOMETRIC_HELPER", "onAuthenticationFailed");
             }
         });
         biometricInterface.setBiometricPrompt(bp);
@@ -214,7 +215,7 @@ public class BiometricHelper {
             @Override
             public void onAuthenticationSucceeded(
                     @NonNull BiometricPrompt.AuthenticationResult result) {
-                super.onAuthenticationSucceeded(result);
+//                super.onAuthenticationSucceeded(result);
 
                 try {
                     String strToSign = biometricInterface.getStringToSign();
@@ -224,10 +225,11 @@ public class BiometricHelper {
 
                     biometricInterface.onSubmitBio(Base64.encodeToString(signature, Base64.DEFAULT));
 
+                    Log.d("COTTER_BIOMETRIC_HELPER","onAuthenticationSucceeded setupVerifyBiometricHandler success");
                     Log.d("Message", strToSign);
                     Log.d("Signature", Base64.encodeToString(signature, Base64.DEFAULT));
                 }    catch (Exception e) {
-                    Log.d("onAuthSucceeded", e.toString());
+                    Log.e("COTTER_BIOMETRIC_HELPER", "onAuthenticationSucceeded setupVerifyBiometricHandler failed: " + e.toString());
                 }
             }
 

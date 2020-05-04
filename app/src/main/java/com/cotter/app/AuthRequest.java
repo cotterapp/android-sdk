@@ -112,6 +112,8 @@ public class AuthRequest {
 
         String url = mainServerURL + "/user/" + Cotter.UserID;
 
+        Log.e("COTTER REQ URL", url);
+
         JSONObject req = new JSONObject();
 
         try {
@@ -743,6 +745,7 @@ public class AuthRequest {
     }
 
     public static String getErrorMessage(VolleyError error) {
+        Log.e("COTTER ERROR MESSAGE", error.toString());
         String statusCode = null;
         String body = null;
 
