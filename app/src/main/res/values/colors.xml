@@ -12,6 +12,7 @@
     <color name="colorDanger">#D92C59</color>
     <color name="colorTransparent">#00000000</color>
     <color name="colorSuperLightGrey">#F5F5F5</color>
+    <color name="colorButtonPress">@color/colorLightGrey</color>
 
 
 </resources>
