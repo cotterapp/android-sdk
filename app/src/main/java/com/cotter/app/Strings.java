@@ -238,32 +238,32 @@ public class Strings {
         PinVerification.put(key, value);
     }
 
-    public void setPinChangeVerifyPin(String key, String value) {
+    public void setPinChangeVerifyPinStrings(String key, String value) {
         PinChangeVerifyPin.put(key, value);
     }
-    public void setPinChangeEnterPin(String key, String value) {
+    public void setPinChangeEnterPinStrings(String key, String value) {
         PinChangeEnterPin.put(key, value);
     }
 
-    public void setPinChangeReEnterPin(String key, String value) {
+    public void setPinChangeReEnterPinStrings(String key, String value) {
         PinChangeReEnterPin.put(key, value);
     }
-    public void setPinChangeSuccess(String key, String value) {
+    public void setPinChangeSuccessStrings(String key, String value) {
         PinChangeSuccess.put(key, value);
     }
 
 
-    public void setPinReset(String key, String value) {
+    public void setPinResetStrings(String key, String value) {
         PinReset.put(key, value);
     }
-    public void setPinResetEnterPin(String key, String value) {
+    public void setPinResetEnterPinStrings(String key, String value) {
         PinResetEnterPin.put(key, value);
     }
 
-    public void setPinResetReEnterPin(String key, String value) {
+    public void setPinResetReEnterPinStrings(String key, String value) {
         PinResetReEnterPin.put(key, value);
     }
-    public void setPinResetSuccess(String key, String value) {
+    public void setPinResetSuccessStrings(String key, String value) {
         PinResetSuccess.put(key, value);
     }
 

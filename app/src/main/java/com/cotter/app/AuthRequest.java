@@ -22,6 +22,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -170,7 +171,18 @@ public class AuthRequest {
                                 Log.d("COTTER_BIO_AUTH_REQ", "Update biometric enrolled in shared pref: " + result);
                             }
                         }, true);
-                        callback.onError(getErrorMessage(error));
+
+                        if (method == Cotter.BiometricMethod && enrolled && getErrorMessage(error).contains("already enrolled")) {
+                            JSONObject enrolledResp = new JSONObject();
+                            try {
+                                enrolledResp.put("response", getErrorMessage(error));
+                            } catch (JSONException e) {
+                                callback.onError(getErrorMessage(error));
+                            }
+                            callback.onSuccess(enrolledResp);
+                        } else {
+                            callback.onError(getErrorMessage(error));
+                        }
                     }
                 }) {
             @Override
