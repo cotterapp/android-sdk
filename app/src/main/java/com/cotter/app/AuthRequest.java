@@ -388,6 +388,7 @@ public class AuthRequest {
             req.put("issuer", Cotter.ApiKeyID);
             req.put("event", ev.event);
             req.put("ip", ev.ip);
+            req.put("location", ev.location);
             req.put("timestamp", ev.timestamp);
             req.put("method", method);
             req.put("code", signature);
