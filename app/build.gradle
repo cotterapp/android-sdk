@@ -40,6 +40,6 @@ dependencies {
 
     implementation 'com.google.androidbrowserhelper:androidbrowserhelper:1.0.0'
     implementation 'com.google.android.material:material:1.2.0-alpha05'
-    implementation 'com.google.android.gms:play-services-vision:19.0.0'
+    implementation 'com.google.android.gms:play-services-vision:20.1.0'
     implementation 'com.google.zxing:core:3.4.0'
 }

@@ -20,6 +20,8 @@ import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
@@ -119,7 +121,11 @@ public class TrustedDeviceHelper {
             return Base64.encodeToString(publicKey.getEncoded(), Base64.DEFAULT);
         } catch (NullPointerException e) {
             return generateKeyPair(ctx);
-        } catch (Exception e) {
+        } catch (NoSuchAlgorithmException e) {
+            return generateKeyPair(ctx);
+        } catch (KeyStoreException e) {
+            return generateKeyPair(ctx);
+        }  catch (Exception e) {
             Log.e("COTTER_TRUSTED_DEV", "getPublicKey error: " + e.toString());
         }
         return null;
@@ -213,6 +219,7 @@ public class TrustedDeviceHelper {
             Log.e("COTTER_TRUSTED_DEV", "enrollOtherDevice, invalid newPublicKeyAndAlgo string. Should be of format <publickey>:<algo>");
             return;
         }
+        Log.e("COTTER_TRUSTED_DEV", "enrollOtherDevice str" + newPublicKeyAndAlgo );
 
         String newPublicKey = strs[0];
         String newAlgo = strs[1];
@@ -225,7 +232,7 @@ public class TrustedDeviceHelper {
 
             Date now = new Date();
             long timestamp = now.getTime() / 1000L;
-            Integer expireSeconds = 60 * 3; // Expire in 3 minutes;
+            Integer expireSeconds = 60 * 15; // Expire in 15 minutes;
 
             if (qrTimetstamp < timestamp - (expireSeconds)) {
                 callback.onError("The QR Code is expired. Current timestamp = " + timestamp + ", QRCode was created at " + qrTimetstamp);

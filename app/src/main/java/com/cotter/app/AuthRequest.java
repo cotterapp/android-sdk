@@ -354,7 +354,7 @@ public class AuthRequest {
     }
 
     public void CreateApprovedEventRequest(Context context, JSONObject req, final Callback callback) {
-        String path = "/event/create";
+        String path = "/event/create?oauth_token=true";
         CreateEventRequest(context, req, path, callback);
     }
 
@@ -496,7 +496,7 @@ public class AuthRequest {
             return;
         }
 
-        String url = mainServerURL + "/event/get/" + eventID;
+        String url = mainServerURL + "/event/get/" + eventID + "?oauth_token=true";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
 
