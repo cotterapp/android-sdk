@@ -88,7 +88,10 @@ public class AuthRequest {
 
     // For trusted devices
     public void EnrollMethod(Context context, String method, String code, String algorithm, final Callback callback) {
-        UpdateMethod(context, method, code, true, false, null, algorithm, callback);
+        UpdateMethod(context, method, code, true, false, null, algorithm, null, callback);
+    }
+    public void EnrollMethodWithCotterUserID(Context context, String method, String code, String algorithm, String cotterUserID, final Callback callback) {
+        UpdateMethod(context, method, code, true, false, null, algorithm, cotterUserID, callback);
     }
 
     public void ChangeMethod(Context context, String method, String code, String currentCode, final Callback callback) {
@@ -101,17 +104,20 @@ public class AuthRequest {
 
     public void UpdateMethod(Context context, String method, String code, boolean enrolled, boolean changeCode,
                              String currentCode, final Callback callback) {
-        UpdateMethod(context, method, code, enrolled, changeCode, currentCode, null, callback);
+        UpdateMethod(context, method, code, enrolled, changeCode, currentCode, null, null, callback);
     }
 
     public void UpdateMethod(Context context, String method, String code, boolean enrolled, boolean changeCode,
-            String currentCode, String algorithm, final Callback callback) {
+            String currentCode, String algorithm, String cotterUserID, final Callback callback) {
         if (!networkIsAvailable(context)) {
             showNetworkErrorDialogIfNecessary(context, callback);
             return;
         }
 
         String url = mainServerURL + "/user/" + Cotter.UserID;
+        if (cotterUserID != null) {
+            url = mainServerURL + "/user/methods?cotter_user_id=" + cotterUserID + "&oauth_token=true";
+        }
 
         JSONObject req = new JSONObject();
 
@@ -131,6 +137,7 @@ public class AuthRequest {
             callback.onError(e.toString());
         }
 
+        Log.e("COTTER URL", url);
         Log.e("COTTER REQ", req.toString());
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, req,
@@ -713,6 +720,87 @@ public class AuthRequest {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("API_KEY_ID", Cotter.ApiKeyID);
                 params.put("API_SECRET_KEY", Cotter.ApiSecretKey);
+
+                return params;
+            }
+        };
+
+        // Access the RequestQueue through your singleton class.
+        VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
+
+    // Register user to Cotter
+    public void RegisterUserToCotter(Context context, String identifier, final Callback callback) {
+        if (!networkIsAvailable(context)) {
+            showNetworkErrorDialogIfNecessary(context, callback);
+            return;
+        }
+
+        String url = mainServerURL + "/user/create";
+
+
+        JSONObject req = new JSONObject();
+        try {
+            req.put("identifier", identifier);
+        } catch (Exception e) {
+            callback.onError(e.toString());
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, req,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callback.onSuccess(response);
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.onError(getErrorMessage(error));
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("API_KEY_ID", Cotter.ApiKeyID);
+
+                return params;
+            }
+        };
+
+        // Access the RequestQueue through your singleton class.
+        VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
+
+    // Get user by identifier
+    public void GetUserByIdentifier(Context context, String identifier, final Callback callback) {
+        if (!networkIsAvailable(context)) {
+            showNetworkErrorDialogIfNecessary(context, callback);
+            return;
+        }
+
+        String url = mainServerURL + "/user?identifier=" + identifier;
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callback.onSuccess(response);
+                        Log.i("COTTER GetByIdentifier", "Success getting user: " + response.toString());
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.onError(getErrorMessage(error));
+                Log.e("COTTER GetByIdentifier", "Error getting user: " + getErrorMessage(error));
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("API_KEY_ID", Cotter.ApiKeyID);
 
                 return params;
             }

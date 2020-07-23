@@ -193,6 +193,29 @@ public class TrustedDeviceHelper {
 
         Cotter.authRequest.EnrollMethod(ctx, Cotter.TrustedDeviceMethod, publicKey, getAlgorithm(ctx), cb);
     }
+    public static void enrollDeviceWithCotterUserID(Context ctx, String cotterUserID, Callback callback) {
+        String publicKey = getPublicKey(ctx);
+        if (publicKey == null) {
+            // Generate keypair that can only be accessed by biometrics
+            publicKey = generateKeyPair(ctx);
+        }
+
+        // Enroll Trusted Device
+        Callback cb = new Callback(){
+            public void onSuccess(JSONObject response){
+                Log.e("COTTER_TRUSTED_DEV", "Enroll Success: " + response.toString());
+                User.refetchUser(ctx, Cotter.authRequest);
+                callback.onSuccess(response);
+            }
+            public void onError(String error){
+                Log.e("COTTER_TRUSTED_DEV", "Enroll error: " + error);
+                User.refetchUser(ctx, Cotter.authRequest);
+                callback.onError(error);
+            }
+        };
+
+        Cotter.authRequest.EnrollMethodWithCotterUserID(ctx, Cotter.TrustedDeviceMethod, publicKey, getAlgorithm(ctx), cotterUserID, cb);
+    }
 
 
     public static boolean checkApprovedResponse(JSONObject response) {

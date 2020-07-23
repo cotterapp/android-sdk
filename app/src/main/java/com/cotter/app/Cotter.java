@@ -3,7 +3,12 @@ package com.cotter.app;
 import android.app.Activity;
 import android.content.Context;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
+
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 public class Cotter {
     public static String UserID;
@@ -45,6 +50,8 @@ public class Cotter {
     public static Flow PinChange = new Flow(new String[] { ScreenNames.PinChangeVerifyPin, ScreenNames.PinChangeEnterPin, ScreenNames.PinChangeReEnterPin, ScreenNames.PinChangeSuccess });
     public static Flow PinReset = new Flow(new String[] { ScreenNames.PinReset, ScreenNames.PinResetEnterPin, ScreenNames.PinResetReEnterPin, ScreenNames.PinResetSuccess });
 
+    public static String MAIN_SERVER_URL = "https://www.cotter.app/api/v0";
+
     public static void init(Context context, String mainServerURL, String userID, String apiKeyID, String apiSecretKey) {
         UserID = userID;
         ApiKeyID = apiKeyID;
@@ -57,7 +64,6 @@ public class Cotter {
         colors = new Colors();
         methods = new CotterMethodHelper(context);
     }
-
 
     public static String getSharedPreferenceFileKeyPrefix() {
         return sharedPreferenceFileKeyPrefix + "_" + Cotter.ApiKeyID + "_" + Cotter.UserID;
@@ -102,5 +108,61 @@ public class Cotter {
     }
     public static void setAllowClosePinEnrollment(boolean allow) {
         allowClosePinEnrollment = allow;
+    }
+
+
+    // ==========================
+    //     Device Based Auth
+    // ==========================
+
+
+    public static void init(Context context, String apiKeyID) {
+        ApiKeyID = apiKeyID;
+        ApiSecretKey = apiKeyID;
+        ctx = context;
+        authRequest = new AuthRequest(MAIN_SERVER_URL);
+        strings = new Strings();
+        colors = new Colors();
+        methods = new CotterMethodHelper(context);
+    }
+
+    public static void signUpWithDevice(Context ctx, String identifier, Callback callback) {
+        User.registerUser(ctx, authRequest, identifier, new Callback() {
+            @Override
+            public void onSuccess(JSONObject result) {
+                Gson gson = new Gson();
+                User us = gson.fromJson(result.toString(), User.class);
+                setUser(us);
+                UserID = us.client_user_id;
+                authRequest = new AuthRequest(MAIN_SERVER_URL);
+                TrustedDeviceHelper.enrollDeviceWithCotterUserID(ctx, us.ID, callback);
+                User.refetchUser(ctx, authRequest);
+            }
+
+            @Override
+            public void onError(String error) {
+                callback.onError(error);
+            }
+        });
+    }
+
+    public static void signInWithDevice(Context ctx, String identifier, AppCompatActivity act, Class callbackClass, Callback callback) {
+        User.getByIdentifier(ctx, authRequest, identifier, new Callback() {
+            @Override
+            public void onSuccess(JSONObject result) {
+                Gson gson = new Gson();
+                User us = gson.fromJson(result.toString(), User.class);
+                setUser(us);
+                UserID = us.client_user_id;
+                authRequest = new AuthRequest(MAIN_SERVER_URL);
+                TrustedDeviceHelper.requestAuth(ctx, "LOGIN", act, callbackClass, callback);
+                User.refetchUser(ctx, authRequest);
+            }
+
+            @Override
+            public void onError(String error) {
+                callback.onError(error);
+            }
+        });
     }
 }

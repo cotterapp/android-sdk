@@ -59,6 +59,45 @@ public class User {
         return instance;
     }
 
+
+
+    public static User registerUser(Context context, AuthRequest authRequest, String identifier, Callback cb) {
+        authRequest.RegisterUserToCotter(context, identifier, new Callback(){
+            public void onSuccess(JSONObject response){
+                Gson gson = new Gson();
+                User updatedUser = gson.fromJson(response.toString(), User.class);
+                instance = updateUser(updatedUser);
+                Cotter.setUser(instance);
+                Log.i("Register User Success", response.toString());
+                cb.onSuccess(response);
+            }
+            public void onError(String error){
+                Log.e("Register User Error", error);
+                cb.onError(error);
+            }
+        });
+        Cotter.setUser(instance);
+        return instance;
+    }
+
+    public static User getByIdentifier(Context context, AuthRequest authRequest, String identifier, Callback cb) {
+        authRequest.GetUserByIdentifier(context, identifier, new Callback(){
+            public void onSuccess(JSONObject response){
+                Gson gson = new Gson();
+                User updatedUser = gson.fromJson(response.toString(), User.class);
+                instance = updateUser(updatedUser);
+                Cotter.setUser(instance);
+                Log.i("Get User Success", response.toString());
+                cb.onSuccess(response);
+            }
+            public void onError(String error){
+                Log.e("Get User Error", error);
+                cb.onError(error);
+            }
+        });
+        Cotter.setUser(instance);
+        return instance;
+    }
     public static User updateUser(User updatedUser) {
         if (instance == null) {
             instance = updatedUser;

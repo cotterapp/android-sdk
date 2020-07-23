@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.androidbrowserhelper.trusted.TwaLauncher;
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
@@ -128,6 +129,15 @@ public class IdentityActivity extends Activity {
                 @Override
                 public void onSuccess(JSONObject result) {
                     // On success, open the completion intent with the token response
+
+                    Gson gson = new Gson();
+                    try {
+                        Object usr = result.get("user");
+                        User updatedUser = gson.fromJson(usr.toString(), User.class);
+                        User.updateUser(updatedUser);
+                    } catch (Exception e) {
+                        Log.e("COTTER_IDENTITY", "Can't parse result to user");
+                    }
 
                     completeIntent.putExtra(IdentityManager.TOKEN_RESPONSE, result.toString());
                     completeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
