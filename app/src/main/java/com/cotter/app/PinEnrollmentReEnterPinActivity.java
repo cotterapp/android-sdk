@@ -227,7 +227,6 @@ public class PinEnrollmentReEnterPinActivity extends AppCompatActivity implement
     public void errorOther() {
         String errorString = ActivityStrings.get(Strings.ErrorOther);
         PinHelper.shakePin(bullet, pins, errorString, textShow, textError, this, this);
-
     }
 
     // Invoked when pin is invalid

@@ -239,7 +239,7 @@ public class PinResetActivity extends AppCompatActivity implements PinInterface 
             public void onError(String error){
                 setLoading(false);
                 Log.e("Verify Pin Error", error);
-                invalidPin();
+                errorOther();
             }
         };
 
@@ -265,7 +265,11 @@ public class PinResetActivity extends AppCompatActivity implements PinInterface 
         PinHelper.shakePin(bullet, pins, errorString, null, textError, this, this);
         this.setBullet();
     }
-
+    // Invoked when server error
+    public void errorOther() {
+        String errorString = ActivityStrings.get(Strings.ErrorOther);
+        PinHelper.shakePin(bullet, pins, errorString, null, textError, this, this);
+    }
     // toggle Show Pin
     public void onToggleShowPin(View v) {};
 

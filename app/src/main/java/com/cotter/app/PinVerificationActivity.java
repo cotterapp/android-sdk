@@ -184,7 +184,7 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
             public void onError(String error){
                 Log.e("Verify Pin Error", error);
                 setLoading(false);
-                invalidPin();
+                errorOther();
             }
         };
 
@@ -231,6 +231,11 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
 
     public void invalidPin() {
         String errorString = ActivityStrings.get(Strings.ErrorInvalid);
+        PinHelper.shakePin(bullet, pins, errorString, null, textError, this, this);
+    }
+    // Invoked when server error
+    public void errorOther() {
+        String errorString = ActivityStrings.get(Strings.ErrorOther);
         PinHelper.shakePin(bullet, pins, errorString, null, textError, this, this);
     }
 

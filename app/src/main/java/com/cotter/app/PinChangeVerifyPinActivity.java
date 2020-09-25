@@ -142,7 +142,7 @@ public class PinChangeVerifyPinActivity extends AppCompatActivity implements Pin
             public void onError(String error){
                 Log.e("Verify Pin Error", error);
                 setLoading(false);
-                invalidPin();
+                errorOther();
             }
         };
 
@@ -198,6 +198,11 @@ public class PinChangeVerifyPinActivity extends AppCompatActivity implements Pin
         }
 
         String errorString = ActivityStrings.get(Strings.ErrorInvalid);
+        PinHelper.shakePin(bullet, pins, errorString, textShow, textError, this, this);
+    }
+    // Invoked when server error
+    public void errorOther() {
+        String errorString = ActivityStrings.get(Strings.ErrorOther);
         PinHelper.shakePin(bullet, pins, errorString, textShow, textError, this, this);
     }
 

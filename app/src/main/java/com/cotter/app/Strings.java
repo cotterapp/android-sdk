@@ -130,6 +130,7 @@ public class Strings {
         PinChangeVerifyPin.put(ShowPin, "Show Pin");
         PinChangeVerifyPin.put(HidePin, "Hide Pin");
         PinChangeVerifyPin.put(ErrorInvalid, "Your PIN is invalid");
+        PinChangeVerifyPin.put(ErrorOther, "Something went wrong");
 
         PinChangeEnterPin.put(Title, "Enter New Pin");
         PinChangeEnterPin.put(ShowPin, "Show Pin");
