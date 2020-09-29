@@ -165,7 +165,7 @@ public class Strings {
         NetworkError.put(DialogSubtitle, "Please establish a stronger internet connection and try again.");
         NetworkError.put(DialogPositiveButton, "Try Again");
 
-        // HTTP Error Dialog
+        // HTTP Error Dialog (not used)
         HttpError.put(DialogTitle, "Something went wrong");
         HttpError.put(DialogSubtitle, "Looks like there's an error on our end. Please try again.");
         HttpError.put(DialogPositiveButton, "Try Again");
@@ -252,6 +252,9 @@ public class Strings {
     public void setPinChangeSuccessStrings(String key, String value) {
         PinChangeSuccess.put(key, value);
     }
+    public void setBiometricChangeStrings(String key, String value) {
+        BiometricChange.put(key, value);
+    }
 
 
     public void setPinResetStrings(String key, String value) {
@@ -270,6 +273,11 @@ public class Strings {
 
     public void setNetworkErrorStrings(String key, String value) {
         NetworkError.put(key, value);
+    }
+
+    // Not Used
+    public void setHttpErrorStrings(String key, String value) {
+        HttpError.put(key, value);
     }
 
 

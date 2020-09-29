@@ -256,13 +256,13 @@
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:paddingVertical">30dp</item>
     </style>
-    <!-- Pin Input Box -->
+    <!-- Pin Input Bullet -->
     <style name="CotterPinInputBullet">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">@font/akkurat_bold</item>
         <item name="android:textColor">@color/colorLightGrey</item>
-        <item name="android:textSize">25dp</item>
+        <item name="android:textSize">25dp</item> 
         <item name="android:paddingHorizontal">10dp</item>
     </style>
 
