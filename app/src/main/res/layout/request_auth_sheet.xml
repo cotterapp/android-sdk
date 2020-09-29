@@ -2,45 +2,29 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/colorWhite"
-    android:padding="30dp"
+    style="@style/CotterAuthLayout"
     >
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
+        style="@style/CotterAuthLinearLayout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:orientation="vertical"
         >
     <TextView
         android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="Approve this login from your phone"
-        android:textSize="20dp"
-        android:layout_marginBottom="10dp"
-        android:textColor="@color/colorBlack"
+        style="@style/CotterTitle"
         />
     <TextView
         android:id="@+id/subtitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/colorDarkGrey"
         android:text="A notification is sent to your trusted device to confirm it's you."
+        style="@style/CotterSubtitle"
         />
     <ImageView
-        android:id="@+id/tap_device_image"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:scaleType="centerInside"
-        android:adjustViewBounds="true"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="40dp" />
+        android:id="@+id/tap_device_image" 
+        style="@style/CotterAuthImage"
+        />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

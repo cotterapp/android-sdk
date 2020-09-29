@@ -34,27 +34,38 @@ public class Colors {
         ErrorImage = R.drawable.warning;
     }
 
-    public void setColorPrimary(String color) {
-        ColorPrimary = color;
-    }
-
-    public void setColorAccent(String color) {
-        ColorAccent = color;
-    }
-
-    public void setColorDanger(String color) {
-        ColorDanger = color;
-    }
-
     public void setColorBackground(String color) {
         ColorBackground = color;
     }
+    public void setColorBlack(String color) {
+        ColorBlack = color;
+    }
+    public void setColorPrimary(String color) {
+        ColorPrimary = color;
+    }
+    public void setColorAccent(String color) {
+        ColorAccent = color;
+    }
+    public void setColorDanger(String color) {
+        ColorDanger = color;
+    }
+    public void setColorDangerLight(String color) {
+        ColorDangerLight = color;
+    }
+    public void setColorPrimaryLight(String color) {
+        ColorPrimaryLight = color;
+    }
+    public void setColorSuperLightGrey(String color) {
+        ColorSuperLightGrey = color;
+    }
+
 
     public void setSuccessImage(int img) {
         SuccessImage = img;
     }
-
+    public void setErrorImage(int img) { ErrorImage = img; }
+    public void setHttpErrorImage(int img) { HttpErrorImage = img; }
     public void setNetworkErrorImage(int img) { NetworkErrorImage = img; }
-
     public void setLogo(int img) { Logo = img; }
+    public void setTap(int img) { Tap = img; }
 }

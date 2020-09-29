@@ -3,132 +3,88 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorWhite"
+    style="@style/CotterLayout"
     tools:context=".PinResetActivity">
 
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
+        style="@style/CotterToolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorWhite"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:titleTextColor="@color/colorDarkGrey" />
+        app:popupTheme="@style/CotterToolbar.PopupTheme"
+        app:titleTextAppearance="@style/CotterToolbar.TitleText" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.1" />
+        style="@style/CotterGuideline.Vertical"
+        app:layout_constraintGuide_percent="@integer/CotterGuideline.Vertical.Left" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.90" />
+        style="@style/CotterGuideline.Vertical"
+        app:layout_constraintGuide_percent="@integer/CotterGuideline.Vertical.Right" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.15" />
+        style="@style/CotterGuideline.Horizontal"
+        app:layout_constraintGuide_percent="@integer/CotterGuideline.Horizontal.Top" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.95" />
+        style="@style/CotterGuideline.Horizontal"
+        app:layout_constraintGuide_percent="@integer/CotterGuideline.Horizontal.Bottom" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_mid_vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        style="@style/CotterGuideline.Horizontal"
+        app:layout_constraintGuide_percent="@integer/CotterGuideline.Center" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        style="@style/CotterLinearLayout"
         app:layout_constraintLeft_toLeftOf="@id/guideline_left"
         app:layout_constraintRight_toRightOf="@id/guideline_right"
         app:layout_constraintTop_toTopOf="@id/guideline_top"
         app:layout_constraintBottom_toTopOf="@id/guideline_mid_vertical"
-        android:orientation="vertical"
-        android:gravity="center"
         >
 
         <TextView
             android:id="@+id/text_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/akkurat_bold"
+            style="@style/CotterText.Grey.Title"
             android:text="Verification Code"
-            android:textColor="@color/colorDarkGrey"
-            android:textSize="18dp"
-            android:paddingBottom="10dp"
             />
 
         <TextView
             android:id="@+id/text_subtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/akkurat"
             android:text="We have sent a code to"
-            android:textColor="@color/colorDarkGrey"
-            android:textSize="15dp" />
+            style="@style/CotterText.Grey"
+            />
+            
         <TextView
             android:id="@+id/text_subtitle_to"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/akkurat_bold"
-            android:textColor="@color/colorAccent"
-            android:textSize="15dp" />
+            style="@style/CotterText.Accent"
+            />
 
         <include
             layout="@layout/pin_input_box"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/CotterPinInput" />
 
         <TextView
             android:id="@+id/text_error"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/akkurat_bold"
-            android:paddingBottom="10dp"
+            style="@style/CotterText.PinError.SmallBottom"
             android:text=""
-            android:textAlignment="center"
-            android:paddingHorizontal="20dp"
-            android:textColor="@color/colorDanger"
-            android:textSize="15dp"
-            android:visibility="gone"/>
+            />
 
         <TextView
             android:id="@+id/text_resend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/akkurat_bold"
-            android:paddingBottom="20dp"
+            style="@style/CotterText.Primary.PaddingBottom"
             android:text="Resend Code"
-            android:onClick="onResendCode"
-            android:textColor="@color/colorPrimary"
-            android:textSize="15dp" />
+            android:onClick="onResendCode" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/card_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:elevation="20dp"
-        android:background="@drawable/keyboard_background"
+        style="@style/CotterLinearLayout.Keyboard"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -137,8 +93,7 @@
         <include
             android:id="@+id/keyboard"
             layout="@layout/keyboard"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent" />
+            style="@style/CotterKeyboard"  />
     </LinearLayout>
 
 

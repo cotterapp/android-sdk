@@ -10,10 +10,6 @@
     <style name="SelectableItemTheme">
         <item name="colorControlHighlight">@color/colorButtonPress</item>
     </style>
-    <style name="SelectableItemBackground" parent="@style/Widget.AppCompat.Button.Borderless">
-        <item name="android:theme">@style/SelectableItemTheme</item>
-        <item name="android:background">?attr/selectableItemBackground</item>
-    </style>
     <style name="CustomDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <!--buttons color-->
         <item name="colorAccent">@color/colorPrimary</item>
@@ -29,4 +25,418 @@
     <style name="TitleDialogTextStyle" parent="Base.DialogWindowTitle.AppCompat">
         <item name="android:textColor">@color/colorBlack</item>
     </style>
+
+
+    <!-- Layout -->
+    <style name="CotterLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/colorWhite</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
+    <style name="CotterLinearLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <style name="CotterLinearLayout.Keyboard" parent="CotterLinearLayout">
+        <item name="android:elevation">20dp</item>
+        <item name="android:background">@drawable/keyboard_background</item>
+    </style>
+
+    <!-- Toolbar -->
+    <style name="CotterToolbar" >
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">@color/colorWhite</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.ActionBar</item>
+    </style>
+    <style name="CotterToolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textColor">@color/colorDarkGrey</item>
+    </style>
+    <style name="CotterToolbar.PopupTheme" parent="ThemeOverlay.AppCompat.Light">
+    </style>
+
+
+    <!-- Guidelines -->
+    <style name="CotterGuideline" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="CotterGuideline.Vertical" parent="CotterGuideline">
+        <item name="android:orientation">vertical</item>
+    </style>
+    <style name="CotterGuideline.Horizontal" parent="CotterGuideline">
+        <item name="android:orientation">horizontal</item>
+    </style>
+    <item format="float"  name="CotterGuideline.Vertical.Right" type="integer" >0.90</item>
+    <item format="float"  name="CotterGuideline.Vertical.Left" type="integer" >0.10</item>
+    <item format="float"  name="CotterGuideline.Vertical.RightMid" type="integer" >0.85</item>
+    <item format="float"  name="CotterGuideline.Vertical.LeftMid" type="integer" >0.15</item>
+    <item format="float"  name="CotterGuideline.Horizontal.Top" type="integer" >0.15</item>
+    <item format="float"  name="CotterGuideline.Horizontal.Bottom" type="integer" >0.95</item>
+    <item format="float"  name="CotterGuideline.Center" type="integer" >0.5</item>
+
+    <!-- Image Logo -->
+    <style name="CotterLogo" >
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">80dp</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:layout_marginBottom">20dp</item>
+    </style>
+
+    <!-- Title -->
+    <style name="CotterTitle" >
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">20dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+    <!-- Subtitle -->
+    <style name="CotterSubtitle" >
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/colorDarkGrey</item>
+        <item name="android:textSize">17dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+    <!-- Text -->
+    <style name="CotterText" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textSize">15dp</item>
+    </style>
+    <style name="CotterText.Grey" parent="CotterText" >
+        <item name="android:textColor">@color/colorDarkGrey</item>
+    </style>
+    <style name="CotterText.Danger" parent="CotterText" >
+        <item name="android:textColor">@color/colorDanger</item>
+    </style>
+    <style name="CotterText.Accent" parent="CotterText">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+    <style name="CotterText.Primary" parent="CotterText">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <!-- Button -->
+    <style name="CotterButton" >
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:background">@drawable/button_border</item>
+    </style>
+
+
+    <!--
+    =========================================
+                      Pin
+    =========================================
+    -->
+    <!-- Show Pin Text -->
+    <style name="CotterText.ShowPin" parent="CotterText">
+        <item name="android:paddingBottom">20dp</item>
+    </style>
+
+    <!-- Pin Error Text -->
+    <style name="CotterText.PinError" parent="CotterText.Danger">
+        <item name="android:paddingBottom">20dp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <!-- Pin Forgot Text -->
+    <style name="CotterText.ForgotPin" parent="CotterText.Primary">
+        <item name="android:paddingBottom">20dp</item>
+    </style>
+
+    <!-- PinInput -->
+    <style name="CotterPinInput" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <!--
+    =========================================
+                    Keyboard
+    =========================================
+    -->
+    <!-- Keyboard -->
+    <style name="CotterKeyboardTableLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:stretchColumns">0,1,2</item>
+        <item name="android:background">@color/colorWhite</item>
+    </style>
+    <style name="CotterKeyboard">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+    </style>
+    <style name="CotterKeyboardKey" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:theme">@style/SelectableItemTheme</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textSize">24dp</item>
+    </style>
+    <style name="CotterKeyboardRow">
+        <item name="android:layout_height">0dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+    <style name="CotterKeyboardBiometricKey">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/colorWhite</item>
+    </style>
+    <style name="CotterKeyboardDeleteKey">
+        <item name="android:src">@drawable/backspace</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:tint">@color/colorBlack</item>
+        <item name="android:theme">@style/SelectableItemTheme</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
+
+
+    <!--
+    =========================================
+                    Loading
+    =========================================
+    -->
+    <!-- FrameLayout -->
+    <style name="CotterLoadingFrameLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:alpha">0.4</item>
+        <item name="android:animateLayoutChanges">true</item>
+        <item name="android:background">@android:color/black</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:elevation">30dp</item>
+    </style>
+    <!-- ProgressBar -->
+    <style name="CotterLoadingProgressBar">
+        <item name="android:indeterminate">true</item>
+        <item name="android:indeterminateDrawable">@drawable/progress</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_centerHorizontal">true</item>
+    </style>
+
+    <!--
+    =========================================
+                    Pin Input
+    =========================================
+    -->
+    <!-- Linear Layout -->
+    <style name="CotterPinLayout">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:paddingVertical">30dp</item>
+    </style>
+    <!-- Pin Input Box -->
+    <style name="CotterPinInputBullet">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/akkurat_bold</item>
+        <item name="android:textColor">@color/colorLightGrey</item>
+        <item name="android:textSize">25dp</item>
+        <item name="android:paddingHorizontal">10dp</item>
+    </style>
+
+    <!--
+    =========================================
+              Pin Reset Input Box
+    =========================================
+    -->
+    <!-- Linear Layout -->
+    <style name="CotterPinBoxLayout">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:paddingVertical">10dp</item>
+    </style>
+    <!-- Pin Input Box -->
+    <style name="CotterPinInputBox">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:fontFamily">@font/akkurat_bold</item>
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textSize">25dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:background">@drawable/background_pin_input</item>
+    </style>
+    <!--
+    =========================================
+                 Pin Success Page
+    =========================================
+    -->
+    <!-- Success Image -->
+    <style name="CotterSuccessImage">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_marginBottom">20dp</item>
+    </style>
+    <!-- Linear Layout -->
+    <style name="CotterLinearLayout.Wrap" parent="CotterLinearLayout">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">0dp</item>
+    </style>
+    <!-- Title -->
+    <style name="CotterTitle.Small" parent="CotterTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">15dp</item>
+    </style>
+
+    <!-- Subtitle -->
+    <style name="CotterSubtitle.Small" parent="CotterSubtitle" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/colorDarkGrey</item>
+        <item name="android:textSize">15dp</item>
+    </style>
+
+    <!-- Button -->
+    <style name="CotterButton.Success" parent="CotterButton">
+        <item name="android:textColor">@color/colorGreen</item>
+        <item name="android:layout_marginTop">20dp</item>
+    </style>
+
+
+    <!--
+    =========================================
+                Pin Reset Page
+    =========================================
+    -->
+    <!-- Title -->
+    <style name="CotterText.Grey.Title" parent="CotterText.Grey">
+        <item name="android:textSize">18dp</item>
+        <item name="android:paddingBottom">20dp</item>
+    </style>
+    <!-- Pin Error Text -->
+    <style name="CotterText.Primary.PaddingBottom" parent="CotterText.Primary">
+        <item name="android:paddingBottom">20dp</item>
+    </style>
+
+    <!-- Pin Error Text -->
+    <style name="CotterText.PinError.SmallBottom" parent="CotterText.PinError">
+        <item name="android:paddingBottom">10dp</item>
+    </style>
+
+    <!--
+    =========================================
+      Approve Request Page (Trusted Device)
+    =========================================
+    -->
+    <!--  Top Half -->
+
+    <style name="CotterLinearLayoutModal">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <style name="CotterLinearLayout.TopHalf" parent="CotterLinearLayout">
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center|bottom</item>
+    </style>
+    <style name="CotterLinearLayout.BottomHalf" parent="CotterLinearLayout">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingBottom">40dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center|bottom</item>
+    </style>
+    <style name="CotterButton.Right" parent="CotterButton">
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginRight">0dp</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+    <style name="CotterButton.Left" parent="CotterButton">
+        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+    <style name="CotterButton.Right.Success" parent="CotterButton.Right">
+        <item name="android:textColor">@color/colorGreen</item>
+    </style>
+    <style name="CotterButton.Left.Danger" parent="CotterButton.Left">
+        <item name="android:textColor">@color/colorDanger</item>
+    </style>
+
+    <!--
+    =========================================
+      Register Device QR Show (Trusted Device)
+    =========================================
+    -->
+    <!--  Linear Layout -->
+    <style name="CotterLinearLayout.Padding" parent="CotterLinearLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:padding">30dp</item>
+    </style>
+    <!-- Subtitle -->
+    <style name="CotterSubtitle.MarginBottom" parent="CotterSubtitle" >
+        <item name="android:layout_marginBottom">20dp</item>
+    </style>
+    <!-- QR Code -->
+    <style name="CotterQRCode" >
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:adjustViewBounds">true</item>
+    </style>
+
+    <!-- 
+    =========================================
+              Request Auth Sheet
+    =========================================
+    -->
+    <style name="CotterAuthLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/colorWhite</item>
+        <item name="android:padding">30dp</item>
+    </style>
+    <style name="CotterAuthLinearLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+    <!-- Tap Device Image -->
+    <style name="CotterAuthImage" >
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">80dp</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:layout_marginTop">40dp</item>
+        <item name="android:layout_marginBottom">40dp</item>
+    </style>
+
 </resources>

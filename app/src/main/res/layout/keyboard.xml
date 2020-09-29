@@ -1,93 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <TableLayout xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:stretchColumns="0,1,2"
-    android:background="@color/colorWhite">
-
+    style="@style/CotterKeyboardTableLayout">
 
     <TableRow
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:layout_weight="1">
+        style="@style/CotterKeyboardRow">
     <Button
         android:id="@+id/keyboard_1"
-        android:gravity="center"
         android:text="1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/SelectableItemBackground"
+        style="@style/CotterKeyboardKey"
         android:onClick="onPressKey"
-        android:textColor="@color/colorBlack"
-        android:textSize="24dp"
-
     />
     <Button
         android:id="@+id/keyboard_2"
-        android:gravity="center"
         android:text="2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/SelectableItemBackground"
+        style="@style/CotterKeyboardKey"
         android:onClick="onPressKey"
-        android:textColor="@color/colorBlack"
-        android:textSize="24dp"
-
         />
     <Button
         android:id="@+id/keyboard_3"
-        android:gravity="center"
         android:text="3"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/SelectableItemBackground"
+        style="@style/CotterKeyboardKey"
         android:onClick="onPressKey"
-        android:textColor="@color/colorBlack"
-        android:textSize="24dp"
-
         />
     </TableRow>
 
     <TableRow
-        android:gravity="center"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        style="@style/CotterKeyboardRow">
     <Button
         android:id="@+id/keyboard_4"
-        android:gravity="center"
         android:text="4"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/SelectableItemBackground"
+        style="@style/CotterKeyboardKey"
         android:onClick="onPressKey"
-        android:textColor="@color/colorBlack"
-        android:textSize="24dp"
-
         />
     <Button
         android:id="@+id/keyboard_5"
-        android:gravity="center"
         android:text="5"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/SelectableItemBackground"
+        style="@style/CotterKeyboardKey"
         android:onClick="onPressKey"
-        android:textColor="@color/colorBlack"
-        android:textSize="24dp"
-
         />
     <Button
         android:id="@+id/keyboard_6"
-        android:gravity="center"
         android:text="6"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/SelectableItemBackground"
+        style="@style/CotterKeyboardKey"
         android:onClick="onPressKey"
-        android:textColor="@color/colorBlack"
-        android:textSize="24dp"
-
         />
     </TableRow>
     <TableRow
@@ -96,76 +52,40 @@
         android:layout_weight="1">
     <Button
         android:id="@+id/keyboard_7"
-        android:gravity="center"
         android:text="7"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/SelectableItemBackground"
+        style="@style/CotterKeyboardKey"
         android:onClick="onPressKey"
-        android:textColor="@color/colorBlack"
-        android:textSize="24dp"
-
         />
     <Button
         android:id="@+id/keyboard_8"
-        android:gravity="center"
         android:text="8"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/SelectableItemBackground"
+        style="@style/CotterKeyboardKey"
         android:onClick="onPressKey"
-        android:textColor="@color/colorBlack"
-        android:textSize="24dp"
-
         />
     <Button
         android:id="@+id/keyboard_9"
-        android:gravity="center"
         android:text="9"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/SelectableItemBackground"
+        style="@style/CotterKeyboardKey"
         android:onClick="onPressKey"
-        android:textColor="@color/colorBlack"
-        android:textSize="24dp"
-
         />
     </TableRow>
 
     <TableRow
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:layout_weight="1">
+        style="@style/CotterKeyboardRow">
     <ImageButton
-        android:gravity="center"
         android:id="@+id/keyboard_biometric"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorWhite"
+        style="@style/CotterKeyboardBiometricKey"
         />
     <Button
         android:id="@+id/keyboard_0"
-        android:gravity="center"
         android:text="0"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/SelectableItemBackground"
+        style="@style/CotterKeyboardKey"
         android:onClick="onPressKey"
-        android:textColor="@color/colorBlack"
-        android:textSize="24dp"
-
         />
     <ImageButton
-        android:src="@drawable/backspace"
-        android:gravity="center"
         android:id="@+id/keyboard_backspace"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/SelectableItemBackground"
+        style="@style/CotterKeyboardDeleteKey"
         android:onClick="onDeleteKey"
-        android:textColor="@color/colorBlack"
-        android:tint="@color/colorBlack"
-
         />
     </TableRow>
 </TableLayout>

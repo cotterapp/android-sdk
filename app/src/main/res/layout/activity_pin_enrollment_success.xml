@@ -2,78 +2,58 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    style="@style/CotterLayout"
     android:id="@+id/container"
     tools:context=".PinEnrollmentSuccessActivity">
 
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.15" />
+        style="@style/CotterGuideline.Vertical"
+        app:layout_constraintGuide_percent="@integer/CotterGuideline.Vertical.LeftMid" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.85" />
+        style="@style/CotterGuideline.Vertical"
+        app:layout_constraintGuide_percent="@integer/CotterGuideline.Vertical.RightMid"  />
+
+
+    <ImageView
+        android:id="@+id/success_image"
+        style="@style/CotterSuccessImage"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/linear_layout"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:id="@+id/linear_layout"
+        style="@style/CotterLinearLayout.Wrap"
         app:layout_constraintRight_toRightOf="@id/guideline_right"
         app:layout_constraintLeft_toLeftOf="@id/guideline_left"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:orientation="vertical"
-        android:gravity="center"
         >
 
-    <ImageView
-        android:id="@+id/success_image"
-        android:layout_width="280dp"
-        android:layout_height="150dp"
-        />
+        <TextView
+            android:id="@+id/title"
+            style="@style/CotterTitle.Small"
+            android:text="Success Activating PIN"
+            />
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Success Activating PIN"
-        android:fontFamily="@font/akkurat_bold"
-        android:textColor="@color/colorBlack"
-        android:textSize="15dp"
-        android:layout_marginBottom="10dp"
-        />
-
-    <TextView
-        android:id="@+id/subtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="You can now use PIN to unlock your account and do transactions"
-        android:fontFamily="@font/akkurat"
-        android:textColor="@color/colorDarkGrey"
-        android:textSize="15dp"
-        android:textAlignment="center"
-        />
+        <TextView
+            android:id="@+id/subtitle"
+            android:text="You can now use PIN to unlock your account and do transactions"
+           style="@style/CotterSubtitle.Small"
+            />
 
         <Button
             android:id="@+id/button"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            style="@style/CotterButton.Success"
             android:text="Done"
-            android:textColor="@color/colorGreen"
-            android:textAllCaps="false"
             android:onClick="onCheckBiometric"
-            android:background="@drawable/button_success"
-            android:paddingBottom="0dp"
             />
-
     </LinearLayout>
+
     <include layout="@layout/loading_overlay" />
 </androidx.constraintlayout.widget.ConstraintLayout>
