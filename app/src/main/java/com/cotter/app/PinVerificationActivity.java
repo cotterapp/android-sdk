@@ -369,9 +369,6 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
     public void onForgotPin(View view) {
         setLoading(true);
         User user = Cotter.getUser();
-        String name = user.name;
-        String sendingMethod = user.sendingMethod;
-        String sendingDestination = user.sendingDestination;
         // Verify Pin
         Callback cb = new Callback(){
             public void onSuccess(JSONObject response){
@@ -380,8 +377,8 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
                 try {
                     nextIntent.putExtra("challenge", response.getString("challenge"));
                     nextIntent.putExtra("challenge_id", response.getInt("challenge_id"));
-                    nextIntent.putExtra("sending_method", sendingMethod);
-                    nextIntent.putExtra("sending_destination", sendingDestination);
+                    nextIntent.putExtra("sending_method", response.getString("sending_method"));
+                    nextIntent.putExtra("sending_destination", response.getString("sending_destination"));
                     startActivity(nextIntent);
                     setLoading(false);
                 } catch (Exception e) {
@@ -398,12 +395,12 @@ public class PinVerificationActivity extends AppCompatActivity implements PinInt
         };
 
 
-        if (name != null && sendingMethod != null && sendingDestination != null) {
-            Cotter.authRequest.ResetStart(this, Cotter.PinMethod, sendingMethod, sendingDestination, name, cb);
+        if (Cotter.resetPinCaller != null) {
+            Cotter.resetPinCaller.onResetPin(user, cb);
         } else {
             setLoading(false);
             error();
-            Log.e("COTTER RESET PIN", "Please set user's name, sending method and destination. Use `Cotter.getUser().setUserInformation()`" + name + sendingDestination + sendingMethod);
+            Log.e("COTTER RESET PIN", "Please set a function that will be used to send the verification code. Use `Cotter.setOnResetPin()`");
         }
     }
 

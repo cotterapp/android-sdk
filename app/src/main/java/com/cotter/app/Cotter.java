@@ -43,6 +43,8 @@ public class Cotter {
 
     public static String sharedPreferenceFileKeyPrefix = "com.cotter.app.COTTER_PREFERENCES";
 
+    public static PinResetInterface resetPinCaller;
+
 
     private static Context ctx;
     public static Flow PinEnrollment = new Flow(new String[] { ScreenNames.PinEnrollmentEnterPin, ScreenNames.PinEnrollmentReEnterPin, ScreenNames.PinEnrollmentSuccess });
@@ -110,6 +112,10 @@ public class Cotter {
         allowClosePinEnrollment = allow;
     }
 
+    // Reset Pin
+    public static void setOnResetPin(PinResetInterface nOnResetPin) {
+        resetPinCaller = nOnResetPin;
+    }
 
     // ==========================
     //     Device Based Auth

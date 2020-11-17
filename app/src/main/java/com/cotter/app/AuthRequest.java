@@ -582,6 +582,7 @@ public class AuthRequest {
         VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
 
+    // DEPRECATED
     public void ResetStart(Context context, String method, String sendingMethod, String sendingDestination, String name, final Callback callback) {
         if (!networkIsAvailable(context)) {
             showNetworkErrorDialogIfNecessary(context, callback);
