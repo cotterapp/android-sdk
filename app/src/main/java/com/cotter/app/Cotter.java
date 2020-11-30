@@ -113,8 +113,8 @@ public class Cotter {
     }
 
     // Reset Pin
-    public static void setOnResetPin(PinResetInterface nOnResetPin) {
-        resetPinCaller = nOnResetPin;
+    public static void setOnResetPin(PinResetInterface onResetPin) {
+        resetPinCaller = onResetPin;
     }
 
     // ==========================

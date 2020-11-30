@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -781,7 +782,7 @@ public class AuthRequest {
             return;
         }
 
-        String url = mainServerURL + "/user?identifier=" + identifier;
+        String url = mainServerURL + "/user?identifier=" + Uri.encode(identifier);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
 
