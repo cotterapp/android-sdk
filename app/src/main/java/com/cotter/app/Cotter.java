@@ -53,6 +53,14 @@ public class Cotter {
     public static Flow PinReset = new Flow(new String[] { ScreenNames.PinReset, ScreenNames.PinResetEnterPin, ScreenNames.PinResetReEnterPin, ScreenNames.PinResetSuccess });
 
     public static String MAIN_SERVER_URL = "https://www.cotter.app/api/v0";
+    public static String JS_URL = "https://js.cotter.app";
+
+    public static void setMainServerURL(String url) {
+        MAIN_SERVER_URL = url;
+    }
+    public static void setJSURL(String url) {
+        JS_URL = url;
+    }
 
     public static void init(Context context, String mainServerURL, String userID, String apiKeyID, String apiSecretKey) {
         UserID = userID;

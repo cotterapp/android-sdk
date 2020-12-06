@@ -66,7 +66,7 @@ public class IdentityRequest {
 
     public void login(String type, Context ctx, Class callbackClass) {
         // build URL
-        String url = "https://js.cotter.app/app?";
+        String url = Cotter.JS_URL + "/app?";
         url = url + "api_key=" + Cotter.ApiKeyID;
         url = url + "&redirect_url=" + Uri.encode(URL_SCHEME);
         url = url + "&type=" + type;
@@ -88,7 +88,7 @@ public class IdentityRequest {
 
     public void loginWithInput(String type, String input, Context ctx, Class callbackClass) {
         // build URL
-        String url = "https://js.cotter.app/app?direct_login=true";
+        String url = Cotter.JS_URL + "/app?direct_login=true";
         url = url + "&api_key=" + Cotter.ApiKeyID;
         url = url + "&redirect_url=" + Uri.encode(URL_SCHEME);
         url = url + "&type=" + type;
